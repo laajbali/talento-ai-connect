@@ -219,7 +219,7 @@ function MyCv() {
 
       {/* Off-screen full-size document used for the PDF export */}
       <div aria-hidden className="pointer-events-none fixed -left-[3000px] top-0 -z-10">
-        <CvDocument ref={docRef} cv={cv} template={state.cvTemplate} />
+        <CvDocument ref={docRef} cv={cv} template={state.cvTemplate} forExport />
       </div>
     </AppShell>
   );
