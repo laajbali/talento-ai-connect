@@ -21,13 +21,20 @@ interface Props {
   template: string;
   /** Scale down for thumbnails. */
   scale?: number;
+  /**
+   * Force English labels + LTR. Used for the PDF export, because the canvas
+   * rasteriser does not shape Arabic script correctly.
+   */
+  forExport?: boolean;
 }
 
 export const CvDocument = forwardRef<HTMLDivElement, Props>(function CvDocument(
-  { cv, template, scale = 1 },
+  { cv, template, scale = 1, forExport = false },
   ref,
 ) {
-  const { t, dir } = useI18n();
+  const i18n = useI18n();
+  const t = forExport ? (s: string) => s : i18n.t;
+  const dir = forExport ? "ltr" : i18n.dir;
   const id = (["classic", "modern", "compact"].includes(template)
     ? template
     : "classic") as TemplateId;
