@@ -9,6 +9,7 @@ import { jobById } from "@/lib/data";
 import { useStore } from "@/lib/store";
 import type { ApplicationStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/app/applications")({
   head: () => ({
@@ -37,13 +38,14 @@ export function statusClass(status: string) {
     status === "Shortlisted" && "bg-success/10 text-success",
     status === "Interview" && "bg-info/10 text-info",
     status === "Rejected" && "bg-destructive/10 text-destructive",
-    status === "Under Review" && "bg-warning/20 text-warning-foreground",
+    status === "Under Review" && "bg-warning/15 text-warning",
     status === "Applied" && "bg-muted text-muted-foreground",
     status === "Hired" && "bg-success/10 text-success",
   );
 }
 
 function Applications() {
+  const { t } = useI18n();
   const { state } = useStore();
   const [filter, setFilter] = useState<string>("All");
   const [open, setOpen] = useState<string | null>(null);
@@ -61,7 +63,7 @@ function Applications() {
         <TabsList className="flex w-full flex-wrap justify-start">
           {filters.map((f) => (
             <TabsTrigger key={f} value={f}>
-              {f}
+              {t(f)}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -98,22 +100,22 @@ function Applications() {
                           {job.company} · Applied {app.appliedAt}
                         </p>
                       </div>
-                      <span className={statusClass(app.status)}>{app.status}</span>
+                      <span className={statusClass(app.status)}>{t(app.status)}</span>
                     </div>
                   </div>
                 </div>
 
                 {expanded && (
                   <ol className="mt-4 space-y-3 border-l border-border pl-4">
-                    {app.timeline.map((t) => (
-                      <li key={t.label} className="relative text-sm">
+                    {app.timeline.map((event) => (
+                      <li key={event.label} className="relative text-sm">
                         <span
                           className={`absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full ${
-                            t.done ? "bg-primary" : "bg-muted"
+                            event.done ? "bg-primary" : "bg-muted"
                           }`}
                         />
-                        <p className={t.done ? "font-medium" : "text-muted-foreground"}>{t.label}</p>
-                        <p className="text-xs text-muted-foreground">{t.date}</p>
+                        <p className={event.done ? "font-medium" : "text-muted-foreground"}>{t(event.label)}</p>
+                        <p className="text-xs text-muted-foreground">{event.date}</p>
                       </li>
                     ))}
                   </ol>

@@ -68,7 +68,6 @@ export function BackButton({ className }: { className?: string }) {
       className={cn("gap-1 px-2", className)}
     >
       <Icon className="h-4 w-4" />
-      <span className="hidden sm:inline">{t("Back")}</span>
     </Button>
   );
 }
@@ -107,9 +106,9 @@ export function AppShell({
       <div className="mx-auto flex w-full max-w-7xl">
         {/* Desktop sidebar */}
         <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-e border-border bg-sidebar px-4 py-6 lg:flex">
-          <Link to="/" className="px-2">
+          <div className="px-2">
             <Logo />
-          </Link>
+          </div>
           <nav className="mt-8 flex flex-1 flex-col gap-1">
             {nav.map((item) => (
               <Link
@@ -155,15 +154,15 @@ export function AppShell({
           <header className="sticky top-0 z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur sm:flex sm:justify-between">
             <div className="flex min-w-0 items-center gap-2">
               {isRoot ? (
-                <Link to="/" className="lg:hidden">
+                <div className="lg:hidden">
                   <Logo compact />
-                </Link>
+                </div>
               ) : (
                 <BackButton />
               )}
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold">{title ? t(title) : "Talento"}</p>
-                <p className="truncate text-xs text-muted-foreground">{displayName}</p>
+                <p className="truncate text-xs text-muted-foreground" data-no-translate>{displayName}</p>
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1">

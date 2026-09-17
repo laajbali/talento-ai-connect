@@ -9,6 +9,8 @@ import {
   HelpCircle,
   LifeBuoy,
   LogOut,
+  Moon,
+  Sun,
   Search,
   Shield,
   Users,
@@ -16,6 +18,8 @@ import {
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
+import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 export const Route = createFileRoute("/hr/more")({
   head: () => ({
@@ -32,6 +36,8 @@ export const Route = createFileRoute("/hr/more")({
 function HrMore() {
   const { state, reset } = useStore();
   const navigate = useNavigate();
+  const { t, lang } = useI18n();
+  const { theme } = useTheme();
 
   return (
     <AppShell variant="employer" title="More">
@@ -55,7 +61,8 @@ function HrMore() {
       </Group>
 
       <Group title="Preferences & support">
-        <Setting section="language" icon={<Globe className="h-4 w-4" />} label="Language" hint="English" />
+        <Setting section="language" icon={<Globe className="h-4 w-4" />} label={t("Language")} hint={lang === "ar" ? "العربية" : "English"} />
+        <Setting section="appearance" icon={theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />} label={t("Appearance")} hint={t(theme === "dark" ? "Dark" : "Light")} />
         <Setting section="privacy" icon={<Shield className="h-4 w-4" />} label="Privacy" />
         <Setting section="terms" icon={<Shield className="h-4 w-4" />} label="Terms of service" />
         <Setting section="help" icon={<HelpCircle className="h-4 w-4" />} label="Help center" />

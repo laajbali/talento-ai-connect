@@ -32,8 +32,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
     if (saved === "light" || saved === "dark") {
       setThemeState(saved);
-    } else if (window.matchMedia?.("(prefers-color-scheme: dark)").matches) {
-      setThemeState("dark");
     }
   }, []);
 

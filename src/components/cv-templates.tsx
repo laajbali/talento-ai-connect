@@ -131,6 +131,7 @@ export const CvDocument = forwardRef<HTMLDivElement, Props>(function CvDocument(
     >
       <div
         ref={ref}
+        data-no-translate={forExport ? "true" : undefined}
         dir={dir}
         style={{
           width: CV_DOC_WIDTH,
