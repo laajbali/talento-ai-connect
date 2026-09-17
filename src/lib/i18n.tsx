@@ -458,7 +458,24 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    if (lang !== "ar") return;
+    if (lang !== "ar") {
+      // Restore any text/attributes a previous Arabic pass replaced.
+      const originals = originalsRef.current;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let n = walker.nextNode();
+      while (n) {
+        const original = originals.get(n);
+        if (original !== undefined && n.textContent !== original) n.textContent = original;
+        n = walker.nextNode();
+      }
+      for (const element of document.body.querySelectorAll("[data-i18n-placeholder],[data-i18n-aria-label],[data-i18n-title]")) {
+        for (const attr of ["placeholder", "aria-label", "title"] as const) {
+          const original = element.getAttribute(`data-i18n-${attr}`);
+          if (original !== null && element.getAttribute(attr) !== original) element.setAttribute(attr, original);
+        }
+      }
+      return;
+    }
     const originals = originalsRef.current;
     let frame = 0;
     let disposed = false;
