@@ -58,10 +58,10 @@ function NewJob() {
   });
   const [draft, setDraft] = useState<Written | null>(null);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<{ title?: string; skills?: string }>({});
 
   const validate = () => {
-    const e: Record<string, string> = {};
+    const e: { title?: string; skills?: string } = {};
     if (form.title.trim().length < 3) e.title = "Enter a job title.";
     if (form.skills.trim().length < 2) e.skills = "List at least one required skill.";
     setErrors(e);
@@ -108,7 +108,7 @@ function NewJob() {
       location: form.location,
       type: form.type as Job["type"],
       level: form.level as Job["level"],
-      salary: form.salary || undefined,
+      ...(form.salary ? { salary: form.salary } : {}),
       posted: "just now",
       description: draft?.description ?? form.notes,
       responsibilities: draft?.responsibilities ?? [],
