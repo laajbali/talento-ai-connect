@@ -28,7 +28,7 @@ export const Route = createFileRoute("/app/gap")({
       { property: "og:description", content: "Your profile vs the job requirements." },
     ],
   }),
-  component: GapAnalysis;
+  component: GapAnalysis,
 });
 
 function GapAnalysis() {

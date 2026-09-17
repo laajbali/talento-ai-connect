@@ -15,14 +15,33 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HrRouteImport } from './routes/hr'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAnalysisRouteImport } from './routes/app.analysis'
+import { Route as AppApplicationsRouteImport } from './routes/app.applications'
 import { Route as AppCvRouteImport } from './routes/app.cv'
 import { Route as AppCvBuilderRouteImport } from './routes/app.cv-builder'
+import { Route as AppGapRouteImport } from './routes/app.gap'
+import { Route as AppMoreRouteImport } from './routes/app.more'
+import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
+import { Route as AppPathRouteImport } from './routes/app.path'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppSavedRouteImport } from './routes/app.saved'
 import { Route as AuthRoleRouteImport } from './routes/auth.role'
 import { Route as AuthSetupRouteImport } from './routes/auth.setup'
 import { Route as AuthSignupRouteImport } from './routes/auth.signup'
 import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
+import { Route as HrIndexRouteImport } from './routes/hr.index'
+import { Route as HrCompanyRouteImport } from './routes/hr.company'
+import { Route as HrNotificationsRouteImport } from './routes/hr.notifications'
+import { Route as HrSavedRouteImport } from './routes/hr.saved'
+import { Route as HrScreeningRouteImport } from './routes/hr.screening'
+import { Route as HrSearchRouteImport } from './routes/hr.search'
 import { Route as AppJobsIndexRouteImport } from './routes/app.jobs.index'
 import { Route as AppJobsJobIdRouteImport } from './routes/app.jobs.$jobId'
+import { Route as AppSettingsSectionRouteImport } from './routes/app.settings.$section'
+import { Route as HrCandidatesIndexRouteImport } from './routes/hr.candidates.index'
+import { Route as HrCandidatesCandidateIdRouteImport } from './routes/hr.candidates.$candidateId'
+import { Route as HrJobsIndexRouteImport } from './routes/hr.jobs.index'
+import { Route as HrJobsJobIdRouteImport } from './routes/hr.jobs.$jobId'
+import { Route as HrJobsNewRouteImport } from './routes/hr.jobs.new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,6 +73,11 @@ const AppAnalysisRoute = AppAnalysisRouteImport.update({
   path: '/analysis',
   getParentRoute: () => AppRoute,
 } as any)
+const AppApplicationsRoute = AppApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCvRoute = AppCvRouteImport.update({
   id: '/cv',
   path: '/cv',
@@ -62,6 +86,36 @@ const AppCvRoute = AppCvRouteImport.update({
 const AppCvBuilderRoute = AppCvBuilderRouteImport.update({
   id: '/cv-builder',
   path: '/cv-builder',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGapRoute = AppGapRouteImport.update({
+  id: '/gap',
+  path: '/gap',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMoreRoute = AppMoreRouteImport.update({
+  id: '/more',
+  path: '/more',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPathRoute = AppPathRouteImport.update({
+  id: '/path',
+  path: '/path',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSavedRoute = AppSavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
   getParentRoute: () => AppRoute,
 } as any)
 const AuthRoleRoute = AuthRoleRouteImport.update({
@@ -84,6 +138,36 @@ const AuthVerifyRoute = AuthVerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => AuthRoute,
 } as any)
+const HrIndexRoute = HrIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrCompanyRoute = HrCompanyRouteImport.update({
+  id: '/company',
+  path: '/company',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrNotificationsRoute = HrNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrSavedRoute = HrSavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrScreeningRoute = HrScreeningRouteImport.update({
+  id: '/screening',
+  path: '/screening',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrSearchRoute = HrSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => HrRoute,
+} as any)
 const AppJobsIndexRoute = AppJobsIndexRouteImport.update({
   id: '/jobs/',
   path: '/jobs/',
@@ -94,54 +178,140 @@ const AppJobsJobIdRoute = AppJobsJobIdRouteImport.update({
   path: '/jobs/$jobId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsSectionRoute = AppSettingsSectionRouteImport.update({
+  id: '/settings/$section',
+  path: '/settings/$section',
+  getParentRoute: () => AppRoute,
+} as any)
+const HrCandidatesIndexRoute = HrCandidatesIndexRouteImport.update({
+  id: '/candidates/',
+  path: '/candidates/',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrCandidatesCandidateIdRoute = HrCandidatesCandidateIdRouteImport.update({
+  id: '/candidates/$candidateId',
+  path: '/candidates/$candidateId',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrJobsIndexRoute = HrJobsIndexRouteImport.update({
+  id: '/jobs/',
+  path: '/jobs/',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrJobsJobIdRoute = HrJobsJobIdRouteImport.update({
+  id: '/jobs/$jobId',
+  path: '/jobs/$jobId',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrJobsNewRoute = HrJobsNewRouteImport.update({
+  id: '/jobs/new',
+  path: '/jobs/new',
+  getParentRoute: () => HrRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
-  '/hr': typeof HrRoute
+  '/hr': typeof HrRouteWithChildren
   '/app/analysis': typeof AppAnalysisRoute
+  '/app/applications': typeof AppApplicationsRoute
   '/app/cv': typeof AppCvRoute
   '/app/cv-builder': typeof AppCvBuilderRoute
+  '/app/gap': typeof AppGapRoute
+  '/app/more': typeof AppMoreRoute
+  '/app/notifications': typeof AppNotificationsRoute
+  '/app/path': typeof AppPathRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/saved': typeof AppSavedRoute
   '/auth/role': typeof AuthRoleRoute
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/hr/company': typeof HrCompanyRoute
+  '/hr/notifications': typeof HrNotificationsRoute
+  '/hr/saved': typeof HrSavedRoute
+  '/hr/screening': typeof HrScreeningRoute
+  '/hr/search': typeof HrSearchRoute
   '/app/': typeof AppIndexRoute
+  '/hr/': typeof HrIndexRoute
   '/app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/app/settings/$section': typeof AppSettingsSectionRoute
+  '/hr/candidates/$candidateId': typeof HrCandidatesCandidateIdRoute
+  '/hr/jobs/$jobId': typeof HrJobsJobIdRoute
+  '/hr/jobs/new': typeof HrJobsNewRoute
   '/app/jobs/': typeof AppJobsIndexRoute
+  '/hr/candidates/': typeof HrCandidatesIndexRoute
+  '/hr/jobs/': typeof HrJobsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
-  '/hr': typeof HrRoute
   '/app/analysis': typeof AppAnalysisRoute
+  '/app/applications': typeof AppApplicationsRoute
   '/app/cv': typeof AppCvRoute
   '/app/cv-builder': typeof AppCvBuilderRoute
+  '/app/gap': typeof AppGapRoute
+  '/app/more': typeof AppMoreRoute
+  '/app/notifications': typeof AppNotificationsRoute
+  '/app/path': typeof AppPathRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/saved': typeof AppSavedRoute
   '/auth/role': typeof AuthRoleRoute
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/hr/company': typeof HrCompanyRoute
+  '/hr/notifications': typeof HrNotificationsRoute
+  '/hr/saved': typeof HrSavedRoute
+  '/hr/screening': typeof HrScreeningRoute
+  '/hr/search': typeof HrSearchRoute
   '/app': typeof AppIndexRoute
+  '/hr': typeof HrIndexRoute
   '/app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/app/settings/$section': typeof AppSettingsSectionRoute
+  '/hr/candidates/$candidateId': typeof HrCandidatesCandidateIdRoute
+  '/hr/jobs/$jobId': typeof HrJobsJobIdRoute
+  '/hr/jobs/new': typeof HrJobsNewRoute
   '/app/jobs': typeof AppJobsIndexRoute
+  '/hr/candidates': typeof HrCandidatesIndexRoute
+  '/hr/jobs': typeof HrJobsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
-  '/hr': typeof HrRoute
+  '/hr': typeof HrRouteWithChildren
   '/app/analysis': typeof AppAnalysisRoute
+  '/app/applications': typeof AppApplicationsRoute
   '/app/cv': typeof AppCvRoute
   '/app/cv-builder': typeof AppCvBuilderRoute
+  '/app/gap': typeof AppGapRoute
+  '/app/more': typeof AppMoreRoute
+  '/app/notifications': typeof AppNotificationsRoute
+  '/app/path': typeof AppPathRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/saved': typeof AppSavedRoute
   '/auth/role': typeof AuthRoleRoute
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/hr/company': typeof HrCompanyRoute
+  '/hr/notifications': typeof HrNotificationsRoute
+  '/hr/saved': typeof HrSavedRoute
+  '/hr/screening': typeof HrScreeningRoute
+  '/hr/search': typeof HrSearchRoute
   '/app/': typeof AppIndexRoute
+  '/hr/': typeof HrIndexRoute
   '/app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/app/settings/$section': typeof AppSettingsSectionRoute
+  '/hr/candidates/$candidateId': typeof HrCandidatesCandidateIdRoute
+  '/hr/jobs/$jobId': typeof HrJobsJobIdRoute
+  '/hr/jobs/new': typeof HrJobsNewRoute
   '/app/jobs/': typeof AppJobsIndexRoute
+  '/hr/candidates/': typeof HrCandidatesIndexRoute
+  '/hr/jobs/': typeof HrJobsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,30 +321,67 @@ export interface FileRouteTypes {
     | '/auth'
     | '/hr'
     | '/app/analysis'
+    | '/app/applications'
     | '/app/cv'
     | '/app/cv-builder'
+    | '/app/gap'
+    | '/app/more'
+    | '/app/notifications'
+    | '/app/path'
+    | '/app/profile'
+    | '/app/saved'
     | '/auth/role'
     | '/auth/setup'
     | '/auth/signup'
     | '/auth/verify'
+    | '/hr/company'
+    | '/hr/notifications'
+    | '/hr/saved'
+    | '/hr/screening'
+    | '/hr/search'
     | '/app/'
+    | '/hr/'
     | '/app/jobs/$jobId'
+    | '/app/settings/$section'
+    | '/hr/candidates/$candidateId'
+    | '/hr/jobs/$jobId'
+    | '/hr/jobs/new'
     | '/app/jobs/'
+    | '/hr/candidates/'
+    | '/hr/jobs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/hr'
     | '/app/analysis'
+    | '/app/applications'
     | '/app/cv'
     | '/app/cv-builder'
+    | '/app/gap'
+    | '/app/more'
+    | '/app/notifications'
+    | '/app/path'
+    | '/app/profile'
+    | '/app/saved'
     | '/auth/role'
     | '/auth/setup'
     | '/auth/signup'
     | '/auth/verify'
+    | '/hr/company'
+    | '/hr/notifications'
+    | '/hr/saved'
+    | '/hr/screening'
+    | '/hr/search'
     | '/app'
+    | '/hr'
     | '/app/jobs/$jobId'
+    | '/app/settings/$section'
+    | '/hr/candidates/$candidateId'
+    | '/hr/jobs/$jobId'
+    | '/hr/jobs/new'
     | '/app/jobs'
+    | '/hr/candidates'
+    | '/hr/jobs'
   id:
     | '__root__'
     | '/'
@@ -182,22 +389,41 @@ export interface FileRouteTypes {
     | '/auth'
     | '/hr'
     | '/app/analysis'
+    | '/app/applications'
     | '/app/cv'
     | '/app/cv-builder'
+    | '/app/gap'
+    | '/app/more'
+    | '/app/notifications'
+    | '/app/path'
+    | '/app/profile'
+    | '/app/saved'
     | '/auth/role'
     | '/auth/setup'
     | '/auth/signup'
     | '/auth/verify'
+    | '/hr/company'
+    | '/hr/notifications'
+    | '/hr/saved'
+    | '/hr/screening'
+    | '/hr/search'
     | '/app/'
+    | '/hr/'
     | '/app/jobs/$jobId'
+    | '/app/settings/$section'
+    | '/hr/candidates/$candidateId'
+    | '/hr/jobs/$jobId'
+    | '/hr/jobs/new'
     | '/app/jobs/'
+    | '/hr/candidates/'
+    | '/hr/jobs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
-  HrRoute: typeof HrRoute
+  HrRoute: typeof HrRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -244,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAnalysisRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/applications': {
+      id: '/app/applications'
+      path: '/applications'
+      fullPath: '/app/applications'
+      preLoaderRoute: typeof AppApplicationsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/cv': {
       id: '/app/cv'
       path: '/cv'
@@ -256,6 +489,48 @@ declare module '@tanstack/react-router' {
       path: '/cv-builder'
       fullPath: '/app/cv-builder'
       preLoaderRoute: typeof AppCvBuilderRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/gap': {
+      id: '/app/gap'
+      path: '/gap'
+      fullPath: '/app/gap'
+      preLoaderRoute: typeof AppGapRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/more': {
+      id: '/app/more'
+      path: '/more'
+      fullPath: '/app/more'
+      preLoaderRoute: typeof AppMoreRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/notifications': {
+      id: '/app/notifications'
+      path: '/notifications'
+      fullPath: '/app/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/path': {
+      id: '/app/path'
+      path: '/path'
+      fullPath: '/app/path'
+      preLoaderRoute: typeof AppPathRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/saved': {
+      id: '/app/saved'
+      path: '/saved'
+      fullPath: '/app/saved'
+      preLoaderRoute: typeof AppSavedRouteImport
       parentRoute: typeof AppRoute
     }
     '/auth/role': {
@@ -286,6 +561,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthVerifyRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/hr/': {
+      id: '/hr/'
+      path: '/'
+      fullPath: '/hr/'
+      preLoaderRoute: typeof HrIndexRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/company': {
+      id: '/hr/company'
+      path: '/company'
+      fullPath: '/hr/company'
+      preLoaderRoute: typeof HrCompanyRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/notifications': {
+      id: '/hr/notifications'
+      path: '/notifications'
+      fullPath: '/hr/notifications'
+      preLoaderRoute: typeof HrNotificationsRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/saved': {
+      id: '/hr/saved'
+      path: '/saved'
+      fullPath: '/hr/saved'
+      preLoaderRoute: typeof HrSavedRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/screening': {
+      id: '/hr/screening'
+      path: '/screening'
+      fullPath: '/hr/screening'
+      preLoaderRoute: typeof HrScreeningRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/search': {
+      id: '/hr/search'
+      path: '/search'
+      fullPath: '/hr/search'
+      preLoaderRoute: typeof HrSearchRouteImport
+      parentRoute: typeof HrRoute
+    }
     '/app/jobs/': {
       id: '/app/jobs/'
       path: '/jobs'
@@ -300,24 +617,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppJobsJobIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/settings/$section': {
+      id: '/app/settings/$section'
+      path: '/settings/$section'
+      fullPath: '/app/settings/$section'
+      preLoaderRoute: typeof AppSettingsSectionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/hr/candidates/': {
+      id: '/hr/candidates/'
+      path: '/candidates'
+      fullPath: '/hr/candidates/'
+      preLoaderRoute: typeof HrCandidatesIndexRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/candidates/$candidateId': {
+      id: '/hr/candidates/$candidateId'
+      path: '/candidates/$candidateId'
+      fullPath: '/hr/candidates/$candidateId'
+      preLoaderRoute: typeof HrCandidatesCandidateIdRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/jobs/': {
+      id: '/hr/jobs/'
+      path: '/jobs'
+      fullPath: '/hr/jobs/'
+      preLoaderRoute: typeof HrJobsIndexRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/jobs/$jobId': {
+      id: '/hr/jobs/$jobId'
+      path: '/jobs/$jobId'
+      fullPath: '/hr/jobs/$jobId'
+      preLoaderRoute: typeof HrJobsJobIdRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/jobs/new': {
+      id: '/hr/jobs/new'
+      path: '/jobs/new'
+      fullPath: '/hr/jobs/new'
+      preLoaderRoute: typeof HrJobsNewRouteImport
+      parentRoute: typeof HrRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppAnalysisRoute: typeof AppAnalysisRoute
+  AppApplicationsRoute: typeof AppApplicationsRoute
   AppCvRoute: typeof AppCvRoute
   AppCvBuilderRoute: typeof AppCvBuilderRoute
+  AppGapRoute: typeof AppGapRoute
+  AppMoreRoute: typeof AppMoreRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
+  AppPathRoute: typeof AppPathRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppSavedRoute: typeof AppSavedRoute
   AppIndexRoute: typeof AppIndexRoute
   AppJobsJobIdRoute: typeof AppJobsJobIdRoute
+  AppSettingsSectionRoute: typeof AppSettingsSectionRoute
   AppJobsIndexRoute: typeof AppJobsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAnalysisRoute: AppAnalysisRoute,
+  AppApplicationsRoute: AppApplicationsRoute,
   AppCvRoute: AppCvRoute,
   AppCvBuilderRoute: AppCvBuilderRoute,
+  AppGapRoute: AppGapRoute,
+  AppMoreRoute: AppMoreRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
+  AppPathRoute: AppPathRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppSavedRoute: AppSavedRoute,
   AppIndexRoute: AppIndexRoute,
   AppJobsJobIdRoute: AppJobsJobIdRoute,
+  AppSettingsSectionRoute: AppSettingsSectionRoute,
   AppJobsIndexRoute: AppJobsIndexRoute,
 }
 
@@ -339,11 +714,41 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface HrRouteChildren {
+  HrCompanyRoute: typeof HrCompanyRoute
+  HrNotificationsRoute: typeof HrNotificationsRoute
+  HrSavedRoute: typeof HrSavedRoute
+  HrScreeningRoute: typeof HrScreeningRoute
+  HrSearchRoute: typeof HrSearchRoute
+  HrIndexRoute: typeof HrIndexRoute
+  HrCandidatesCandidateIdRoute: typeof HrCandidatesCandidateIdRoute
+  HrJobsJobIdRoute: typeof HrJobsJobIdRoute
+  HrJobsNewRoute: typeof HrJobsNewRoute
+  HrCandidatesIndexRoute: typeof HrCandidatesIndexRoute
+  HrJobsIndexRoute: typeof HrJobsIndexRoute
+}
+
+const HrRouteChildren: HrRouteChildren = {
+  HrCompanyRoute: HrCompanyRoute,
+  HrNotificationsRoute: HrNotificationsRoute,
+  HrSavedRoute: HrSavedRoute,
+  HrScreeningRoute: HrScreeningRoute,
+  HrSearchRoute: HrSearchRoute,
+  HrIndexRoute: HrIndexRoute,
+  HrCandidatesCandidateIdRoute: HrCandidatesCandidateIdRoute,
+  HrJobsJobIdRoute: HrJobsJobIdRoute,
+  HrJobsNewRoute: HrJobsNewRoute,
+  HrCandidatesIndexRoute: HrCandidatesIndexRoute,
+  HrJobsIndexRoute: HrJobsIndexRoute,
+}
+
+const HrRouteWithChildren = HrRoute._addFileChildren(HrRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
-  HrRoute: HrRoute,
+  HrRoute: HrRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
