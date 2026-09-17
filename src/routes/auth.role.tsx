@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Briefcase, Building2, Check } from "lucide-react";
 import { useState } from "react";
-import { AuthLayout } from "./auth";
+import { AuthLayout } from "@/components/auth-layout";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
 import type { Role } from "@/lib/types";
