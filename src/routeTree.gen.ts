@@ -30,6 +30,7 @@ import { Route as AuthSignupRouteImport } from './routes/auth.signup'
 import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
 import { Route as HrIndexRouteImport } from './routes/hr.index'
 import { Route as HrCompanyRouteImport } from './routes/hr.company'
+import { Route as HrMoreRouteImport } from './routes/hr.more'
 import { Route as HrNotificationsRouteImport } from './routes/hr.notifications'
 import { Route as HrSavedRouteImport } from './routes/hr.saved'
 import { Route as HrScreeningRouteImport } from './routes/hr.screening'
@@ -42,6 +43,7 @@ import { Route as HrCandidatesCandidateIdRouteImport } from './routes/hr.candida
 import { Route as HrJobsIndexRouteImport } from './routes/hr.jobs.index'
 import { Route as HrJobsJobIdRouteImport } from './routes/hr.jobs.$jobId'
 import { Route as HrJobsNewRouteImport } from './routes/hr.jobs.new'
+import { Route as HrSettingsSectionRouteImport } from './routes/hr.settings.$section'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -148,6 +150,11 @@ const HrCompanyRoute = HrCompanyRouteImport.update({
   path: '/company',
   getParentRoute: () => HrRoute,
 } as any)
+const HrMoreRoute = HrMoreRouteImport.update({
+  id: '/more',
+  path: '/more',
+  getParentRoute: () => HrRoute,
+} as any)
 const HrNotificationsRoute = HrNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
@@ -208,6 +215,11 @@ const HrJobsNewRoute = HrJobsNewRouteImport.update({
   path: '/jobs/new',
   getParentRoute: () => HrRoute,
 } as any)
+const HrSettingsSectionRoute = HrSettingsSectionRouteImport.update({
+  id: '/settings/$section',
+  path: '/settings/$section',
+  getParentRoute: () => HrRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -229,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/hr/company': typeof HrCompanyRoute
+  '/hr/more': typeof HrMoreRoute
   '/hr/notifications': typeof HrNotificationsRoute
   '/hr/saved': typeof HrSavedRoute
   '/hr/screening': typeof HrScreeningRoute
@@ -240,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/hr/candidates/$candidateId': typeof HrCandidatesCandidateIdRoute
   '/hr/jobs/$jobId': typeof HrJobsJobIdRoute
   '/hr/jobs/new': typeof HrJobsNewRoute
+  '/hr/settings/$section': typeof HrSettingsSectionRoute
   '/app/jobs/': typeof AppJobsIndexRoute
   '/hr/candidates/': typeof HrCandidatesIndexRoute
   '/hr/jobs/': typeof HrJobsIndexRoute
@@ -262,6 +276,7 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/hr/company': typeof HrCompanyRoute
+  '/hr/more': typeof HrMoreRoute
   '/hr/notifications': typeof HrNotificationsRoute
   '/hr/saved': typeof HrSavedRoute
   '/hr/screening': typeof HrScreeningRoute
@@ -273,6 +288,7 @@ export interface FileRoutesByTo {
   '/hr/candidates/$candidateId': typeof HrCandidatesCandidateIdRoute
   '/hr/jobs/$jobId': typeof HrJobsJobIdRoute
   '/hr/jobs/new': typeof HrJobsNewRoute
+  '/hr/settings/$section': typeof HrSettingsSectionRoute
   '/app/jobs': typeof AppJobsIndexRoute
   '/hr/candidates': typeof HrCandidatesIndexRoute
   '/hr/jobs': typeof HrJobsIndexRoute
@@ -298,6 +314,7 @@ export interface FileRoutesById {
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/hr/company': typeof HrCompanyRoute
+  '/hr/more': typeof HrMoreRoute
   '/hr/notifications': typeof HrNotificationsRoute
   '/hr/saved': typeof HrSavedRoute
   '/hr/screening': typeof HrScreeningRoute
@@ -309,6 +326,7 @@ export interface FileRoutesById {
   '/hr/candidates/$candidateId': typeof HrCandidatesCandidateIdRoute
   '/hr/jobs/$jobId': typeof HrJobsJobIdRoute
   '/hr/jobs/new': typeof HrJobsNewRoute
+  '/hr/settings/$section': typeof HrSettingsSectionRoute
   '/app/jobs/': typeof AppJobsIndexRoute
   '/hr/candidates/': typeof HrCandidatesIndexRoute
   '/hr/jobs/': typeof HrJobsIndexRoute
@@ -335,6 +353,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/auth/verify'
     | '/hr/company'
+    | '/hr/more'
     | '/hr/notifications'
     | '/hr/saved'
     | '/hr/screening'
@@ -346,6 +365,7 @@ export interface FileRouteTypes {
     | '/hr/candidates/$candidateId'
     | '/hr/jobs/$jobId'
     | '/hr/jobs/new'
+    | '/hr/settings/$section'
     | '/app/jobs/'
     | '/hr/candidates/'
     | '/hr/jobs/'
@@ -368,6 +388,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/auth/verify'
     | '/hr/company'
+    | '/hr/more'
     | '/hr/notifications'
     | '/hr/saved'
     | '/hr/screening'
@@ -379,6 +400,7 @@ export interface FileRouteTypes {
     | '/hr/candidates/$candidateId'
     | '/hr/jobs/$jobId'
     | '/hr/jobs/new'
+    | '/hr/settings/$section'
     | '/app/jobs'
     | '/hr/candidates'
     | '/hr/jobs'
@@ -403,6 +425,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/auth/verify'
     | '/hr/company'
+    | '/hr/more'
     | '/hr/notifications'
     | '/hr/saved'
     | '/hr/screening'
@@ -414,6 +437,7 @@ export interface FileRouteTypes {
     | '/hr/candidates/$candidateId'
     | '/hr/jobs/$jobId'
     | '/hr/jobs/new'
+    | '/hr/settings/$section'
     | '/app/jobs/'
     | '/hr/candidates/'
     | '/hr/jobs/'
@@ -575,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HrCompanyRouteImport
       parentRoute: typeof HrRoute
     }
+    '/hr/more': {
+      id: '/hr/more'
+      path: '/more'
+      fullPath: '/hr/more'
+      preLoaderRoute: typeof HrMoreRouteImport
+      parentRoute: typeof HrRoute
+    }
     '/hr/notifications': {
       id: '/hr/notifications'
       path: '/notifications'
@@ -659,6 +690,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HrJobsNewRouteImport
       parentRoute: typeof HrRoute
     }
+    '/hr/settings/$section': {
+      id: '/hr/settings/$section'
+      path: '/settings/$section'
+      fullPath: '/hr/settings/$section'
+      preLoaderRoute: typeof HrSettingsSectionRouteImport
+      parentRoute: typeof HrRoute
+    }
   }
 }
 
@@ -716,6 +754,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface HrRouteChildren {
   HrCompanyRoute: typeof HrCompanyRoute
+  HrMoreRoute: typeof HrMoreRoute
   HrNotificationsRoute: typeof HrNotificationsRoute
   HrSavedRoute: typeof HrSavedRoute
   HrScreeningRoute: typeof HrScreeningRoute
@@ -724,12 +763,14 @@ interface HrRouteChildren {
   HrCandidatesCandidateIdRoute: typeof HrCandidatesCandidateIdRoute
   HrJobsJobIdRoute: typeof HrJobsJobIdRoute
   HrJobsNewRoute: typeof HrJobsNewRoute
+  HrSettingsSectionRoute: typeof HrSettingsSectionRoute
   HrCandidatesIndexRoute: typeof HrCandidatesIndexRoute
   HrJobsIndexRoute: typeof HrJobsIndexRoute
 }
 
 const HrRouteChildren: HrRouteChildren = {
   HrCompanyRoute: HrCompanyRoute,
+  HrMoreRoute: HrMoreRoute,
   HrNotificationsRoute: HrNotificationsRoute,
   HrSavedRoute: HrSavedRoute,
   HrScreeningRoute: HrScreeningRoute,
@@ -738,6 +779,7 @@ const HrRouteChildren: HrRouteChildren = {
   HrCandidatesCandidateIdRoute: HrCandidatesCandidateIdRoute,
   HrJobsJobIdRoute: HrJobsJobIdRoute,
   HrJobsNewRoute: HrJobsNewRoute,
+  HrSettingsSectionRoute: HrSettingsSectionRoute,
   HrCandidatesIndexRoute: HrCandidatesIndexRoute,
   HrJobsIndexRoute: HrJobsIndexRoute,
 }
