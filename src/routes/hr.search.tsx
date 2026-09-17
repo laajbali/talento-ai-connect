@@ -213,22 +213,41 @@ function Criterion({ label, value }: { label: string; value?: string | undefined
 }
 
 function filterCandidates(c: Criteria) {
-  return CANDIDATES.filter((cand) => {
-    if (c.location && c.location.trim() && !cand.location.toLowerCase().includes(c.location.toLowerCase()))
-      return false;
-    if (c.major && c.major.trim()) {
-      const m = c.major.toLowerCase();
-      if (!cand.major.toLowerCase().includes(m) && !m.includes(cand.major.toLowerCase())) return false;
+  const tokens = (v?: string | null) =>
+    (v ?? "")
+      .toLowerCase()
+      .split(/[^a-z]+/)
+      .filter((t) => t.length > 2);
+
+  const scored = CANDIDATES.map((cand) => {
+    let hits = 0;
+    let required = 0;
+    if (c.skills?.length) {
+      required += 1;
+      if (c.skills.some((s) => cand.skills.some((cs) => cs.toLowerCase().includes(s.toLowerCase()))))
+        hits += 1;
     }
+    if (c.major?.trim()) {
+      required += 1;
+      const want = tokens(c.major);
+      const have = tokens(`${cand.major} ${cand.title} ${cand.skills.join(" ")}`);
+      if (want.some((w) => have.includes(w))) hits += 1;
+    }
+    if (c.location?.trim()) {
+      required += 1;
+      if (cand.location.toLowerCase().includes(c.location.toLowerCase().split(",")[0]!.trim()))
+        hits += 1;
+    }
+    return { cand, hits, required };
+  }).filter(({ cand }) => {
     if (typeof c.minYears === "number" && cand.years < c.minYears) return false;
     if (typeof c.maxYears === "number" && cand.years > c.maxYears) return false;
-    if (c.availability && c.availability.trim() && cand.availability !== c.availability) return false;
-    if (c.skills?.length) {
-      const hit = c.skills.some((s) =>
-        cand.skills.some((cs) => cs.toLowerCase().includes(s.toLowerCase())),
-      );
-      if (!hit) return false;
-    }
+    if (c.availability?.trim() && cand.availability !== c.availability) return false;
     return true;
   });
+
+  if (!scored.length) return [];
+  const best = Math.max(...scored.map((s) => s.hits));
+  if (best === 0) return scored.map((s) => s.cand);
+  return scored.filter((s) => s.hits === best).map((s) => s.cand);
 }
