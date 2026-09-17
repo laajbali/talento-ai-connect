@@ -28,6 +28,7 @@ async function ask(system: string, prompt: string) {
     model: getModel(),
     system,
     prompt,
+    providerOptions: { lovable: { reasoningEffort: "low" } },
   });
   return result.text;
 }
