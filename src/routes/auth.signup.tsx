@@ -25,7 +25,7 @@ function SignUp() {
   const { state, set, hydrated } = useStore();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function SignUp() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const next: Record<string, string> = {};
+    const next: { name?: string; email?: string; password?: string } = {};
     if (form.name.trim().length < 3) next.name = "Please enter your full name.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = "Enter a valid email address.";
     if (form.password.length < 8) next.password = "Use at least 8 characters.";
@@ -143,9 +143,9 @@ function Field({
   label: string;
   value: string;
   onChange: (v: string) => void;
-  error?: string;
-  type?: string;
-  placeholder?: string;
+  error?: string | undefined;
+  type?: string | undefined;
+  placeholder?: string | undefined;
 }) {
   return (
     <div className="space-y-1.5">
