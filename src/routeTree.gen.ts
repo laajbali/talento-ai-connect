@@ -14,6 +14,9 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HrRouteImport } from './routes/hr'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppAnalysisRouteImport } from './routes/app.analysis'
+import { Route as AppCvRouteImport } from './routes/app.cv'
+import { Route as AppCvBuilderRouteImport } from './routes/app.cv-builder'
 import { Route as AuthRoleRouteImport } from './routes/auth.role'
 import { Route as AuthSetupRouteImport } from './routes/auth.setup'
 import { Route as AuthSignupRouteImport } from './routes/auth.signup'
@@ -44,6 +47,21 @@ const HrRoute = HrRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnalysisRoute = AppAnalysisRouteImport.update({
+  id: '/analysis',
+  path: '/analysis',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCvRoute = AppCvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCvBuilderRoute = AppCvBuilderRouteImport.update({
+  id: '/cv-builder',
+  path: '/cv-builder',
   getParentRoute: () => AppRoute,
 } as any)
 const AuthRoleRoute = AuthRoleRouteImport.update({
@@ -82,6 +100,9 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/hr': typeof HrRoute
+  '/app/analysis': typeof AppAnalysisRoute
+  '/app/cv': typeof AppCvRoute
+  '/app/cv-builder': typeof AppCvBuilderRoute
   '/auth/role': typeof AuthRoleRoute
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -94,6 +115,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/hr': typeof HrRoute
+  '/app/analysis': typeof AppAnalysisRoute
+  '/app/cv': typeof AppCvRoute
+  '/app/cv-builder': typeof AppCvBuilderRoute
   '/auth/role': typeof AuthRoleRoute
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -108,6 +132,9 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/hr': typeof HrRoute
+  '/app/analysis': typeof AppAnalysisRoute
+  '/app/cv': typeof AppCvRoute
+  '/app/cv-builder': typeof AppCvBuilderRoute
   '/auth/role': typeof AuthRoleRoute
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -123,6 +150,9 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/hr'
+    | '/app/analysis'
+    | '/app/cv'
+    | '/app/cv-builder'
     | '/auth/role'
     | '/auth/setup'
     | '/auth/signup'
@@ -135,6 +165,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/hr'
+    | '/app/analysis'
+    | '/app/cv'
+    | '/app/cv-builder'
     | '/auth/role'
     | '/auth/setup'
     | '/auth/signup'
@@ -148,6 +181,9 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/hr'
+    | '/app/analysis'
+    | '/app/cv'
+    | '/app/cv-builder'
     | '/auth/role'
     | '/auth/setup'
     | '/auth/signup'
@@ -201,6 +237,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/analysis': {
+      id: '/app/analysis'
+      path: '/analysis'
+      fullPath: '/app/analysis'
+      preLoaderRoute: typeof AppAnalysisRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/cv': {
+      id: '/app/cv'
+      path: '/cv'
+      fullPath: '/app/cv'
+      preLoaderRoute: typeof AppCvRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/cv-builder': {
+      id: '/app/cv-builder'
+      path: '/cv-builder'
+      fullPath: '/app/cv-builder'
+      preLoaderRoute: typeof AppCvBuilderRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/auth/role': {
       id: '/auth/role'
       path: '/role'
@@ -247,12 +304,18 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAnalysisRoute: typeof AppAnalysisRoute
+  AppCvRoute: typeof AppCvRoute
+  AppCvBuilderRoute: typeof AppCvBuilderRoute
   AppIndexRoute: typeof AppIndexRoute
   AppJobsJobIdRoute: typeof AppJobsJobIdRoute
   AppJobsIndexRoute: typeof AppJobsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAnalysisRoute: AppAnalysisRoute,
+  AppCvRoute: AppCvRoute,
+  AppCvBuilderRoute: AppCvBuilderRoute,
   AppIndexRoute: AppIndexRoute,
   AppJobsJobIdRoute: AppJobsJobIdRoute,
   AppJobsIndexRoute: AppJobsIndexRoute,
