@@ -24,6 +24,7 @@ import { Route as AppNotificationsRouteImport } from './routes/app.notifications
 import { Route as AppPathRouteImport } from './routes/app.path'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppSavedRouteImport } from './routes/app.saved'
+import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as AuthRoleRouteImport } from './routes/auth.role'
 import { Route as AuthSetupRouteImport } from './routes/auth.setup'
 import { Route as AuthSignupRouteImport } from './routes/auth.signup'
@@ -119,6 +120,11 @@ const AppSavedRoute = AppSavedRouteImport.update({
   id: '/saved',
   path: '/saved',
   getParentRoute: () => AppRoute,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthRoleRoute = AuthRoleRouteImport.update({
   id: '/role',
@@ -247,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/hr/screening': typeof HrScreeningRoute
   '/hr/search': typeof HrSearchRoute
   '/app/': typeof AppIndexRoute
+  '/auth/': typeof AuthIndexRoute
   '/hr/': typeof HrIndexRoute
   '/app/jobs/$jobId': typeof AppJobsJobIdRoute
   '/app/settings/$section': typeof AppSettingsSectionRoute
@@ -260,7 +267,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
   '/app/analysis': typeof AppAnalysisRoute
   '/app/applications': typeof AppApplicationsRoute
   '/app/cv': typeof AppCvRoute
@@ -282,6 +288,7 @@ export interface FileRoutesByTo {
   '/hr/screening': typeof HrScreeningRoute
   '/hr/search': typeof HrSearchRoute
   '/app': typeof AppIndexRoute
+  '/auth': typeof AuthIndexRoute
   '/hr': typeof HrIndexRoute
   '/app/jobs/$jobId': typeof AppJobsJobIdRoute
   '/app/settings/$section': typeof AppSettingsSectionRoute
@@ -320,6 +327,7 @@ export interface FileRoutesById {
   '/hr/screening': typeof HrScreeningRoute
   '/hr/search': typeof HrSearchRoute
   '/app/': typeof AppIndexRoute
+  '/auth/': typeof AuthIndexRoute
   '/hr/': typeof HrIndexRoute
   '/app/jobs/$jobId': typeof AppJobsJobIdRoute
   '/app/settings/$section': typeof AppSettingsSectionRoute
@@ -359,6 +367,7 @@ export interface FileRouteTypes {
     | '/hr/screening'
     | '/hr/search'
     | '/app/'
+    | '/auth/'
     | '/hr/'
     | '/app/jobs/$jobId'
     | '/app/settings/$section'
@@ -372,7 +381,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/app/analysis'
     | '/app/applications'
     | '/app/cv'
@@ -394,6 +402,7 @@ export interface FileRouteTypes {
     | '/hr/screening'
     | '/hr/search'
     | '/app'
+    | '/auth'
     | '/hr'
     | '/app/jobs/$jobId'
     | '/app/settings/$section'
@@ -431,6 +440,7 @@ export interface FileRouteTypes {
     | '/hr/screening'
     | '/hr/search'
     | '/app/'
+    | '/auth/'
     | '/hr/'
     | '/app/jobs/$jobId'
     | '/app/settings/$section'
@@ -556,6 +566,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/saved'
       preLoaderRoute: typeof AppSavedRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/auth/role': {
       id: '/auth/role'
@@ -741,6 +758,7 @@ interface AuthRouteChildren {
   AuthSetupRoute: typeof AuthSetupRoute
   AuthSignupRoute: typeof AuthSignupRoute
   AuthVerifyRoute: typeof AuthVerifyRoute
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -748,6 +766,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthSetupRoute: AuthSetupRoute,
   AuthSignupRoute: AuthSignupRoute,
   AuthVerifyRoute: AuthVerifyRoute,
+  AuthIndexRoute: AuthIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
