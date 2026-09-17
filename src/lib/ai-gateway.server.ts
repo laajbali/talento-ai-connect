@@ -14,5 +14,5 @@ export function createLovableAiGatewayProvider(lovableApiKey: string) {
 export function getModel() {
   const key = process.env["LOVABLE_API_KEY"];
   if (!key) throw new Error("AI is not configured for this project.");
-  return createLovableAiGatewayProvider(key)("google/gemini-3.8-flash");
+  return createLovableAiGatewayProvider(key)("openai/gpt-6-astra");
 }

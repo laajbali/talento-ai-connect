@@ -10,33 +10,194 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as HrRouteImport } from './routes/hr'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppAnalysisRouteImport } from './routes/app.analysis'
+import { Route as AppCvRouteImport } from './routes/app.cv'
+import { Route as AppCvBuilderRouteImport } from './routes/app.cv-builder'
+import { Route as AuthRoleRouteImport } from './routes/auth.role'
+import { Route as AuthSetupRouteImport } from './routes/auth.setup'
+import { Route as AuthSignupRouteImport } from './routes/auth.signup'
+import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
+import { Route as AppJobsIndexRouteImport } from './routes/app.jobs.index'
+import { Route as AppJobsJobIdRouteImport } from './routes/app.jobs.$jobId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HrRoute = HrRouteImport.update({
+  id: '/hr',
+  path: '/hr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnalysisRoute = AppAnalysisRouteImport.update({
+  id: '/analysis',
+  path: '/analysis',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCvRoute = AppCvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCvBuilderRoute = AppCvBuilderRouteImport.update({
+  id: '/cv-builder',
+  path: '/cv-builder',
+  getParentRoute: () => AppRoute,
+} as any)
+const AuthRoleRoute = AuthRoleRouteImport.update({
+  id: '/role',
+  path: '/role',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSetupRoute = AuthSetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthVerifyRoute = AuthVerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AppJobsIndexRoute = AppJobsIndexRouteImport.update({
+  id: '/jobs/',
+  path: '/jobs/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJobsJobIdRoute = AppJobsJobIdRouteImport.update({
+  id: '/jobs/$jobId',
+  path: '/jobs/$jobId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/hr': typeof HrRoute
+  '/app/analysis': typeof AppAnalysisRoute
+  '/app/cv': typeof AppCvRoute
+  '/app/cv-builder': typeof AppCvBuilderRoute
+  '/auth/role': typeof AuthRoleRoute
+  '/auth/setup': typeof AuthSetupRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/auth/verify': typeof AuthVerifyRoute
+  '/app/': typeof AppIndexRoute
+  '/app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/app/jobs/': typeof AppJobsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/hr': typeof HrRoute
+  '/app/analysis': typeof AppAnalysisRoute
+  '/app/cv': typeof AppCvRoute
+  '/app/cv-builder': typeof AppCvBuilderRoute
+  '/auth/role': typeof AuthRoleRoute
+  '/auth/setup': typeof AuthSetupRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/auth/verify': typeof AuthVerifyRoute
+  '/app': typeof AppIndexRoute
+  '/app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/app/jobs': typeof AppJobsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/hr': typeof HrRoute
+  '/app/analysis': typeof AppAnalysisRoute
+  '/app/cv': typeof AppCvRoute
+  '/app/cv-builder': typeof AppCvBuilderRoute
+  '/auth/role': typeof AuthRoleRoute
+  '/auth/setup': typeof AuthSetupRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/auth/verify': typeof AuthVerifyRoute
+  '/app/': typeof AppIndexRoute
+  '/app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/app/jobs/': typeof AppJobsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/hr'
+    | '/app/analysis'
+    | '/app/cv'
+    | '/app/cv-builder'
+    | '/auth/role'
+    | '/auth/setup'
+    | '/auth/signup'
+    | '/auth/verify'
+    | '/app/'
+    | '/app/jobs/$jobId'
+    | '/app/jobs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/hr'
+    | '/app/analysis'
+    | '/app/cv'
+    | '/app/cv-builder'
+    | '/auth/role'
+    | '/auth/setup'
+    | '/auth/signup'
+    | '/auth/verify'
+    | '/app'
+    | '/app/jobs/$jobId'
+    | '/app/jobs'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/hr'
+    | '/app/analysis'
+    | '/app/cv'
+    | '/app/cv-builder'
+    | '/auth/role'
+    | '/auth/setup'
+    | '/auth/signup'
+    | '/auth/verify'
+    | '/app/'
+    | '/app/jobs/$jobId'
+    | '/app/jobs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
+  HrRoute: typeof HrRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +209,141 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hr': {
+      id: '/hr'
+      path: '/hr'
+      fullPath: '/hr'
+      preLoaderRoute: typeof HrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/analysis': {
+      id: '/app/analysis'
+      path: '/analysis'
+      fullPath: '/app/analysis'
+      preLoaderRoute: typeof AppAnalysisRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/cv': {
+      id: '/app/cv'
+      path: '/cv'
+      fullPath: '/app/cv'
+      preLoaderRoute: typeof AppCvRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/cv-builder': {
+      id: '/app/cv-builder'
+      path: '/cv-builder'
+      fullPath: '/app/cv-builder'
+      preLoaderRoute: typeof AppCvBuilderRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/auth/role': {
+      id: '/auth/role'
+      path: '/role'
+      fullPath: '/auth/role'
+      preLoaderRoute: typeof AuthRoleRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/setup': {
+      id: '/auth/setup'
+      path: '/setup'
+      fullPath: '/auth/setup'
+      preLoaderRoute: typeof AuthSetupRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/verify': {
+      id: '/auth/verify'
+      path: '/verify'
+      fullPath: '/auth/verify'
+      preLoaderRoute: typeof AuthVerifyRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/app/jobs/': {
+      id: '/app/jobs/'
+      path: '/jobs'
+      fullPath: '/app/jobs/'
+      preLoaderRoute: typeof AppJobsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/jobs/$jobId': {
+      id: '/app/jobs/$jobId'
+      path: '/jobs/$jobId'
+      fullPath: '/app/jobs/$jobId'
+      preLoaderRoute: typeof AppJobsJobIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppAnalysisRoute: typeof AppAnalysisRoute
+  AppCvRoute: typeof AppCvRoute
+  AppCvBuilderRoute: typeof AppCvBuilderRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppJobsJobIdRoute: typeof AppJobsJobIdRoute
+  AppJobsIndexRoute: typeof AppJobsIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAnalysisRoute: AppAnalysisRoute,
+  AppCvRoute: AppCvRoute,
+  AppCvBuilderRoute: AppCvBuilderRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppJobsJobIdRoute: AppJobsJobIdRoute,
+  AppJobsIndexRoute: AppJobsIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface AuthRouteChildren {
+  AuthRoleRoute: typeof AuthRoleRoute
+  AuthSetupRoute: typeof AuthSetupRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+  AuthVerifyRoute: typeof AuthVerifyRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthRoleRoute: AuthRoleRoute,
+  AuthSetupRoute: AuthSetupRoute,
+  AuthSignupRoute: AuthSignupRoute,
+  AuthVerifyRoute: AuthVerifyRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
+  HrRoute: HrRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
