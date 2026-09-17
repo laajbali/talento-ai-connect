@@ -1,5 +1,7 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
 import {
+  ArrowLeft,
+  ArrowRight,
   Bell,
   Briefcase,
   Building2,
@@ -7,13 +9,17 @@ import {
   Home,
   LayoutGrid,
   LogOut,
+  Moon,
   Search,
+  Sun,
   Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Logo } from "./brand";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
+import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -37,6 +43,36 @@ const hrNav: NavItem[] = [
   { to: "/hr/more", label: "More", icon: <LayoutGrid className="h-5 w-5" /> },
 ];
 
+export function BackButton({ className }: { className?: string }) {
+  const router = useRouter();
+  const navigate = useNavigate();
+  const { t, dir } = useI18n();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  const goBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.history.back();
+    } else {
+      navigate({ to: pathname.startsWith("/hr") ? "/hr" : "/app" });
+    }
+  };
+
+  const Icon = dir === "rtl" ? ArrowRight : ArrowLeft;
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={goBack}
+      aria-label={t("Back")}
+      className={cn("gap-1 px-2", className)}
+    >
+      <Icon className="h-4 w-4" />
+      <span className="hidden sm:inline">{t("Back")}</span>
+    </Button>
+  );
+}
+
 export function AppShell({
   children,
   variant,
@@ -48,12 +84,16 @@ export function AppShell({
 }) {
   const nav = variant === "seeker" ? seekerNav : hrNav;
   const { state, reset } = useStore();
+  const { t, lang, setLang } = useI18n();
+  const { theme, toggle } = useTheme();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const unread = state.notifications.filter((n) => !n.read).length;
 
   const isActive = (item: NavItem) =>
     item.exact ? pathname === item.to : pathname.startsWith(item.to);
+
+  const isRoot = pathname === "/app" || pathname === "/hr";
 
   const signOut = () => {
     reset();
@@ -66,7 +106,7 @@ export function AppShell({
     <div className="min-h-screen bg-muted/40">
       <div className="mx-auto flex w-full max-w-7xl">
         {/* Desktop sidebar */}
-        <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-sidebar px-4 py-6 lg:flex">
+        <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-e border-border bg-sidebar px-4 py-6 lg:flex">
           <Link to="/" className="px-2">
             <Logo />
           </Link>
@@ -83,54 +123,75 @@ export function AppShell({
                 )}
               >
                 {item.icon}
-                {item.label}
+                {t(item.label)}
               </Link>
             ))}
             <div className="mt-4 border-t border-border pt-4">
               {variant === "seeker" ? (
                 <>
-                  <SideLink to="/app/analysis" label="Career Analysis" />
-                  <SideLink to="/app/gap" label="Career Gap Analysis" />
-                  <SideLink to="/app/path" label="Career Path" />
-                  <SideLink to="/app/applications" label="My Applications" />
-                  <SideLink to="/app/saved" label="Saved Jobs" />
+                  <SideLink to="/app/analysis" label={t("Career Analysis")} />
+                  <SideLink to="/app/gap" label={t("Career Gap Analysis")} />
+                  <SideLink to="/app/path" label={t("Career Path")} />
+                  <SideLink to="/app/applications" label={t("My Applications")} />
+                  <SideLink to="/app/saved" label={t("Saved Jobs")} />
                 </>
               ) : (
                 <>
-                  <SideLink to="/hr/search" label="AI Candidate Search" />
-                  <SideLink to="/hr/screening" label="AI CV Screening" />
-                  <SideLink to="/hr/saved" label="Saved Candidates" />
-                  <SideLink to="/hr/company" label="Company Profile" />
+                  <SideLink to="/hr/search" label={t("AI Candidate Search")} />
+                  <SideLink to="/hr/screening" label={t("AI CV Screening")} />
+                  <SideLink to="/hr/saved" label={t("Saved Candidates")} />
+                  <SideLink to="/hr/company" label={t("Company Profile")} />
                 </>
               )}
             </div>
           </nav>
           <Button variant="ghost" className="justify-start gap-2 text-destructive" onClick={signOut}>
-            <LogOut className="h-4 w-4" /> Log out
+            <LogOut className="h-4 w-4" /> {t("Log out")}
           </Button>
         </aside>
 
         {/* Main */}
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur sm:flex sm:justify-between">
-            <div className="flex min-w-0 items-center gap-3">
-              <Link to="/" className="lg:hidden">
-                <Logo compact />
-              </Link>
+            <div className="flex min-w-0 items-center gap-2">
+              {isRoot ? (
+                <Link to="/" className="lg:hidden">
+                  <Logo compact />
+                </Link>
+              ) : (
+                <BackButton />
+              )}
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">{title ?? "Talento"}</p>
+                <p className="truncate text-sm font-semibold">{title ? t(title) : "Talento"}</p>
                 <p className="truncate text-xs text-muted-foreground">{displayName}</p>
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="px-2 text-xs font-semibold"
+                onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+                aria-label={t("Language")}
+              >
+                {lang === "ar" ? "EN" : "ع"}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggle}
+                aria-label={theme === "dark" ? t("Light mode") : t("Dark mode")}
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
               {variant === "employer" && (
-                <Button asChild variant="ghost" size="icon" aria-label="AI candidate search">
+                <Button asChild variant="ghost" size="icon" aria-label={t("AI Candidate Search")}>
                   <Link to="/hr/search">
                     <Search className="h-5 w-5" />
                   </Link>
                 </Button>
               )}
-              <Button asChild variant="ghost" size="icon" aria-label="Notifications">
+              <Button asChild variant="ghost" size="icon" aria-label={t("Notifications")}>
                 <Link to={variant === "seeker" ? "/app/notifications" : "/hr/notifications"}>
                   <span className="relative">
                     <Bell className="h-5 w-5" />
@@ -140,7 +201,7 @@ export function AppShell({
                   </span>
                 </Link>
               </Button>
-              <Button asChild variant="ghost" size="icon" aria-label="Profile">
+              <Button asChild variant="ghost" size="icon" aria-label={t("Profile")}>
                 <Link to={variant === "seeker" ? "/app/profile" : "/hr/company"}>
                   {variant === "seeker" ? (
                     <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
@@ -175,7 +236,7 @@ export function AppShell({
                 )}
               >
                 {item.icon}
-                {item.label}
+                {t(item.label)}
               </Link>
             </li>
           ))}
@@ -206,11 +267,12 @@ export function PageHeader({
   subtitle?: string;
   action?: ReactNode;
 }) {
+  const { t } = useI18n();
   return (
     <div className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:justify-between">
       <div className="min-w-0">
-        <h1 className="truncate text-xl font-bold sm:text-2xl">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
+        <h1 className="truncate text-xl font-bold sm:text-2xl">{t(title)}</h1>
+        {subtitle && <p className="mt-1 text-sm text-muted-foreground">{t(subtitle)}</p>}
       </div>
       {action}
     </div>

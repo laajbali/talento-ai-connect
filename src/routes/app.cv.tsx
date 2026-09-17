@@ -1,18 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Download, Eye, FileText, Pencil, Upload } from "lucide-react";
+import { Check, Download, Eye, FileText, Pencil, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { AiBadge, MatchRing } from "@/components/brand";
+import { CvDocument } from "@/components/cv-templates";
 import { SkillChips } from "@/components/match";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CV_TEMPLATES } from "@/lib/data";
+import { useI18n } from "@/lib/i18n";
+import { downloadNodeAsPdf } from "@/lib/pdf";
 import { cvCompletion, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/app/cv")({
@@ -32,46 +30,29 @@ export const Route = createFileRoute("/app/cv")({
 
 function MyCv() {
   const { state, set } = useStore();
+  const { t } = useI18n();
   const cv = state.cv;
   const pct = cvCompletion(cv);
   const [preview, setPreview] = useState(false);
+  const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const docRef = useRef<HTMLDivElement>(null);
 
-  const download = () => {
-    const text = [
-      cv.personal.fullName,
-      cv.personal.title,
-      `${cv.personal.email} | ${cv.personal.phone} | ${cv.personal.location}`,
-      "",
-      "SUMMARY",
-      cv.personal.summary,
-      "",
-      "EDUCATION",
-      ...cv.education.map((e) => `${e.degree}, ${e.school} (${e.period}) GPA ${e.gpa}`),
-      "",
-      "SKILLS",
-      cv.skills.join(", "),
-      "",
-      "EXPERIENCE",
-      ...cv.experience.map((e) => `${e.role} — ${e.company} (${e.period}): ${e.summary}`),
-      "",
-      "PROJECTS",
-      ...cv.projects.map((p) => `${p.name}: ${p.description}`),
-      "",
-      "CERTIFICATIONS",
-      cv.certifications.join(", "),
-      "",
-      "LANGUAGES",
-      cv.languages.join(", "),
-    ].join("\n");
-    const blob = new Blob([text], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${cv.personal.fullName.replace(/\s+/g, "-")}-CV.pdf`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("CV downloaded.");
+  const download = async () => {
+    if (!docRef.current) return;
+    setBusy(true);
+    toast.info(t("Preparing your PDF…"));
+    try {
+      await downloadNodeAsPdf(
+        docRef.current,
+        `${cv.personal.fullName.replace(/\s+/g, "-")}-CV-${state.cvTemplate}.pdf`,
+      );
+      toast.success(t("CV downloaded."));
+    } catch {
+      toast.error(t("We could not create the PDF. Please try again."));
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -82,7 +63,7 @@ function MyCv() {
         action={
           <Button asChild size="sm">
             <Link to="/app/cv-builder">
-              <Pencil className="mr-1 h-4 w-4" /> Edit CV
+              <Pencil className="mr-1 h-4 w-4" /> {t("Edit CV")}
             </Link>
           </Button>
         }
@@ -91,30 +72,30 @@ function MyCv() {
       <section className="surface grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 p-5">
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-sm font-semibold">
-            <AiBadge /> {state.cvSource === "upload" ? "Uploaded CV" : "AI-generated CV"}
+            <AiBadge /> {state.cvSource === "upload" ? t("Uploaded CV") : t("AI-generated CV")}
           </p>
           <h2 className="mt-1 truncate text-lg font-bold">{cv.personal.fullName}</h2>
           <p className="truncate text-sm text-muted-foreground">{cv.personal.title}</p>
           <p className="mt-2 text-xs text-muted-foreground">
-            Template: {CV_TEMPLATES.find((t) => t.id === state.cvTemplate)?.name}
+            {t("Template")}: {t(CV_TEMPLATES.find((x) => x.id === state.cvTemplate)?.name ?? "")}
           </p>
         </div>
-        <MatchRing value={pct} label="Complete" size={90} />
+        <MatchRing value={pct} label={t("Complete")} size={90} />
       </section>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-4">
         <Button variant="outline" onClick={() => setPreview(true)}>
-          <Eye className="mr-1 h-4 w-4" /> Preview
+          <Eye className="mr-1 h-4 w-4" /> {t("Preview")}
         </Button>
-        <Button variant="outline" onClick={download}>
-          <Download className="mr-1 h-4 w-4" /> Download PDF
+        <Button variant="outline" onClick={download} disabled={busy}>
+          <Download className="mr-1 h-4 w-4" /> {t("Download PDF")}
         </Button>
         <Button variant="outline" onClick={() => fileRef.current?.click()}>
-          <Upload className="mr-1 h-4 w-4" /> Upload new CV
+          <Upload className="mr-1 h-4 w-4" /> {t("Upload new CV")}
         </Button>
         <Button asChild>
           <Link to="/app/cv-builder">
-            <FileText className="mr-1 h-4 w-4" /> Open builder
+            <FileText className="mr-1 h-4 w-4" /> {t("Open builder")}
           </Link>
         </Button>
         <input
@@ -136,13 +117,13 @@ function MyCv() {
       </div>
 
       <section className="mt-6 grid gap-3 lg:grid-cols-2">
-        <Block title="Personal information">
+        <Block title={t("Personal information")}>
           <p className="text-sm">{cv.personal.summary}</p>
           <p className="mt-2 text-xs text-muted-foreground">
             {cv.personal.email} · {cv.personal.phone} · {cv.personal.location}
           </p>
         </Block>
-        <Block title="Education">
+        <Block title={t("Education")}>
           {cv.education.map((e) => (
             <div key={e.degree} className="text-sm">
               <p className="font-medium">{e.degree}</p>
@@ -152,10 +133,10 @@ function MyCv() {
             </div>
           ))}
         </Block>
-        <Block title="Skills">
+        <Block title={t("Skills")}>
           <SkillChips skills={cv.skills} />
         </Block>
-        <Block title="Experience">
+        <Block title={t("Experience")}>
           {cv.experience.length ? (
             cv.experience.map((e) => (
               <div key={e.role} className="text-sm">
@@ -167,10 +148,10 @@ function MyCv() {
               </div>
             ))
           ) : (
-            <p className="text-sm text-muted-foreground">No experience added yet.</p>
+            <p className="text-sm text-muted-foreground">{t("No experience added yet.")}</p>
           )}
         </Block>
-        <Block title="Projects">
+        <Block title={t("Projects")}>
           {cv.projects.map((p) => (
             <div key={p.name} className="text-sm">
               <p className="font-medium">{p.name}</p>
@@ -178,81 +159,68 @@ function MyCv() {
             </div>
           ))}
         </Block>
-        <Block title="Certifications & languages">
+        <Block title={t("Certifications & languages")}>
           <SkillChips skills={[...cv.certifications, ...cv.languages]} />
         </Block>
       </section>
 
       <section className="mt-6">
-        <h2 className="mb-3 text-lg font-bold">CV templates</h2>
+        <h2 className="mb-3 text-lg font-bold">{t("CV templates")}</h2>
         <div className="grid gap-3 sm:grid-cols-3">
-          {CV_TEMPLATES.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => {
-                set({ cvTemplate: t.id });
-                toast.success(`${t.name} template applied.`);
-              }}
-              className={`surface p-4 text-left transition-colors ${
-                state.cvTemplate === t.id ? "ring-2 ring-primary" : ""
-              }`}
-            >
-              <div className="mb-3 h-20 rounded-lg bg-muted" />
-              <p className="font-semibold">{t.name}</p>
-              <p className="text-xs text-muted-foreground">{t.description}</p>
-            </button>
-          ))}
+          {CV_TEMPLATES.map((tpl) => {
+            const selected = state.cvTemplate === tpl.id;
+            return (
+              <button
+                key={tpl.id}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => {
+                  set({ cvTemplate: tpl.id });
+                  toast.success(`${t(tpl.name)} — ${t("Selected")}`);
+                }}
+                className={`surface p-4 text-start transition-colors ${
+                  selected ? "ring-2 ring-primary" : ""
+                }`}
+              >
+                <div className="mb-3 h-40 overflow-hidden rounded-lg border border-border bg-white">
+                  <div className="pointer-events-none origin-top-left" style={{ width: 794 }}>
+                    <CvDocument cv={cv} template={tpl.id} scale={0.28} />
+                  </div>
+                </div>
+                <p className="flex items-center gap-1.5 font-semibold">
+                  {t(tpl.name)}
+                  {selected && <Check className="h-4 w-4 text-primary" />}
+                </p>
+                <p className="text-xs text-muted-foreground">{tpl.description}</p>
+                <p className="mt-1 text-xs font-medium text-primary">
+                  {selected ? t("Selected") : t("Use this template")}
+                </p>
+              </button>
+            );
+          })}
         </div>
       </section>
 
       <Dialog open={preview} onOpenChange={setPreview}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-h-[85vh] max-w-3xl overflow-auto">
           <DialogHeader>
-            <DialogTitle>CV preview</DialogTitle>
+            <DialogTitle>{t("CV preview")}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 rounded-xl border border-border bg-card p-6 text-sm">
-            <div className="border-b border-border pb-3">
-              <h3 className="text-xl font-bold">{cv.personal.fullName}</h3>
-              <p className="text-primary">{cv.personal.title}</p>
-              <p className="text-xs text-muted-foreground">
-                {cv.personal.email} · {cv.personal.phone} · {cv.personal.location}
-              </p>
+          <div className="overflow-x-auto">
+            <div className="mx-auto w-fit rounded-xl border border-border shadow-sm">
+              <CvDocument cv={cv} template={state.cvTemplate} scale={0.75} />
             </div>
-            <p>{cv.personal.summary}</p>
-            <Section title="Education">
-              {cv.education.map((e) => (
-                <p key={e.degree}>
-                  <strong>{e.degree}</strong> — {e.school} ({e.period})
-                </p>
-              ))}
-            </Section>
-            <Section title="Experience">
-              {cv.experience.map((e) => (
-                <p key={e.role}>
-                  <strong>{e.role}</strong>, {e.company} ({e.period}) — {e.summary}
-                </p>
-              ))}
-            </Section>
-            <Section title="Skills">
-              <p>{cv.skills.join(" · ")}</p>
-            </Section>
-            <Section title="Projects">
-              {cv.projects.map((p) => (
-                <p key={p.name}>
-                  <strong>{p.name}</strong> — {p.description}
-                </p>
-              ))}
-            </Section>
-            <Section title="Certifications">
-              <p>{cv.certifications.join(" · ") || "—"}</p>
-            </Section>
-            <Section title="Languages">
-              <p>{cv.languages.join(" · ")}</p>
-            </Section>
           </div>
+          <Button onClick={download} disabled={busy} className="mt-3">
+            <Download className="mr-1 h-4 w-4" /> {t("Download PDF")}
+          </Button>
         </DialogContent>
       </Dialog>
+
+      {/* Off-screen full-size document used for the PDF export */}
+      <div aria-hidden className="pointer-events-none fixed -left-[3000px] top-0 -z-10">
+        <CvDocument ref={docRef} cv={cv} template={state.cvTemplate} forExport />
+      </div>
     </AppShell>
   );
 }
@@ -262,15 +230,6 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
     <div className="surface space-y-2 p-4">
       <h3 className="text-sm font-semibold">{title}</h3>
       {children}
-    </div>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <p className="mb-1 text-xs font-bold uppercase tracking-wide text-primary">{title}</p>
-      <div className="space-y-1 text-sm">{children}</div>
     </div>
   );
 }
