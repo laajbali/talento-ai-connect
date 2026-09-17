@@ -157,7 +157,7 @@ function Panel({
       ? "text-success"
       : tone === "destructive"
         ? "text-destructive"
-        : "text-warning-foreground";
+        : "text-warning";
   return (
     <div className="surface space-y-2 p-4">
       <h3 className={`text-sm font-semibold ${color}`}>{title}</h3>

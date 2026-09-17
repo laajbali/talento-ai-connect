@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { MatchResult } from "@/lib/matching";
 import type { Job } from "@/lib/types";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export function matchTone(score: number) {
@@ -12,6 +13,7 @@ export function matchTone(score: number) {
 }
 
 export function ScorePill({ score }: { score: number }) {
+  const { t } = useI18n();
   const tone = matchTone(score);
   return (
     <span
@@ -19,10 +21,10 @@ export function ScorePill({ score }: { score: number }) {
         "rounded-full px-2.5 py-1 text-xs font-bold",
         tone === "success" && "bg-success/10 text-success",
         tone === "primary" && "bg-primary/10 text-primary",
-        tone === "warning" && "bg-warning/20 text-warning-foreground",
+        tone === "warning" && "bg-warning/15 text-warning",
       )}
     >
-      {score}% match
+      {score}% {t("match")}
     </span>
   );
 }
@@ -44,7 +46,7 @@ export function SkillChips({
             "rounded-md px-2 py-0.5 text-[11px] font-medium",
             variant === "default" && "bg-muted text-muted-foreground",
             variant === "missing" && "bg-destructive/10 text-destructive",
-            variant === "improve" && "bg-warning/20 text-warning-foreground",
+            variant === "improve" && "bg-warning/15 text-warning",
           )}
         >
           {s}
@@ -65,6 +67,7 @@ export function JobCard({
   saved: boolean;
   onSave: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <article className="surface p-4">
       <div className="flex items-start gap-3">
@@ -82,7 +85,7 @@ export function JobCard({
             <button
               type="button"
               onClick={onSave}
-              aria-label={saved ? "Remove from saved jobs" : "Save job"}
+              aria-label={t(saved ? "Remove from saved jobs" : "Save job")}
               className="shrink-0 text-muted-foreground transition-colors hover:text-primary"
             >
               {saved ? (
@@ -106,7 +109,7 @@ export function JobCard({
 
       <div className="mt-3 space-y-2 rounded-xl bg-muted/60 p-3">
         <p className="flex items-center gap-2 text-xs font-semibold">
-          <AiBadge /> Why this matches you
+          <AiBadge /> {t("Why this matches you")}
         </p>
         <p className="text-xs text-muted-foreground">
           {match.matching.length
@@ -121,11 +124,11 @@ export function JobCard({
       <div className="mt-3 flex gap-2">
         <Button asChild size="sm" className="flex-1">
           <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
-            View details
+            {t("View details")}
           </Link>
         </Button>
         <Button size="sm" variant="outline" onClick={onSave}>
-          {saved ? "Saved" : "Save"}
+          {t(saved ? "Saved" : "Save")}
         </Button>
       </div>
     </article>
@@ -133,24 +136,25 @@ export function JobCard({
 }
 
 export function MatchBreakdown({ match }: { match: MatchResult }) {
+  const { t } = useI18n();
   return (
     <div className="space-y-2">
       {match.dimensions.map((d) => (
         <div key={d.label} className="rounded-xl border border-border p-3">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-medium">{d.label}</p>
+            <p className="text-sm font-medium">{t(d.label)}</p>
             <span
               className={cn(
                 "rounded-full px-2 py-0.5 text-[11px] font-semibold",
                 d.verdict === "Match" && "bg-success/10 text-success",
-                d.verdict === "Partial" && "bg-warning/20 text-warning-foreground",
+                d.verdict === "Partial" && "bg-warning/15 text-warning",
                 d.verdict === "Missing" && "bg-destructive/10 text-destructive",
               )}
             >
-              {d.verdict === "Partial" ? "Needs improvement" : d.verdict}
+              {t(d.verdict === "Partial" ? "Needs improvement" : d.verdict)}
             </span>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">{d.detail}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t(d.detail)}</p>
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
             <div
               className="h-full rounded-full bg-primary transition-all"

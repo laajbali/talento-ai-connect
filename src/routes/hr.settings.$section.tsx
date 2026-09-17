@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { Moon, Sun } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
@@ -7,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 export const Route = createFileRoute("/hr/settings/$section")({
   head: () => ({
@@ -37,7 +40,8 @@ const FAQ = [
 
 function HrSettings() {
   const { section } = useParams({ from: "/hr/settings/$section" });
-  const [language, setLanguage] = useState("English");
+  const { t, lang, setLang } = useI18n();
+  const { theme, setTheme } = useTheme();
   const [alerts, setAlerts] = useState(true);
   const [teamVisible, setTeamVisible] = useState(true);
   const [message, setMessage] = useState("");
@@ -62,20 +66,39 @@ function HrSettings() {
       <div className="surface space-y-4 p-5">
         {section === "language" && (
           <div className="space-y-2">
-            {["English", "العربية"].map((l) => (
+            {([{ id: "en", label: "English" }, { id: "ar", label: "العربية" }] as const).map((l) => (
               <button
-                key={l}
+                key={l.id}
                 type="button"
                 onClick={() => {
-                  setLanguage(l);
-                  toast.success(`Language set to ${l}.`);
+                  setLang(l.id);
+                  toast.success(l.id === "ar" ? "تم ضبط اللغة على العربية." : "Language set to English.");
                 }}
                 className={`flex w-full items-center justify-between rounded-xl border p-3 text-sm ${
-                  language === l ? "border-primary bg-accent" : "border-border"
+                  lang === l.id ? "border-primary bg-accent" : "border-border"
                 }`}
               >
-                {l}
-                {language === l && <span className="text-xs font-semibold text-primary">Selected</span>}
+                {l.label}
+                {lang === l.id && <span className="text-xs font-semibold text-primary">{t("Selected")}</span>}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {section === "appearance" && (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {(["light", "dark"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setTheme(mode)}
+                className={`flex items-center justify-between rounded-xl border p-3 text-sm ${theme === mode ? "border-primary bg-accent" : "border-border"}`}
+              >
+                <span className="flex items-center gap-2">
+                  {mode === "light" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  {t(mode === "light" ? "Light" : "Dark")}
+                </span>
+                {theme === mode && <span className="text-xs font-semibold text-primary">{t("Selected")}</span>}
               </button>
             ))}
           </div>

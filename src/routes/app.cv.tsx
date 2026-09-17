@@ -182,7 +182,7 @@ function MyCv() {
                   selected ? "ring-2 ring-primary" : ""
                 }`}
               >
-                <div className="mb-3 h-40 overflow-hidden rounded-lg border border-border bg-white">
+                <div className="mb-3 h-40 overflow-hidden rounded-lg border border-border bg-card">
                   <div className="pointer-events-none origin-top-left" style={{ width: 794 }}>
                     <CvDocument cv={cv} template={tpl.id} scale={0.28} />
                   </div>

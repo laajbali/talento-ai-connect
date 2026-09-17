@@ -194,7 +194,7 @@ function JobDetails() {
               )}
               {match.improve.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-warning-foreground">Nice to have</p>
+                  <p className="text-xs font-semibold text-warning">Nice to have</p>
                   <SkillChips skills={match.improve} variant="improve" />
                 </div>
               )}
