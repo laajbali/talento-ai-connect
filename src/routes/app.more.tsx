@@ -9,14 +9,18 @@ import {
   HelpCircle,
   LifeBuoy,
   LogOut,
+  Moon,
   Route as RouteIcon,
   Shield,
   Sparkles,
+  Sun,
   User,
 } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
+import { useTheme } from "@/lib/theme";
 
 export const Route = createFileRoute("/app/more")({
   head: () => ({
