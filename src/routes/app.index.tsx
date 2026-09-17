@@ -45,7 +45,7 @@ function SeekerHome() {
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
           <div className="min-w-0">
             <p className="text-sm text-muted-foreground">Welcome back,</p>
-            <h1 className="truncate text-2xl font-bold">{state.seeker.fullName.split(" ")[0]} 👋</h1>
+            <h1 className="truncate text-2xl font-bold" data-no-translate>{state.seeker.fullName.split(" ")[0]} 👋</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               You are {readiness.score}% ready for {state.targetRole} roles.
             </p>

@@ -74,7 +74,7 @@ function MyCv() {
           <p className="flex items-center gap-2 text-sm font-semibold">
             <AiBadge /> {state.cvSource === "upload" ? t("Uploaded CV") : t("AI-generated CV")}
           </p>
-          <h2 className="mt-1 truncate text-lg font-bold">{cv.personal.fullName}</h2>
+          <h2 className="mt-1 truncate text-lg font-bold" data-no-translate>{cv.personal.fullName}</h2>
           <p className="truncate text-sm text-muted-foreground">{cv.personal.title}</p>
           <p className="mt-2 text-xs text-muted-foreground">
             {t("Template")}: {t(CV_TEMPLATES.find((x) => x.id === state.cvTemplate)?.name ?? "")}

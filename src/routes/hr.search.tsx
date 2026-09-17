@@ -173,7 +173,7 @@ function AiSearch() {
                       {candidate.initials}
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate font-semibold">{candidate.name}</p>
+                      <p className="truncate font-semibold" data-no-translate>{candidate.name}</p>
                       <p className="truncate text-xs text-muted-foreground">
                         {candidate.degree} in {candidate.major} · {candidate.university}
                       </p>

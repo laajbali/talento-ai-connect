@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FileUp, PencilLine, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileUp, PencilLine, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { generateCv } from "@/lib/ai.functions";
+import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
 import type { CvSection } from "@/lib/types";
 
@@ -41,7 +42,9 @@ type AnswerKey = (typeof questions)[number]["key"];
 
 function CvBuilder() {
   const { state, set } = useStore();
+  const { dir, t } = useI18n();
   const navigate = useNavigate();
+  const PreviousIcon = dir === "rtl" ? ArrowRight : ArrowLeft;
   const [mode, setMode] = useState<"choose" | "ai" | "manual">("choose");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<AnswerKey, string>>({
@@ -165,8 +168,14 @@ function CvBuilder() {
 
           <div className="mt-5 flex gap-2">
             {step > 0 && (
-              <Button variant="outline" onClick={() => setStep(step - 1)} disabled={loading}>
-                Back
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setStep(step - 1)}
+                disabled={loading}
+                aria-label={t("Back")}
+              >
+                <PreviousIcon className="h-4 w-4" />
               </Button>
             )}
             {step < questions.length - 1 ? (
@@ -195,8 +204,8 @@ function CvBuilder() {
         <div className="surface mx-auto max-w-2xl space-y-4 p-5">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold">Edit every section</h2>
-            <Button variant="ghost" size="sm" onClick={() => setMode("choose")}>
-              Back
+            <Button variant="ghost" size="icon" onClick={() => setMode("choose")} aria-label={t("Back")}>
+              <PreviousIcon className="h-4 w-4" />
             </Button>
           </div>
 

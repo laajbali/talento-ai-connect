@@ -49,6 +49,8 @@ function HrSettings() {
   const title =
     section === "language"
       ? "Language"
+      : section === "appearance"
+        ? "Appearance"
       : section === "privacy"
         ? "Privacy"
         : section === "terms"

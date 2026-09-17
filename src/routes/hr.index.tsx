@@ -82,7 +82,7 @@ function HrHome() {
                 {c.initials}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium">{c.name}</span>
+                <span className="block truncate text-sm font-medium" data-no-translate>{c.name}</span>
                 <span className="block truncate text-xs text-muted-foreground">
                   {c.title} · {c.university}
                 </span>
@@ -107,7 +107,7 @@ function HrHome() {
                   {candidate.initials}
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate font-semibold">{candidate.name}</p>
+                  <p className="truncate font-semibold" data-no-translate>{candidate.name}</p>
                   <p className="truncate text-xs text-muted-foreground">{candidate.title}</p>
                 </div>
               </div>

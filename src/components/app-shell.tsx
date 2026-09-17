@@ -162,7 +162,7 @@ export function AppShell({
               )}
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold">{title ? t(title) : "Talento"}</p>
-                <p className="truncate text-xs text-muted-foreground">{displayName}</p>
+                <p className="truncate text-xs text-muted-foreground" data-no-translate>{displayName}</p>
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1">

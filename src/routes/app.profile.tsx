@@ -59,7 +59,7 @@ function Profile() {
       <div className="surface mb-4 flex items-center gap-4 p-5">
         <MatchRing value={pct} label={t("Complete")} size={84} />
         <div>
-          <p className="font-semibold">{form.fullName}</p>
+          <p className="font-semibold" data-no-translate>{form.fullName}</p>
           <p className="text-sm text-muted-foreground">
             {form.major} · {form.university}
           </p>
