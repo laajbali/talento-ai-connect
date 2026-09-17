@@ -40,7 +40,8 @@ const FAQ = [
 
 function SettingsSection() {
   const { section } = useParams({ from: "/app/settings/$section" });
-  const [language, setLanguage] = useState("English");
+  const { t, lang, setLang } = useI18n();
+  const { theme, setTheme } = useTheme();
   const [visible, setVisible] = useState(true);
   const [alerts, setAlerts] = useState(true);
   const [message, setMessage] = useState("");
@@ -56,7 +57,14 @@ function SettingsSection() {
             ? "Help Center"
             : section === "contact"
               ? "Contact Us"
-              : "Settings";
+              : section === "appearance"
+                ? "Appearance"
+                : "Settings";
+
+  const languages = [
+    { id: "en" as const, label: "English" },
+    { id: "ar" as const, label: "العربية" },
+  ];
 
   return (
     <AppShell variant="seeker" title={title}>
@@ -66,23 +74,55 @@ function SettingsSection() {
         {section === "language" && (
           <>
             <p className="text-sm text-muted-foreground">
-              Choose the language used across Talento.
+              {t("Choose the language used across Talento.")}
             </p>
             <div className="space-y-2">
-              {["English", "العربية"].map((l) => (
+              {languages.map((l) => (
                 <button
-                  key={l}
+                  key={l.id}
                   type="button"
                   onClick={() => {
-                    setLanguage(l);
-                    toast.success(`Language set to ${l}.`);
+                    setLang(l.id);
+                    toast.success(
+                      l.id === "ar" ? "تم ضبط اللغة على العربية." : "Language set to English.",
+                    );
                   }}
                   className={`flex w-full items-center justify-between rounded-xl border p-3 text-sm ${
-                    language === l ? "border-primary bg-accent" : "border-border"
+                    lang === l.id ? "border-primary bg-accent" : "border-border"
                   }`}
                 >
-                  {l}
-                  {language === l && <span className="text-xs font-semibold text-primary">Selected</span>}
+                  {l.label}
+                  {lang === l.id && (
+                    <span className="text-xs font-semibold text-primary">{t("Selected")}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {section === "appearance" && (
+          <>
+            <p className="text-sm text-muted-foreground">
+              {t("Choose how Talento looks on this device.")}
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {(["light", "dark"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setTheme(m)}
+                  className={`flex items-center justify-between rounded-xl border p-3 text-sm ${
+                    theme === m ? "border-primary bg-accent" : "border-border"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {m === "light" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    {t(m === "light" ? "Light" : "Dark")}
+                  </span>
+                  {theme === m && (
+                    <span className="text-xs font-semibold text-primary">{t("Selected")}</span>
+                  )}
                 </button>
               ))}
             </div>
