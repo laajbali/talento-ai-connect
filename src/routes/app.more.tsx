@@ -32,44 +32,57 @@ export const Route = createFileRoute("/app/more")({
 
 function More() {
   const { state, reset } = useStore();
+  const { t, lang } = useI18n();
+  const { theme } = useTheme();
   const navigate = useNavigate();
 
   return (
     <AppShell variant="seeker" title="More">
       <PageHeader title="More" subtitle={state.seeker.email} />
 
-      <Group title="Account">
-        <Item to="/app/profile" icon={<User className="h-4 w-4" />} label="Personal information" />
-        <Item to="/app/cv" icon={<FileText className="h-4 w-4" />} label="My CV" />
+      <Group title={t("Account")}>
+        <Item to="/app/profile" icon={<User className="h-4 w-4" />} label={t("Personal information")} />
+        <Item to="/app/cv" icon={<FileText className="h-4 w-4" />} label={t("My CV")} />
         <Item
           to="/app/applications"
           icon={<Briefcase className="h-4 w-4" />}
-          label="My applications"
+          label={t("My applications")}
         />
-        <Item to="/app/saved" icon={<BookMarked className="h-4 w-4" />} label="Saved jobs" />
+        <Item to="/app/saved" icon={<BookMarked className="h-4 w-4" />} label={t("Saved jobs")} />
       </Group>
 
-      <Group title="Career tools">
-        <Item to="/app/analysis" icon={<Sparkles className="h-4 w-4" />} label="Career analysis" />
-        <Item to="/app/gap" icon={<Sparkles className="h-4 w-4" />} label="Career gap analysis" />
-        <Item to="/app/path" icon={<RouteIcon className="h-4 w-4" />} label="Career path" />
+      <Group title={t("Career tools")}>
+        <Item to="/app/analysis" icon={<Sparkles className="h-4 w-4" />} label={t("Career analysis")} />
+        <Item to="/app/gap" icon={<Sparkles className="h-4 w-4" />} label={t("Career gap analysis")} />
+        <Item to="/app/path" icon={<RouteIcon className="h-4 w-4" />} label={t("Career path")} />
       </Group>
 
-      <Group title="Preferences">
+      <Group title={t("Preferences")}>
         <Item
           to="/app/notifications"
           icon={<Bell className="h-4 w-4" />}
-          label="Notifications"
-          hint={`${state.notifications.filter((n) => !n.read).length} unread`}
+          label={t("Notifications")}
+          hint={`${state.notifications.filter((n) => !n.read).length} ${t("unread")}`}
         />
-        <ItemSetting section="language" icon={<Globe className="h-4 w-4" />} label="Language" hint="English" />
-        <ItemSetting section="privacy" icon={<Shield className="h-4 w-4" />} label="Privacy" />
+        <ItemSetting
+          section="language"
+          icon={<Globe className="h-4 w-4" />}
+          label={t("Language")}
+          hint={lang === "ar" ? "العربية" : "English"}
+        />
+        <ItemSetting
+          section="appearance"
+          icon={theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          label={t("Appearance")}
+          hint={t(theme === "dark" ? "Dark" : "Light")}
+        />
+        <ItemSetting section="privacy" icon={<Shield className="h-4 w-4" />} label={t("Privacy")} />
       </Group>
 
-      <Group title="Support">
-        <ItemSetting section="help" icon={<HelpCircle className="h-4 w-4" />} label="Help center" />
-        <ItemSetting section="contact" icon={<LifeBuoy className="h-4 w-4" />} label="Contact us" />
-        <ItemSetting section="terms" icon={<Shield className="h-4 w-4" />} label="Terms of service" />
+      <Group title={t("Support")}>
+        <ItemSetting section="help" icon={<HelpCircle className="h-4 w-4" />} label={t("Help center")} />
+        <ItemSetting section="contact" icon={<LifeBuoy className="h-4 w-4" />} label={t("Contact us")} />
+        <ItemSetting section="terms" icon={<Shield className="h-4 w-4" />} label={t("Terms of service")} />
       </Group>
 
       <Button
