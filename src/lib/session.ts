@@ -11,8 +11,8 @@ export function useLogout() {
   const { reset } = useStore();
   const navigate = useNavigate();
 
-  return () => {
+  return async () => {
+    await navigate({ to: "/", replace: true });
     reset();
-    void navigate({ to: "/", replace: true });
   };
 }
