@@ -79,7 +79,7 @@ function Candidates() {
         }
       />
 
-      <div className="surface mb-4 min-w-0 space-y-3 p-4">
+      <div className="surface mb-4 w-full min-w-0 max-w-full space-y-3 overflow-hidden p-4">
         <Select value={jobId} onValueChange={setJobId}>
           <SelectTrigger aria-label="Match against job">
             <SelectValue />
@@ -98,7 +98,7 @@ function Candidates() {
           placeholder="Search by name, skill, major or university"
           aria-label="Search candidates"
         />
-        <div className="grid min-w-0 gap-2 sm:grid-cols-2">
+        <div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
           <Select value={availability} onValueChange={setAvailability}>
             <SelectTrigger aria-label="Availability">
               <SelectValue placeholder="Availability" />
@@ -136,7 +136,7 @@ function Candidates() {
           }
         />
       ) : (
-        <div className="grid min-w-0 gap-3 lg:grid-cols-2">
+        <div className="grid w-full min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">
           {results.map(({ candidate, match }) => {
             const saved = state.savedCandidates.includes(candidate.id);
             return (

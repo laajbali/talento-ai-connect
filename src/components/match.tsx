@@ -57,6 +57,46 @@ export function SkillChips({
   );
 }
 
+function MatchExplanation({
+  children,
+  heading,
+}: {
+  children: ReactNode;
+  heading: string;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <div className="mt-2.5 flex-1 rounded-lg bg-muted/60 p-2.5 text-xs text-muted-foreground">
+      <p className="mb-1.5 flex items-center gap-1.5 font-semibold text-foreground">
+        <AiBadge /> {t(heading)}
+      </p>
+      <div className="leading-relaxed">{children}</div>
+    </div>
+  );
+}
+
+function CardActions({
+  primary,
+  saved,
+  onSave,
+}: {
+  primary: ReactNode;
+  saved: boolean;
+  onSave: () => void;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <div className="mt-2.5 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+      <div className="min-w-0 [&>*]:w-full">{primary}</div>
+      <Button size="sm" variant="outline" onClick={onSave} className="min-w-16 bg-background text-foreground">
+        {t(saved ? "Saved" : "Save")}
+      </Button>
+    </div>
+  );
+}
+
 export function JobCard({
   job,
   match,
@@ -70,9 +110,9 @@ export function JobCard({
 }) {
   const { t } = useI18n();
   return (
-    <article className="surface flex h-full min-w-0 flex-col p-4">
-      <div className="flex items-start gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-sm font-bold text-accent-foreground">
+    <article className="surface flex h-full min-w-0 flex-col p-3.5">
+      <div className="flex items-start gap-2.5">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent text-xs font-bold text-accent-foreground">
           {job.companyLogo}
         </span>
         <div className="min-w-0 flex-1">
@@ -104,17 +144,14 @@ export function JobCard({
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
         <ScorePill score={match.score} />
         <Badge variant="secondary">{job.level}</Badge>
         {job.salary && <span className="text-xs text-muted-foreground">{job.salary}</span>}
       </div>
 
-      <div className="mt-3 flex-1 space-y-2 rounded-xl bg-muted/60 p-3">
-        <p className="flex items-center gap-2 text-xs font-semibold">
-          <AiBadge /> {t("Why this matches you")}
-        </p>
-        <p className="text-xs text-muted-foreground">
+      <MatchExplanation heading="Why this matches you">
+        <p>
           {match.matching.length
             ? `You already have ${match.matching.join(", ")}.`
             : "Your profile overlaps only partly with the required skills."}{" "}
@@ -122,18 +159,19 @@ export function JobCard({
             ? `Missing: ${match.missing.join(", ")}.`
             : "No required skills are missing."}
         </p>
-      </div>
+      </MatchExplanation>
 
-      <div className="mt-3 flex gap-2">
-        <Button asChild size="sm" className="flex-1">
+      <CardActions
+        saved={saved}
+        onSave={onSave}
+        primary={
+        <Button asChild size="sm" variant="outline" className="bg-background text-foreground">
           <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
             {t("View details")}
           </Link>
         </Button>
-        <Button size="sm" variant="outline" onClick={onSave}>
-          {t(saved ? "Saved" : "Save")}
-        </Button>
-      </div>
+        }
+      />
     </article>
   );
 }
@@ -164,9 +202,9 @@ export function CandidateCard({
   const { t } = useI18n();
 
   return (
-    <article className="surface flex h-full min-w-0 flex-col p-4">
-      <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-sm font-bold text-accent-foreground">
+    <article className="surface flex h-full min-w-0 flex-col p-3.5">
+      <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-2.5">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
           {candidate.initials}
         </span>
         <div className="min-w-0">
@@ -194,22 +232,25 @@ export function CandidateCard({
           >
             {saved ? <BookmarkCheck className="text-primary" /> : <Bookmark />}
           </Button>
-        ) : status ? <div className="shrink-0">{status}</div> : <span />}
+        ) : <span />}
       </div>
 
-      {(match || jobTitle) && (
-        <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
+      {(match || jobTitle || status) && (
+        <div className="mt-2.5 flex min-w-0 flex-wrap items-center gap-1.5">
           {match && <ScorePill score={match.score} />}
+          {status && <div className="shrink-0">{status}</div>}
           {jobTitle && <span className="min-w-0 break-words text-xs text-muted-foreground">vs {jobTitle}</span>}
         </div>
       )}
       {showSkills && <div className="mt-2"><SkillChips skills={candidate.skills.slice(0, 6)} /></div>}
       {explanation && (
-        <div className="mt-3 flex-1 rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground">
-          {explanation}
-        </div>
+        <MatchExplanation heading="Why this candidate matches">{explanation}</MatchExplanation>
       )}
-      {actions && <div className="mt-3">{actions}</div>}
+      {actions && onSave ? (
+        <CardActions primary={actions} saved={Boolean(saved)} onSave={onSave} />
+      ) : actions ? (
+        <div className="mt-2.5 [&>*]:w-full">{actions}</div>
+      ) : null}
     </article>
   );
 }

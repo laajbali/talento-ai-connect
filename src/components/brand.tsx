@@ -6,7 +6,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
     <img
       src={talentoLogo.url}
       alt="Talento"
-      className={cn(compact ? "h-7 w-auto object-contain" : "h-8 w-auto object-contain", className)}
+      className={cn(compact ? "h-5 w-auto object-contain" : "h-6 w-auto object-contain", className)}
     />
   );
 }
