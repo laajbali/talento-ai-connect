@@ -3,6 +3,8 @@ import { ArrowRight, Briefcase, Building2, Check } from "lucide-react";
 import { useState } from "react";
 import { AuthLayout } from "@/components/auth-layout";
 import { Button } from "@/components/ui/button";
+import { defaultCompany, defaultSeeker } from "@/lib/data";
+import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
 import type { Role } from "@/lib/types";
 
@@ -38,11 +40,12 @@ const options: { role: Role; title: string; body: string; icon: React.ReactNode 
 
 function ChooseRole() {
   const { state, set } = useStore();
+  const { t, dir } = useI18n();
   const navigate = useNavigate();
   const [role, setRole] = useState<Role | null>(state.pendingRole);
 
   return (
-    <AuthLayout title="Choose your role" subtitle="Let's get you started." step="Step 1 of 4">
+    <AuthLayout title="Choose your role" subtitle="Choose a demo role or create a real account.">
       <div className="space-y-3">
         {options.map((o) => (
           <button
@@ -59,10 +62,10 @@ function ChooseRole() {
             </span>
             <span className="min-w-0 flex-1">
               <span className="flex items-center gap-2 font-semibold">
-                {o.title}
+                {t(o.title)}
                 {role === o.role && <Check className="h-4 w-4 text-primary" />}
               </span>
-              <span className="mt-1 block text-sm text-muted-foreground">{o.body}</span>
+              <span className="mt-1 block text-sm text-muted-foreground">{t(o.body)}</span>
             </span>
           </button>
         ))}
@@ -72,17 +75,38 @@ function ChooseRole() {
         className="mt-6 w-full"
         disabled={!role}
         onClick={() => {
-          set({ pendingRole: role });
-          navigate({ to: "/auth/signup" });
+          if (!role) return;
+          const name = role === "seeker" ? defaultSeeker.fullName : defaultCompany.team[0]?.name || "HR Manager";
+          set({
+            pendingRole: role,
+            session: {
+              name,
+              email: role === "seeker" ? defaultSeeker.email : defaultCompany.team[0]?.email || "hr@talento.sa",
+              role,
+              verified: true,
+            },
+          });
+          navigate({ to: role === "seeker" ? "/app" : "/hr" });
         }}
       >
-        Continue <ArrowRight className="ml-1 h-4 w-4" />
+        {t("Enter Demo")} {dir === "rtl" ? <ArrowRight className="mr-1 h-4 w-4 rotate-180" /> : <ArrowRight className="ml-1 h-4 w-4" />}
       </Button>
       {!role && (
         <p className="mt-2 text-center text-xs text-muted-foreground">
           Select a role to continue.
         </p>
       )}
+      <Button
+        variant="outline"
+        className="mt-2 w-full"
+        disabled={!role}
+        onClick={() => {
+          set({ pendingRole: role });
+          navigate({ to: "/auth/signup" });
+        }}
+      >
+        {t("Create an account")}
+      </Button>
     </AuthLayout>
   );
 }

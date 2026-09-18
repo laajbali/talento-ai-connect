@@ -212,3 +212,25 @@ Return JSON:
     );
     return parseJson(text, null);
   });
+
+/* ---------------- Role-aware product assistant ---------------- */
+
+const AssistantInput = z.object({
+  role: z.enum(["seeker", "employer"]),
+  question: z.string().min(2).max(1000),
+  context: z.string().max(2000),
+  history: z.array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(2000) })).max(6),
+});
+
+export const askAssistant = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => AssistantInput.parse(data))
+  .handler(async ({ data }) => {
+    const roleGuide = data.role === "seeker"
+      ? "Guide job seekers through CV editing, match explanations, job discovery, career analysis, gap analysis, career paths, applications, saved jobs, profile, notifications and settings."
+      : "Guide employers through candidates, AI candidate search, AI CV screening, candidate match explanations, job publishing, applicants, company/team management, notifications and settings.";
+    const history = data.history.map((message) => `${message.role}: ${message.content}`).join("\n");
+    return ask(
+      `You are Talento's in-product AI Assistant. ${roleGuide} Answer in the same language as the user's question. Be concise, accurate, and action-oriented. Only describe features that exist in Talento. Never invent account data or claim an action was completed.`,
+      `Current role: ${data.role}\nCurrent product context: ${data.context}\nRecent conversation:\n${history}\n\nUser question: ${data.question}\n\nGive a direct answer in no more than 140 words.`,
+    );
+  });
