@@ -96,26 +96,6 @@ function SeekerHome() {
         </div>
       )}
 
-      <section className="mt-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Recommended for you</h2>
-          <Link to="/app/jobs" className="text-sm font-semibold text-primary">
-            See all
-          </Link>
-        </div>
-        <div className="grid gap-3 lg:grid-cols-2">
-          {ranked.map(({ job, match }) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              match={match}
-              saved={state.savedJobs.includes(job.id)}
-              onSave={() => toggleSave(job.id)}
-            />
-          ))}
-        </div>
-      </section>
-
       {recent.length > 0 && (
         <section className="mt-6">
           <h2 className="mb-3 text-lg font-bold">Recently viewed</h2>
@@ -143,6 +123,26 @@ function SeekerHome() {
           </div>
         </section>
       )}
+
+      <section className="mt-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-bold">Recommended for you</h2>
+          <Link to="/app/jobs" className="text-sm font-semibold text-primary">
+            See all
+          </Link>
+        </div>
+        <div className="grid gap-3 lg:grid-cols-2">
+          {ranked.map(({ job, match }) => (
+            <JobCard
+              key={job.id}
+              job={job}
+              match={match}
+              saved={state.savedJobs.includes(job.id)}
+              onSave={() => toggleSave(job.id)}
+            />
+          ))}
+        </div>
+      </section>
 
       <section className="surface mt-6 p-5">
         <p className="flex items-center gap-2 text-sm font-semibold">

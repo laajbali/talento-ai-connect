@@ -1,6 +1,8 @@
 # Talento update roadmap
 
-- [ ] Replace shared branding with the uploaded standalone logo (blocked until file arrives)
+- [ ] Replace shared branding with the uploaded standalone logo (the available upload is still the earlier screen-flow collage)
+- [x] Apply the latest More-page structures and remove More-page title/account details
+- [x] Reorder Job Seeker home sections so Recently Viewed precedes recommendations
 - [x] Simplify shared desktop/mobile navigation and header controls
 - [x] Correct primary-page and secondary-page back behavior
 - [x] Centralize logout and verify landing-page return

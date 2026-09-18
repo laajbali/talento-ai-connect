@@ -97,6 +97,7 @@ export function AppShell({
     item.exact ? pathname === item.to : pathname.startsWith(item.to);
 
   const isPrimary = nav.some((item) => item.to === pathname);
+  const isMorePage = pathname === "/app/more" || pathname === "/hr/more";
   const displayName = state.session?.name || (variant === "seeker" ? state.seeker.fullName : state.company.team[0]?.name) || state.company.name;
   const initials = initialsFromName(displayName);
 
@@ -131,17 +132,21 @@ export function AppShell({
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur sm:flex sm:justify-between">
             <div className="flex min-w-0 items-center gap-2">
-              {isPrimary ? (
+              {isMorePage ? (
+                <Logo />
+              ) : isPrimary ? (
                 <div className="lg:hidden">
                   <Logo compact />
                 </div>
               ) : (
                 <BackButton />
               )}
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">{title ? t(title) : "Talento"}</p>
-                <p className="truncate text-xs text-muted-foreground" data-no-translate>{displayName}</p>
-              </div>
+              {!isMorePage && (
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{title ? t(title) : "Talento"}</p>
+                  <p className="truncate text-xs text-muted-foreground" data-no-translate>{displayName}</p>
+                </div>
+              )}
             </div>
             <div className="flex shrink-0 items-center gap-1">
               <Button asChild variant="ghost" size="icon" aria-label={t("Notifications")}>
