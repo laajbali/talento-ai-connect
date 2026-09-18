@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Briefcase, Building2, Check } from "lucide-react";
+import { Briefcase, Building2, Check } from "lucide-react";
 import { useState } from "react";
 import { AuthLayout } from "@/components/auth-layout";
 import { Button } from "@/components/ui/button";
-import { defaultCompany, defaultSeeker } from "@/lib/data";
 import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
 import type { Role } from "@/lib/types";
@@ -40,7 +39,7 @@ const options: { role: Role; title: string; body: string; icon: React.ReactNode 
 
 function ChooseRole() {
   const { state, set } = useStore();
-  const { t, dir } = useI18n();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [role, setRole] = useState<Role | null>(state.pendingRole);
 
@@ -71,34 +70,14 @@ function ChooseRole() {
         ))}
       </div>
 
-      <Button
-        className="mt-6 w-full"
-        disabled={!role}
-        onClick={() => {
-          if (!role) return;
-          const name = role === "seeker" ? defaultSeeker.fullName : defaultCompany.team[0]?.name || "HR Manager";
-          set({
-            pendingRole: role,
-            session: {
-              name,
-              email: role === "seeker" ? defaultSeeker.email : defaultCompany.team[0]?.email || "hr@talento.sa",
-              role,
-              verified: true,
-            },
-          });
-          navigate({ to: role === "seeker" ? "/app" : "/hr" });
-        }}
-      >
-        {t("Enter Demo")} {dir === "rtl" ? <ArrowRight className="mr-1 h-4 w-4 rotate-180" /> : <ArrowRight className="ml-1 h-4 w-4" />}
-      </Button>
       {!role && (
-        <p className="mt-2 text-center text-xs text-muted-foreground">
+        <p className="mt-6 text-center text-xs text-muted-foreground">
           Select a role to continue.
         </p>
       )}
       <Button
         variant="outline"
-        className="mt-2 w-full"
+        className="mt-6 w-full"
         disabled={!role}
         onClick={() => {
           set({ pendingRole: role });

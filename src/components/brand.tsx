@@ -1,15 +1,13 @@
 import { cn } from "@/lib/utils";
+import talentoLogo from "@/assets/talento-logo.jpeg.asset.json";
 
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (
-    <span className={cn("inline-flex items-center gap-2 font-bold tracking-tight", className)}>
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
-        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
-          <path d="M12 2c.7 2.6 2.3 4.2 4.9 4.9-2.6.7-4.2 2.3-4.9 4.9-.7-2.6-2.3-4.2-4.9-4.9C9.7 6.2 11.3 4.6 12 2Zm5.8 9.4c.5 1.8 1.6 2.9 3.4 3.4-1.8.5-2.9 1.6-3.4 3.4-.5-1.8-1.6-2.9-3.4-3.4 1.8-.5 2.9-1.6 3.4-3.4Zm-11.6.9c.4 1.6 1.4 2.6 3 3-1.6.4-2.6 1.4-3 3-.4-1.6-1.4-2.6-3-3 1.6-.4 2.6-1.4 3-3Z" />
-        </svg>
-      </span>
-      {!compact && <span className="text-lg">Talento</span>}
-    </span>
+    <img
+      src={talentoLogo.url}
+      alt="Talento"
+      className={cn(compact ? "h-8 w-9 object-contain" : "h-10 w-28 object-contain", className)}
+    />
   );
 }
 

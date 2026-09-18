@@ -99,7 +99,7 @@ function SeekerHome() {
       {recent.length > 0 && (
         <section className="mt-6">
           <h2 className="mb-3 text-lg font-bold">Recently Viewed</h2>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2">
             {recent.map((job) => {
               if (!job) return null;
               const match = computeMatch(toProfile(state.seeker), job);
@@ -108,12 +108,17 @@ function SeekerHome() {
                   key={job.id}
                   to="/app/jobs/$jobId"
                   params={{ jobId: job.id }}
-                  className="surface flex items-center justify-between gap-3 p-3"
+                  className="surface flex min-h-24 items-center justify-between gap-3 p-4"
                 >
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold">{job.title}</span>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {job.company} · {job.location}
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-sm font-bold text-accent-foreground">
+                      {job.companyLogo}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-semibold">{job.title}</span>
+                      <span className="block truncate text-sm text-muted-foreground">
+                        {job.company} · {job.location}
+                      </span>
                     </span>
                   </span>
                   <ScorePill score={match.score} />

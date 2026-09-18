@@ -1,6 +1,9 @@
 # Talento update roadmap
 
-- [ ] Replace shared branding with the uploaded standalone logo (the available upload is still the earlier screen-flow collage)
+- [x] Replace shared branding with the uploaded standalone logo
+- [x] Align Job Seeker home job-card spacing and preserve section order
+- [x] Remove Demo entry while preserving role selection and account creation
+- [x] Remove personal names from the shared app header
 - [x] Apply the latest More-page structures and remove More-page title/account details
 - [x] Reorder Job Seeker home sections so Recently Viewed precedes recommendations
 - [x] Simplify shared desktop/mobile navigation and header controls
