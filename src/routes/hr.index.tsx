@@ -25,7 +25,7 @@ export const Route = createFileRoute("/hr/")({
 });
 
 function HrHome() {
-  const { state } = useStore();
+  const { state, update } = useStore();
   const jobs = state.jobs;
   const active = jobs.filter((j) => j.status === "Active");
   const totals = jobs.reduce(
@@ -38,6 +38,13 @@ function HrHome() {
   );
   const topJob = active[0] ?? jobs[0]!;
   const recommended = rankCandidates(topJob, CANDIDATES).slice(0, 3);
+  const toggleSave = (id: string) =>
+    update((s) => ({
+      ...s,
+      savedCandidates: s.savedCandidates.includes(id)
+        ? s.savedCandidates.filter((candidateId) => candidateId !== id)
+        : [...s.savedCandidates, id],
+    }));
 
   return (
     <AppShell variant="employer" title="Hiring dashboard">
@@ -75,6 +82,8 @@ function HrHome() {
             <CandidateCard
               key={c.id}
               candidate={c}
+              saved={state.savedCandidates.includes(c.id)}
+              onSave={() => toggleSave(c.id)}
               status={<span className={statusClass(state.candidateStages[c.id] ?? "Applied")}>{state.candidateStages[c.id] ?? "Applied"}</span>}
               explanation={`${c.university} · ${c.location}`}
               actions={
@@ -98,6 +107,8 @@ function HrHome() {
               candidate={candidate}
               match={match}
               jobTitle={topJob.title}
+              saved={state.savedCandidates.includes(candidate.id)}
+              onSave={() => toggleSave(candidate.id)}
               explanation={`Matches on ${match.matching.slice(0, 3).join(", ") || "few required skills"}.${match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No gaps."}`}
               actions={
                 <Button asChild size="sm" variant="outline" className="w-full">

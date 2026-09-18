@@ -232,12 +232,13 @@ export function CandidateCard({
           >
             {saved ? <BookmarkCheck className="text-primary" /> : <Bookmark />}
           </Button>
-        ) : status ? <div className="shrink-0">{status}</div> : <span />}
+        ) : <span />}
       </div>
 
-      {(match || jobTitle) && (
+      {(match || jobTitle || status) && (
         <div className="mt-2.5 flex min-w-0 flex-wrap items-center gap-1.5">
           {match && <ScorePill score={match.score} />}
+          {status && <div className="shrink-0">{status}</div>}
           {jobTitle && <span className="min-w-0 break-words text-xs text-muted-foreground">vs {jobTitle}</span>}
         </div>
       )}
