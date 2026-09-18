@@ -3,20 +3,16 @@ import {
   Bell,
   Building2,
   ChevronRight,
-  Globe,
+  FileSearch,
   HelpCircle,
   LogOut,
-  Moon,
-  Sun,
   Shield,
   Sparkles,
   Users,
 } from "lucide-react";
-import { AppShell, PageHeader } from "@/components/app-shell";
+import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
-import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { useTheme } from "@/lib/theme";
 import { useLogout } from "@/lib/session";
 
 export const Route = createFileRoute("/hr/more")({
@@ -32,18 +28,19 @@ export const Route = createFileRoute("/hr/more")({
 });
 
 function HrMore() {
-  const { state } = useStore();
   const logout = useLogout();
-  const { t, lang } = useI18n();
-  const { theme } = useTheme();
+  const { t } = useI18n();
 
   return (
     <AppShell variant="employer" title="More">
-      <PageHeader title="More" subtitle={state.company.name} />
-
       <Group title={t("Company")}>
         <Item to="/hr/company" icon={<Building2 className="h-4 w-4" />} label={t("Company Profile")} />
-        <Item to="/hr/company" hash="team" icon={<Users className="h-4 w-4" />} label={t("Team")} />
+      </Group>
+
+      <Group title={t("Hiring tools")}>
+        <Item to="/hr/screening" icon={<FileSearch className="h-4 w-4" />} label={t("AI CV Screening")} />
+        <Item to="/hr/candidates" icon={<Users className="h-4 w-4" />} label={t("All Candidates")} />
+        <Item to="/hr/saved" icon={<Users className="h-4 w-4" />} label={t("Saved Candidates")} />
       </Group>
 
       <Group title={t("Preferences")}>
@@ -51,20 +48,14 @@ function HrMore() {
           to="/hr/notifications"
           icon={<Bell className="h-4 w-4" />}
           label={t("Notifications")}
-          hint={`${state.notifications.filter((n) => !n.read).length} ${t("unread")}`}
         />
-        <Setting section="language" icon={<Globe className="h-4 w-4" />} label={t("Language")} hint={lang === "ar" ? "العربية" : "English"} />
-        <Setting section="appearance" icon={theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />} label={t("Appearance")} hint={t(theme === "dark" ? "Dark" : "Light")} />
         <Setting section="privacy" icon={<Shield className="h-4 w-4" />} label={t("Privacy")} />
       </Group>
 
       <Group title={t("Support")}>
+        <Item to="/hr/assistant" icon={<Sparkles className="h-4 w-4" />} label={t("AI Assistant")} />
         <Setting section="help" icon={<HelpCircle className="h-4 w-4" />} label={t("Help center")} />
         <Setting section="terms" icon={<Shield className="h-4 w-4" />} label={t("Terms of service")} />
-      </Group>
-
-      <Group title={t("AI tools / assistance")}>
-        <Item to="/hr/assistant" icon={<Sparkles className="h-4 w-4" />} label={t("AI Assistant")} />
       </Group>
 
       <Button
@@ -91,13 +82,11 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 
 function Item({
   to,
-  hash,
   icon,
   label,
   hint,
 }: {
-  to: "/hr/company" | "/hr/notifications" | "/hr/assistant";
-  hash?: string;
+  to: "/hr/company" | "/hr/notifications" | "/hr/assistant" | "/hr/screening" | "/hr/candidates" | "/hr/saved";
   icon: React.ReactNode;
   label: string;
   hint?: string;
@@ -105,7 +94,6 @@ function Item({
   return (
     <Link
       to={to}
-      {...(hash ? { hash } : {})}
       className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/60"
     >
       <span className="text-muted-foreground">{icon}</span>

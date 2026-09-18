@@ -5,22 +5,17 @@ import {
   Briefcase,
   ChevronRight,
   FileText,
-  Globe,
   HelpCircle,
   LogOut,
-  Moon,
   Route as RouteIcon,
   Shield,
   Sparkles,
-  Sun,
   User,
 } from "lucide-react";
-import { AppShell, PageHeader } from "@/components/app-shell";
+import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { useLogout } from "@/lib/session";
-import { useStore } from "@/lib/store";
-import { useTheme } from "@/lib/theme";
 
 export const Route = createFileRoute("/app/more")({
   head: () => ({
@@ -35,15 +30,11 @@ export const Route = createFileRoute("/app/more")({
 });
 
 function More() {
-  const { state } = useStore();
-  const { t, lang } = useI18n();
-  const { theme } = useTheme();
+  const { t } = useI18n();
   const logout = useLogout();
 
   return (
     <AppShell variant="seeker" title="More">
-      <PageHeader title="More" subtitle={state.seeker.email} />
-
       <Group title={t("Account")}>
         <Item to="/app/profile" icon={<User className="h-4 w-4" />} label={t("Personal information")} />
         <Item to="/app/cv" icon={<FileText className="h-4 w-4" />} label={t("My CV")} />
@@ -52,17 +43,13 @@ function More() {
           icon={<Briefcase className="h-4 w-4" />}
           label={t("My applications")}
         />
-        <Item to="/app/saved" icon={<BookMarked className="h-4 w-4" />} label={t("Saved jobs")} />
       </Group>
 
       <Group title={t("Career tools")}>
         <Item to="/app/analysis" icon={<Sparkles className="h-4 w-4" />} label={t("Career analysis")} />
         <Item to="/app/gap" icon={<Sparkles className="h-4 w-4" />} label={t("Career gap analysis")} />
         <Item to="/app/path" icon={<RouteIcon className="h-4 w-4" />} label={t("Career path")} />
-      </Group>
-
-      <Group title={t("AI tools / assistance")}>
-        <Item to="/app/assistant" icon={<Sparkles className="h-4 w-4" />} label={t("AI Assistant")} />
+        <Item to="/app/saved" icon={<BookMarked className="h-4 w-4" />} label={t("Saved jobs")} />
       </Group>
 
       <Group title={t("Preferences")}>
@@ -70,24 +57,12 @@ function More() {
           to="/app/notifications"
           icon={<Bell className="h-4 w-4" />}
           label={t("Notifications")}
-          hint={`${state.notifications.filter((n) => !n.read).length} ${t("unread")}`}
-        />
-        <ItemSetting
-          section="language"
-          icon={<Globe className="h-4 w-4" />}
-          label={t("Language")}
-          hint={lang === "ar" ? "العربية" : "English"}
-        />
-        <ItemSetting
-          section="appearance"
-          icon={theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          label={t("Appearance")}
-          hint={t(theme === "dark" ? "Dark" : "Light")}
         />
         <ItemSetting section="privacy" icon={<Shield className="h-4 w-4" />} label={t("Privacy")} />
       </Group>
 
       <Group title={t("Support")}>
+        <Item to="/app/assistant" icon={<Sparkles className="h-4 w-4" />} label={t("AI Assistant")} />
         <ItemSetting section="help" icon={<HelpCircle className="h-4 w-4" />} label={t("Help center")} />
         <ItemSetting section="terms" icon={<Shield className="h-4 w-4" />} label={t("Terms of service")} />
       </Group>
