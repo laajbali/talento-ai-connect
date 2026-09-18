@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import talentoLogo from "@/assets/talento-logo-cropped.png.asset.json";
+import talentoLogo from "@/assets/talento-logo-transparent.png.asset.json";
 
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (

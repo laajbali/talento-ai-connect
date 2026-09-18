@@ -17,4 +17,4 @@
 - [x] Standardize the authenticated header and move detail-page back navigation into content
 - [x] Crop the supplied logo to its visible artwork bounds
 - [x] Unify seeker and HR card presentation
-- [ ] Eliminate Candidates mobile overflow and verify at iPhone width
+- [x] Eliminate Candidates mobile overflow and verify at iPhone width
