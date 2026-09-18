@@ -8,4 +8,4 @@
 - [x] Add fast role-based Demo Mode while preserving registration
 - [x] Add real role-aware AI Assistant for both roles
 - [x] Ensure every visible match score has supporting explanation
-- [ ] Verify mobile, tablet, desktop, role guards, links, and AI behavior
+- [x] Verify mobile, tablet, desktop, role guards, links, and AI behavior
