@@ -98,7 +98,7 @@ function SeekerHome() {
 
       {recent.length > 0 && (
         <section className="mt-6">
-          <h2 className="mb-3 text-lg font-bold">Recently viewed</h2>
+          <h2 className="mb-3 text-lg font-bold">Recently Viewed</h2>
           <div className="grid gap-2 sm:grid-cols-2">
             {recent.map((job) => {
               if (!job) return null;
@@ -146,7 +146,7 @@ function SeekerHome() {
 
       <section className="surface mt-6 p-5">
         <p className="flex items-center gap-2 text-sm font-semibold">
-          <AiBadge /> Career development suggestions
+          <AiBadge /> Career Development Suggestions
         </p>
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
           <li>• Learn Power BI — it appears in 4 of your 6 recommended jobs.</li>

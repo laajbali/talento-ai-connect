@@ -261,7 +261,6 @@ const ar: Record<string, string> = {
   Interviews: "المقابلات",
   "Recent applications": "أحدث الطلبات",
   "Hiring activity": "نشاط التوظيف",
-  "Hiring tools": "أدوات التوظيف",
   "All candidates": "كل المرشحين",
   Company: "الشركة",
   "Company profile & team": "ملف الشركة والفريق",
