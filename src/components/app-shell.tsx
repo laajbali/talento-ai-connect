@@ -97,7 +97,6 @@ export function AppShell({
     item.exact ? pathname === item.to : pathname.startsWith(item.to);
 
   const isPrimary = nav.some((item) => item.to === pathname);
-  const isMorePage = pathname === "/app/more" || pathname === "/hr/more";
   const displayName = state.session?.name || (variant === "seeker" ? state.seeker.fullName : state.company.team[0]?.name) || state.company.name;
   const initials = initialsFromName(displayName);
 
