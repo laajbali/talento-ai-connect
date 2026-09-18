@@ -7,14 +7,13 @@ import {
   FileText,
   Home,
   LayoutGrid,
-  LogOut,
   Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Logo } from "./brand";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
-import { initialsFromName, useLogout } from "@/lib/session";
+import { initialsFromName } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +90,6 @@ export function AppShell({
   const nav = variant === "seeker" ? seekerNav : hrNav;
   const { state } = useStore();
   const { t } = useI18n();
-  const signOut = useLogout();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const unread = state.notifications.filter((n) => !n.read).length;
 
@@ -127,9 +125,6 @@ export function AppShell({
               </Link>
             ))}
           </nav>
-          <Button variant="ghost" className="justify-start gap-2 text-destructive" onClick={signOut}>
-            <LogOut className="h-4 w-4" /> {t("Log out")}
-          </Button>
         </aside>
 
         {/* Main */}
