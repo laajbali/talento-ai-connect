@@ -458,11 +458,30 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
+    if (lang !== "ar") {
+      // Restore any text/attributes a previous Arabic pass replaced.
+      const originals = originalsRef.current;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let n = walker.nextNode();
+      while (n) {
+        const original = originals.get(n);
+        if (original !== undefined && n.textContent !== original) n.textContent = original;
+        n = walker.nextNode();
+      }
+      for (const element of document.body.querySelectorAll("[data-i18n-placeholder],[data-i18n-aria-label],[data-i18n-title]")) {
+        for (const attr of ["placeholder", "aria-label", "title"] as const) {
+          const original = element.getAttribute(`data-i18n-${attr}`);
+          if (original !== null && element.getAttribute(attr) !== original) element.setAttribute(attr, original);
+        }
+      }
+      return;
+    }
     const originals = originalsRef.current;
-    let translating = false;
+    let frame = 0;
+    let disposed = false;
+    const pending = new Set<ParentNode>();
 
     const translateElement = (root: ParentNode) => {
-      translating = true;
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       let node = walker.nextNode();
       while (node) {
@@ -474,12 +493,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
           const leading = original.match(/^\s*/)?.[0] ?? "";
           const trailing = original.match(/\s*$/)?.[0] ?? "";
           const core = original.trim();
-          node.textContent = core ? `${leading}${lang === "ar" ? translateArabic(core) : core}${trailing}` : original;
+          const next = core ? `${leading}${translateArabic(core)}${trailing}` : original;
+          if (next !== current) node.textContent = next;
         }
         node = walker.nextNode();
       }
 
-      const elements = root instanceof Element ? [root, ...root.querySelectorAll("*")] : [...root.querySelectorAll("*")];
+      const elements =
+        root instanceof Element ? [root, ...root.querySelectorAll("*")] : [...root.querySelectorAll("*")];
       for (const element of elements) {
         if (element.closest("[data-no-translate]")) continue;
         for (const attr of ["placeholder", "aria-label", "title"] as const) {
@@ -487,31 +508,52 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
           if (!value) continue;
           const key = `data-i18n-${attr}`;
           const original = element.getAttribute(key) ?? value;
-          element.setAttribute(key, original);
-          element.setAttribute(attr, lang === "ar" ? translateArabic(original) : original);
+          const next = translateArabic(original);
+          if (element.getAttribute(key) !== original) element.setAttribute(key, original);
+          if (value !== next) element.setAttribute(attr, next);
         }
       }
-      translating = false;
     };
 
-    translateElement(document.body);
     const observer = new MutationObserver((changes) => {
-      if (translating) return;
       for (const change of changes) {
         if (change.type === "characterData") {
-          originals.delete(change.target);
           const parent = change.target.parentElement;
-          if (parent) translateElement(parent);
+          if (parent) pending.add(parent);
         } else {
           change.addedNodes.forEach((node) => {
-            if (node instanceof Element) translateElement(node);
-            else if (node.parentElement) translateElement(node.parentElement);
+            if (node instanceof Element) pending.add(node);
+            else if (node.parentElement) pending.add(node.parentElement);
           });
         }
       }
+      if (pending.size && !frame) {
+        frame = requestAnimationFrame(flush);
+      }
     });
+
+    function flush() {
+      frame = 0;
+      if (disposed) return;
+      const roots = [...pending];
+      pending.clear();
+      observer.disconnect();
+      for (const root of roots) {
+        if (root instanceof Element && !root.isConnected) continue;
+        translateElement(root);
+      }
+      // Drop the mutations we just caused so they don't re-trigger a pass.
+      observer.takeRecords();
+      observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    }
+
+    translateElement(document.body);
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-    return () => observer.disconnect();
+    return () => {
+      disposed = true;
+      if (frame) cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, [lang]);
 
   const setLang = useCallback((l: Lang) => {
