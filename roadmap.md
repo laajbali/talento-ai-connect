@@ -18,3 +18,7 @@
 - [x] Crop the supplied logo to its visible artwork bounds
 - [x] Unify seeker and HR card presentation
 - [x] Eliminate Candidates mobile overflow and verify at iPhone width
+- [ ] Reduce the global authenticated logo display size
+- [ ] Unify and compact all shared job and candidate cards
+- [ ] Standardize card actions, Save controls, and AI explanations
+- [ ] Re-verify Candidates at iPhone width and authenticated screens at desktop width
