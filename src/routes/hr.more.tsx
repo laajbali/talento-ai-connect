@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Bell,
   Building2,
@@ -103,7 +103,11 @@ function Item({
   hint?: string;
 }) {
   return (
-    <Link to={to} hash={hash} className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/60">
+    <Link
+      to={to}
+      {...(hash ? { hash } : {})}
+      className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/60"
+    >
       <span className="text-muted-foreground">{icon}</span>
       <span className="flex-1">{label}</span>
       {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
