@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { generateText } from "ai";
+import { streamText } from "ai";
 import { z } from "zod";
 
 function parseJson<T>(text: string, fallback: T): T {
@@ -24,10 +24,11 @@ function parseJson<T>(text: string, fallback: T): T {
 
 async function ask(system: string, prompt: string) {
   const { getModel } = await import("./ai-gateway.server");
-  const result = await generateText({
+  const result = streamText({
     model: getModel(),
     system,
     prompt,
+    maxRetries: 0,
     providerOptions: { lovable: { reasoningEffort: "low" } },
   });
   return result.text;

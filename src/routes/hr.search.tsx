@@ -188,6 +188,12 @@ function AiSearch() {
                   <div className="mt-2">
                     <SkillChips skills={candidate.skills.slice(0, 6)} />
                   </div>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {match.matching.length
+                      ? `Matches on ${match.matching.join(", ")}.`
+                      : "Limited overlap with required skills."}
+                    {match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No required skills are missing."}
+                  </p>
                   <Button asChild size="sm" variant="outline" className="mt-3 w-full">
                     <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
                       View profile
