@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Briefcase, FileText, Sparkles, TrendingUp } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { AiBadge, MatchRing, StatTile } from "@/components/brand";
-import { JobCard, ScorePill } from "@/components/match";
+import { JobCard } from "@/components/match";
 import { Button } from "@/components/ui/button";
 import { JOBS, jobById } from "@/lib/data";
 import { careerReadiness, computeMatch, rankJobs, toProfile } from "@/lib/matching";
@@ -99,25 +99,18 @@ function SeekerHome() {
       {recent.length > 0 && (
         <section className="mt-6">
           <h2 className="mb-3 text-lg font-bold">Recently Viewed</h2>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2">
             {recent.map((job) => {
               if (!job) return null;
               const match = computeMatch(toProfile(state.seeker), job);
               return (
-                <Link
+                <JobCard
                   key={job.id}
-                  to="/app/jobs/$jobId"
-                  params={{ jobId: job.id }}
-                  className="surface flex items-center justify-between gap-3 p-3"
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold">{job.title}</span>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {job.company} · {job.location}
-                    </span>
-                  </span>
-                  <ScorePill score={match.score} />
-                </Link>
+                  job={job}
+                  match={match}
+                  saved={state.savedJobs.includes(job.id)}
+                  onSave={() => toggleSave(job.id)}
+                />
               );
             })}
           </div>
