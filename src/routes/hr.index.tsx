@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Briefcase, CalendarCheck, Star, Users } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { AiBadge, StatTile } from "@/components/brand";
-import { ScorePill } from "@/components/match";
+import { CandidateCard } from "@/components/match";
 import { statusClass } from "./app.applications";
 import { Button } from "@/components/ui/button";
 import { CANDIDATES } from "@/lib/data";
@@ -70,27 +70,19 @@ function HrHome() {
             See all
           </Link>
         </div>
-        <div className="surface divide-y divide-border">
+        <div className="grid gap-3 lg:grid-cols-2">
           {CANDIDATES.slice(0, 5).map((c) => (
-            <Link
+            <CandidateCard
               key={c.id}
-              to="/hr/candidates/$candidateId"
-              params={{ candidateId: c.id }}
-              className="flex items-center gap-3 px-4 py-3 hover:bg-muted/60"
-            >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
-                {c.initials}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium" data-no-translate>{c.name}</span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {c.title} · {c.university}
-                </span>
-              </span>
-              <span className={statusClass(state.candidateStages[c.id] ?? "Applied")}>
-                {state.candidateStages[c.id] ?? "Applied"}
-              </span>
-            </Link>
+              candidate={c}
+              status={<span className={statusClass(state.candidateStages[c.id] ?? "Applied")}>{state.candidateStages[c.id] ?? "Applied"}</span>}
+              explanation={`${c.university} · ${c.location}`}
+              actions={
+                <Button asChild size="sm" variant="outline" className="w-full">
+                  <Link to="/hr/candidates/$candidateId" params={{ candidateId: c.id }}>View profile</Link>
+                </Button>
+              }
+            />
           ))}
         </div>
       </section>
@@ -101,29 +93,18 @@ function HrHome() {
         </h2>
         <div className="grid gap-3 lg:grid-cols-3">
           {recommended.map(({ candidate, match }) => (
-            <article key={candidate.id} className="surface p-4">
-              <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
-                  {candidate.initials}
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate font-semibold" data-no-translate>{candidate.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">{candidate.title}</p>
-                </div>
-              </div>
-              <div className="mt-3">
-                <ScorePill score={match.score} />
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Matches on {match.matching.slice(0, 3).join(", ") || "few required skills"}.
-                {match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No gaps."}
-              </p>
-              <Button asChild size="sm" variant="outline" className="mt-3 w-full">
-                <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
-                  View profile
-                </Link>
-              </Button>
-            </article>
+            <CandidateCard
+              key={candidate.id}
+              candidate={candidate}
+              match={match}
+              jobTitle={topJob.title}
+              explanation={`Matches on ${match.matching.slice(0, 3).join(", ") || "few required skills"}.${match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No gaps."}`}
+              actions={
+                <Button asChild size="sm" variant="outline" className="w-full">
+                  <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>View profile</Link>
+                </Button>
+              }
+            />
           ))}
         </div>
       </section>

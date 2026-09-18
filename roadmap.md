@@ -14,7 +14,7 @@
 - [x] Add real role-aware AI Assistant for both roles
 - [x] Ensure every visible match score has supporting explanation
 - [x] Verify mobile, tablet, desktop, role guards, links, and AI behavior
-- [ ] Standardize the authenticated header and move detail-page back navigation into content
-- [ ] Crop the supplied logo to its visible artwork bounds
-- [ ] Unify seeker and HR card presentation
+- [x] Standardize the authenticated header and move detail-page back navigation into content
+- [x] Crop the supplied logo to its visible artwork bounds
+- [x] Unify seeker and HR card presentation
 - [ ] Eliminate Candidates mobile overflow and verify at iPhone width
