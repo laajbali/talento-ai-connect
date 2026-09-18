@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { Bookmark, BookmarkCheck, MapPin } from "lucide-react";
+import type { ReactNode } from "react";
 import { AiBadge } from "./brand";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { MatchResult } from "@/lib/matching";
-import type { Job } from "@/lib/types";
+import type { Candidate, Job } from "@/lib/types";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -69,7 +70,7 @@ export function JobCard({
 }) {
   const { t } = useI18n();
   return (
-    <article className="surface p-4">
+    <article className="surface flex h-full min-w-0 flex-col p-4">
       <div className="flex items-start gap-3">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-sm font-bold text-accent-foreground">
           {job.companyLogo}
@@ -82,18 +83,20 @@ export function JobCard({
                 {job.company} · {job.type}
               </p>
             </div>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               onClick={onSave}
               aria-label={t(saved ? "Remove from saved jobs" : "Save job")}
-              className="shrink-0 text-muted-foreground transition-colors hover:text-primary"
+              className="-me-2 -mt-2 shrink-0 text-muted-foreground hover:text-primary"
             >
               {saved ? (
                 <BookmarkCheck className="h-5 w-5 text-primary" />
               ) : (
                 <Bookmark className="h-5 w-5" />
               )}
-            </button>
+            </Button>
           </div>
           <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="h-3 w-3" /> {job.location} · {job.posted}
@@ -107,7 +110,7 @@ export function JobCard({
         {job.salary && <span className="text-xs text-muted-foreground">{job.salary}</span>}
       </div>
 
-      <div className="mt-3 space-y-2 rounded-xl bg-muted/60 p-3">
+      <div className="mt-3 flex-1 space-y-2 rounded-xl bg-muted/60 p-3">
         <p className="flex items-center gap-2 text-xs font-semibold">
           <AiBadge /> {t("Why this matches you")}
         </p>
@@ -131,6 +134,82 @@ export function JobCard({
           {t(saved ? "Saved" : "Save")}
         </Button>
       </div>
+    </article>
+  );
+}
+
+export function CandidateCard({
+  candidate,
+  match,
+  jobTitle,
+  saved,
+  onSave,
+  status,
+  showEducation = false,
+  showSkills = false,
+  explanation,
+  actions,
+}: {
+  candidate: Candidate;
+  match?: MatchResult;
+  jobTitle?: string;
+  saved?: boolean;
+  onSave?: () => void;
+  status?: ReactNode;
+  showEducation?: boolean;
+  showSkills?: boolean;
+  explanation?: string;
+  actions?: ReactNode;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <article className="surface flex h-full min-w-0 flex-col p-4">
+      <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-sm font-bold text-accent-foreground">
+          {candidate.initials}
+        </span>
+        <div className="min-w-0">
+          <h3 className="truncate font-semibold" data-no-translate>{candidate.name}</h3>
+          <p className="break-words text-xs text-muted-foreground">{candidate.title}</p>
+          {showEducation && (
+            <>
+              <p className="break-words text-xs text-muted-foreground">
+                {candidate.degree} in {candidate.major} · {candidate.university}
+              </p>
+              <p className="break-words text-xs text-muted-foreground">
+                GPA {candidate.gpa} · {candidate.years} yrs · {candidate.location}
+              </p>
+            </>
+          )}
+        </div>
+        {onSave ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={onSave}
+            aria-label={t(saved ? "Remove saved candidate" : "Save candidate")}
+            className="-me-2 -mt-2 shrink-0 text-muted-foreground hover:text-primary"
+          >
+            {saved ? <BookmarkCheck className="text-primary" /> : <Bookmark />}
+          </Button>
+        ) : status ? <div className="shrink-0">{status}</div> : <span />}
+      </div>
+
+      {(match || jobTitle) && (
+        <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
+          {match && <ScorePill score={match.score} />}
+          {jobTitle && <span className="min-w-0 break-words text-xs text-muted-foreground">vs {jobTitle}</span>}
+        </div>
+      )}
+      {showSkills && <div className="mt-2"><SkillChips skills={candidate.skills.slice(0, 6)} /></div>}
+      {explanation && (
+        <div className="mt-3 flex-1 rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground">
+          {explanation}
+        </div>
+      )}
+      {actions && <div className="mt-3">{actions}</div>}
     </article>
   );
 }

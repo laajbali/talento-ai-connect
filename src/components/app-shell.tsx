@@ -78,10 +78,43 @@ export function BackButton({ className }: { className?: string }) {
   );
 }
 
+function GlobalHeader({ variant, initials, unread }: {
+  variant: "seeker" | "employer";
+  initials: string;
+  unread: number;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
+      <Logo className="shrink-0" />
+      <div className="flex shrink-0 items-center gap-1">
+        <Button asChild variant="ghost" size="icon" aria-label={t("Notifications")}>
+          <Link to={variant === "seeker" ? "/app/notifications" : "/hr/notifications"}>
+            <span className="relative">
+              <Bell className="h-5 w-5" />
+              {unread > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-destructive" />
+              )}
+            </span>
+          </Link>
+        </Button>
+        <Button asChild variant="ghost" size="icon" aria-label={t("Profile")}>
+          <Link to={variant === "seeker" ? "/app/profile" : "/hr/company"}>
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground" data-no-translate>
+              {initials}
+            </span>
+          </Link>
+        </Button>
+      </div>
+    </header>
+  );
+}
+
 export function AppShell({
   children,
   variant,
-  title,
+  title: _title,
 }: {
   children: ReactNode;
   variant: "seeker" | "employer";
@@ -126,34 +159,12 @@ export function AppShell({
 
         {/* Main */}
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur sm:flex sm:justify-between">
-            <div className="flex min-w-0 items-center gap-3">
-              <Logo />
-              {!isPrimary && <BackButton />}
-              <p className="truncate text-sm font-semibold">{title ? t(title) : "Talento"}</p>
-            </div>
-            <div className="flex shrink-0 items-center gap-1">
-              <Button asChild variant="ghost" size="icon" aria-label={t("Notifications")}>
-                <Link to={variant === "seeker" ? "/app/notifications" : "/hr/notifications"}>
-                  <span className="relative">
-                    <Bell className="h-5 w-5" />
-                    {unread > 0 && (
-                      <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-destructive" />
-                    )}
-                  </span>
-                </Link>
-              </Button>
-              <Button asChild variant="ghost" size="icon" aria-label={t("Profile")}>
-                <Link to={variant === "seeker" ? "/app/profile" : "/hr/company"}>
-                  <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground" data-no-translate>
-                    {initials}
-                  </span>
-                </Link>
-              </Button>
-            </div>
-          </header>
+          <GlobalHeader variant={variant} initials={initials} unread={unread} />
 
-          <main className="flex-1 px-4 pb-28 pt-4 sm:px-6 lg:pb-10">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-clip px-4 pb-28 pt-4 sm:px-6 lg:pb-10">
+            {!isPrimary && <BackButton className="mb-3" />}
+            {children}
+          </main>
         </div>
       </div>
 
@@ -191,7 +202,7 @@ export function PageHeader({
 }) {
   const { t } = useI18n();
   return (
-    <div className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:flex sm:justify-between">
+    <div className="mb-4 grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div className="min-w-0">
         <h1 className="truncate text-xl font-bold sm:text-2xl">{t(title)}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted-foreground">{t(subtitle)}</p>}

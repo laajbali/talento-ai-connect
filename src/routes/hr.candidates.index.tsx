@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bookmark, BookmarkCheck, SearchX } from "lucide-react";
+import { SearchX } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
-import { ScorePill, SkillChips } from "@/components/match";
+import { CandidateCard } from "@/components/match";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -73,13 +73,13 @@ function Candidates() {
         title="Candidates"
         subtitle={`${results.length} candidates matched against ${job.title}`}
         action={
-          <Button asChild size="sm" variant="outline">
+          <Button asChild size="sm" variant="outline" className="w-full sm:w-auto">
             <Link to="/hr/search">AI search</Link>
           </Button>
         }
       />
 
-      <div className="surface mb-4 space-y-3 p-4">
+      <div className="surface mb-4 min-w-0 space-y-3 p-4">
         <Select value={jobId} onValueChange={setJobId}>
           <SelectTrigger aria-label="Match against job">
             <SelectValue />
@@ -98,7 +98,7 @@ function Candidates() {
           placeholder="Search by name, skill, major or university"
           aria-label="Search candidates"
         />
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid min-w-0 gap-2 sm:grid-cols-2">
           <Select value={availability} onValueChange={setAvailability}>
             <SelectTrigger aria-label="Availability">
               <SelectValue placeholder="Availability" />
@@ -136,62 +136,28 @@ function Candidates() {
           }
         />
       ) : (
-        <div className="grid gap-3 lg:grid-cols-2">
+        <div className="grid min-w-0 gap-3 lg:grid-cols-2">
           {results.map(({ candidate, match }) => {
             const saved = state.savedCandidates.includes(candidate.id);
             return (
-              <article key={candidate.id} className="surface p-4">
-                <div className="flex items-start gap-3">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-sm font-bold text-accent-foreground">
-                    {candidate.initials}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <h3 className="truncate font-semibold">{candidate.name}</h3>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {candidate.degree} in {candidate.major} · {candidate.university}
-                        </p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          GPA {candidate.gpa} · {candidate.years} yrs · {candidate.location}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        aria-label={saved ? "Remove saved candidate" : "Save candidate"}
-                        onClick={() => toggleSave(candidate.id)}
-                      >
-                        {saved ? (
-                          <BookmarkCheck className="h-5 w-5 text-primary" />
-                        ) : (
-                          <Bookmark className="h-5 w-5 text-muted-foreground" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-3 flex items-center gap-2">
-                  <ScorePill score={match.score} />
-                  <span className="text-xs text-muted-foreground">
-                    vs {job.title}
-                  </span>
-                </div>
-                <div className="mt-2">
-                  <SkillChips skills={candidate.skills.slice(0, 6)} />
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {match.matching.length
-                    ? `Matches on ${match.matching.join(", ")}.`
-                    : "Limited overlap with required skills."}
-                  {match.missing.length ? ` Missing ${match.missing.join(", ")}.` : ""}
-                </p>
-                <Button asChild size="sm" className="mt-3 w-full">
-                  <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
-                    View profile
-                  </Link>
-                </Button>
-              </article>
+              <CandidateCard
+                key={candidate.id}
+                candidate={candidate}
+                match={match}
+                jobTitle={job.title}
+                saved={saved}
+                onSave={() => toggleSave(candidate.id)}
+                showEducation
+                showSkills
+                explanation={`${match.matching.length ? `Matches on ${match.matching.join(", ")}.` : "Limited overlap with required skills."}${match.missing.length ? ` Missing ${match.missing.join(", ")}.` : ""}`}
+                actions={
+                  <Button asChild size="sm" className="w-full">
+                    <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
+                      View profile
+                    </Link>
+                  </Button>
+                }
+              />
             );
           })}
         </div>

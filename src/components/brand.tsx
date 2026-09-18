@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
-import talentoLogo from "@/assets/talento-logo.jpeg.asset.json";
+import talentoLogo from "@/assets/talento-logo-transparent.png.asset.json";
 
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (
     <img
       src={talentoLogo.url}
       alt="Talento"
-      className={cn(compact ? "h-8 w-9 object-contain" : "h-10 w-28 object-contain", className)}
+      className={cn(compact ? "h-7 w-auto object-contain" : "h-8 w-auto object-contain", className)}
     />
   );
 }
