@@ -122,6 +122,7 @@ export function AppShell({
 }) {
   const nav = variant === "seeker" ? seekerNav : hrNav;
   const { state } = useStore();
+  const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const unread = state.notifications.filter((n) => !n.read).length;
 
