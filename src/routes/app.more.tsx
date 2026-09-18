@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Bell,
   BookMarked,
@@ -7,7 +7,6 @@ import {
   FileText,
   Globe,
   HelpCircle,
-  LifeBuoy,
   LogOut,
   Moon,
   Route as RouteIcon,
@@ -19,6 +18,7 @@ import {
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
+import { useLogout } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import { useTheme } from "@/lib/theme";
 
@@ -35,10 +35,10 @@ export const Route = createFileRoute("/app/more")({
 });
 
 function More() {
-  const { state, reset } = useStore();
+  const { state } = useStore();
   const { t, lang } = useI18n();
   const { theme } = useTheme();
-  const navigate = useNavigate();
+  const logout = useLogout();
 
   return (
     <AppShell variant="seeker" title="More">
@@ -59,6 +59,10 @@ function More() {
         <Item to="/app/analysis" icon={<Sparkles className="h-4 w-4" />} label={t("Career analysis")} />
         <Item to="/app/gap" icon={<Sparkles className="h-4 w-4" />} label={t("Career gap analysis")} />
         <Item to="/app/path" icon={<RouteIcon className="h-4 w-4" />} label={t("Career path")} />
+      </Group>
+
+      <Group title={t("AI tools / assistance")}>
+        <Item to="/app/assistant" icon={<Sparkles className="h-4 w-4" />} label={t("AI Assistant")} />
       </Group>
 
       <Group title={t("Preferences")}>
@@ -85,17 +89,13 @@ function More() {
 
       <Group title={t("Support")}>
         <ItemSetting section="help" icon={<HelpCircle className="h-4 w-4" />} label={t("Help center")} />
-        <ItemSetting section="contact" icon={<LifeBuoy className="h-4 w-4" />} label={t("Contact us")} />
         <ItemSetting section="terms" icon={<Shield className="h-4 w-4" />} label={t("Terms of service")} />
       </Group>
 
       <Button
         variant="ghost"
         className="mt-4 w-full justify-start gap-2 text-destructive"
-        onClick={() => {
-          reset();
-          navigate({ to: "/" });
-        }}
+        onClick={logout}
       >
         <LogOut className="h-4 w-4" /> Log out
       </Button>
@@ -120,7 +120,7 @@ function Item({
   label,
   hint,
 }: {
-  to: "/app/profile" | "/app/cv" | "/app/applications" | "/app/saved" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications";
+  to: "/app/profile" | "/app/cv" | "/app/applications" | "/app/saved" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications" | "/app/assistant";
   icon: React.ReactNode;
   label: string;
   hint?: string;

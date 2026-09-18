@@ -4,22 +4,17 @@ import {
   ArrowRight,
   Bell,
   Briefcase,
-  Building2,
   FileText,
   Home,
   LayoutGrid,
-  LogOut,
-  Moon,
-  Search,
-  Sun,
   Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Logo } from "./brand";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
+import { initialsFromName } from "@/lib/session";
 import { useStore } from "@/lib/store";
-import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -53,7 +48,18 @@ export function BackButton({ className }: { className?: string }) {
     if (typeof window !== "undefined" && window.history.length > 1) {
       router.history.back();
     } else {
-      navigate({ to: pathname.startsWith("/hr") ? "/hr" : "/app" });
+      const fallback = pathname.startsWith("/hr/candidates") || pathname === "/hr/search" || pathname === "/hr/screening"
+        ? "/hr/candidates"
+        : pathname.startsWith("/hr/jobs")
+          ? "/hr/jobs"
+          : pathname.startsWith("/hr")
+            ? "/hr/more"
+            : pathname.startsWith("/app/jobs")
+              ? "/app/jobs"
+              : pathname.startsWith("/app")
+                ? "/app/more"
+                : "/";
+      navigate({ to: fallback });
     }
   };
 
@@ -82,24 +88,17 @@ export function AppShell({
   title?: string;
 }) {
   const nav = variant === "seeker" ? seekerNav : hrNav;
-  const { state, reset } = useStore();
-  const { t, lang, setLang } = useI18n();
-  const { theme, toggle } = useTheme();
-  const navigate = useNavigate();
+  const { state } = useStore();
+  const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const unread = state.notifications.filter((n) => !n.read).length;
 
   const isActive = (item: NavItem) =>
     item.exact ? pathname === item.to : pathname.startsWith(item.to);
 
-  const isRoot = pathname === "/app" || pathname === "/hr";
-
-  const signOut = () => {
-    reset();
-    navigate({ to: "/" });
-  };
-
-  const displayName = variant === "seeker" ? state.seeker.fullName : state.company.name;
+  const isPrimary = nav.some((item) => item.to === pathname);
+  const displayName = state.session?.name || (variant === "seeker" ? state.seeker.fullName : state.company.team[0]?.name) || state.company.name;
+  const initials = initialsFromName(displayName);
 
   return (
     <div className="min-h-screen bg-muted/40">
@@ -125,35 +124,14 @@ export function AppShell({
                 {t(item.label)}
               </Link>
             ))}
-            <div className="mt-4 border-t border-border pt-4">
-              {variant === "seeker" ? (
-                <>
-                  <SideLink to="/app/analysis" label={t("Career Analysis")} />
-                  <SideLink to="/app/gap" label={t("Career Gap Analysis")} />
-                  <SideLink to="/app/path" label={t("Career Path")} />
-                  <SideLink to="/app/applications" label={t("My Applications")} />
-                  <SideLink to="/app/saved" label={t("Saved Jobs")} />
-                </>
-              ) : (
-                <>
-                  <SideLink to="/hr/search" label={t("AI Candidate Search")} />
-                  <SideLink to="/hr/screening" label={t("AI CV Screening")} />
-                  <SideLink to="/hr/saved" label={t("Saved Candidates")} />
-                  <SideLink to="/hr/company" label={t("Company Profile")} />
-                </>
-              )}
-            </div>
           </nav>
-          <Button variant="ghost" className="justify-start gap-2 text-destructive" onClick={signOut}>
-            <LogOut className="h-4 w-4" /> {t("Log out")}
-          </Button>
         </aside>
 
         {/* Main */}
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur sm:flex sm:justify-between">
             <div className="flex min-w-0 items-center gap-2">
-              {isRoot ? (
+              {isPrimary ? (
                 <div className="lg:hidden">
                   <Logo compact />
                 </div>
@@ -166,30 +144,6 @@ export function AppShell({
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="px-2 text-xs font-semibold"
-                onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-                aria-label={t("Language")}
-              >
-                {lang === "ar" ? "EN" : "ع"}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggle}
-                aria-label={theme === "dark" ? t("Light mode") : t("Dark mode")}
-              >
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </Button>
-              {variant === "employer" && (
-                <Button asChild variant="ghost" size="icon" aria-label={t("AI Candidate Search")}>
-                  <Link to="/hr/search">
-                    <Search className="h-5 w-5" />
-                  </Link>
-                </Button>
-              )}
               <Button asChild variant="ghost" size="icon" aria-label={t("Notifications")}>
                 <Link to={variant === "seeker" ? "/app/notifications" : "/hr/notifications"}>
                   <span className="relative">
@@ -202,17 +156,9 @@ export function AppShell({
               </Button>
               <Button asChild variant="ghost" size="icon" aria-label={t("Profile")}>
                 <Link to={variant === "seeker" ? "/app/profile" : "/hr/company"}>
-                  {variant === "seeker" ? (
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
-                      {state.seeker.fullName
-                        .split(" ")
-                        .map((w) => w[0])
-                        .slice(0, 2)
-                        .join("")}
-                    </span>
-                  ) : (
-                    <Building2 className="h-5 w-5" />
-                  )}
+                  <span className="grid h-7 w-7 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground" data-no-translate>
+                    {initials}
+                  </span>
                 </Link>
               </Button>
             </div>
@@ -242,18 +188,6 @@ export function AppShell({
         </ul>
       </nav>
     </div>
-  );
-}
-
-function SideLink({ to, label }: { to: string; label: string }) {
-  return (
-    <Link
-      to={to}
-      className="block rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
-      activeProps={{ className: "text-sidebar-accent-foreground font-medium" }}
-    >
-      {label}
-    </Link>
   );
 }
 

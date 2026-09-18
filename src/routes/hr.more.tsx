@@ -1,18 +1,15 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Bell,
-  Bookmark,
   Building2,
   ChevronRight,
-  FileSearch,
   Globe,
   HelpCircle,
-  LifeBuoy,
   LogOut,
   Moon,
   Sun,
-  Search,
   Shield,
+  Sparkles,
   Users,
 } from "lucide-react";
 import { AppShell, PageHeader } from "@/components/app-shell";
@@ -20,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
+import { useLogout } from "@/lib/session";
 
 export const Route = createFileRoute("/hr/more")({
   head: () => ({
@@ -34,8 +32,8 @@ export const Route = createFileRoute("/hr/more")({
 });
 
 function HrMore() {
-  const { state, reset } = useStore();
-  const navigate = useNavigate();
+  const { state } = useStore();
+  const logout = useLogout();
   const { t, lang } = useI18n();
   const { theme } = useTheme();
 
@@ -43,39 +41,36 @@ function HrMore() {
     <AppShell variant="employer" title="More">
       <PageHeader title="More" subtitle={state.company.name} />
 
-      <Group title="Hiring tools">
-        <Item to="/hr/search" icon={<Search className="h-4 w-4" />} label="AI candidate search" />
-        <Item to="/hr/screening" icon={<FileSearch className="h-4 w-4" />} label="AI CV screening" />
-        <Item to="/hr/candidates" icon={<Users className="h-4 w-4" />} label="All candidates" />
-        <Item to="/hr/saved" icon={<Bookmark className="h-4 w-4" />} label="Saved candidates" />
+      <Group title={t("Company")}>
+        <Item to="/hr/company" icon={<Building2 className="h-4 w-4" />} label={t("Company Profile")} />
+        <Item to="/hr/company" hash="team" icon={<Users className="h-4 w-4" />} label={t("Team")} />
       </Group>
 
-      <Group title="Company">
-        <Item to="/hr/company" icon={<Building2 className="h-4 w-4" />} label="Company profile & team" />
+      <Group title={t("Preferences")}>
         <Item
           to="/hr/notifications"
           icon={<Bell className="h-4 w-4" />}
-          label="Notifications"
-          hint={`${state.notifications.filter((n) => !n.read).length} unread`}
+          label={t("Notifications")}
+          hint={`${state.notifications.filter((n) => !n.read).length} ${t("unread")}`}
         />
-      </Group>
-
-      <Group title="Preferences & support">
         <Setting section="language" icon={<Globe className="h-4 w-4" />} label={t("Language")} hint={lang === "ar" ? "العربية" : "English"} />
         <Setting section="appearance" icon={theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />} label={t("Appearance")} hint={t(theme === "dark" ? "Dark" : "Light")} />
-        <Setting section="privacy" icon={<Shield className="h-4 w-4" />} label="Privacy" />
-        <Setting section="terms" icon={<Shield className="h-4 w-4" />} label="Terms of service" />
-        <Setting section="help" icon={<HelpCircle className="h-4 w-4" />} label="Help center" />
-        <Setting section="contact" icon={<LifeBuoy className="h-4 w-4" />} label="Contact us" />
+        <Setting section="privacy" icon={<Shield className="h-4 w-4" />} label={t("Privacy")} />
+      </Group>
+
+      <Group title={t("Support")}>
+        <Setting section="help" icon={<HelpCircle className="h-4 w-4" />} label={t("Help center")} />
+        <Setting section="terms" icon={<Shield className="h-4 w-4" />} label={t("Terms of service")} />
+      </Group>
+
+      <Group title={t("AI tools / assistance")}>
+        <Item to="/hr/assistant" icon={<Sparkles className="h-4 w-4" />} label={t("AI Assistant")} />
       </Group>
 
       <Button
         variant="ghost"
         className="mt-4 w-full justify-start gap-2 text-destructive"
-        onClick={() => {
-          reset();
-          navigate({ to: "/" });
-        }}
+        onClick={logout}
       >
         <LogOut className="h-4 w-4" /> Log out
       </Button>
@@ -96,17 +91,23 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 
 function Item({
   to,
+  hash,
   icon,
   label,
   hint,
 }: {
-  to: "/hr/search" | "/hr/screening" | "/hr/candidates" | "/hr/saved" | "/hr/company" | "/hr/notifications";
+  to: "/hr/company" | "/hr/notifications" | "/hr/assistant";
+  hash?: string;
   icon: React.ReactNode;
   label: string;
   hint?: string;
 }) {
   return (
-    <Link to={to} className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/60">
+    <Link
+      to={to}
+      {...(hash ? { hash } : {})}
+      className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/60"
+    >
       <span className="text-muted-foreground">{icon}</span>
       <span className="flex-1">{label}</span>
       {hint && <span className="text-xs text-muted-foreground">{hint}</span>}

@@ -68,7 +68,7 @@ function Company() {
           />
         </div>
 
-        <div>
+        <div id="team" className="scroll-mt-24">
           <p className="mb-2 text-sm font-semibold">Hiring team</p>
           <div className="space-y-2">
             {form.team.map((t) => (

@@ -16,6 +16,7 @@ import { Route as HrRouteImport } from './routes/hr'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAnalysisRouteImport } from './routes/app.analysis'
 import { Route as AppApplicationsRouteImport } from './routes/app.applications'
+import { Route as AppAssistantRouteImport } from './routes/app.assistant'
 import { Route as AppCvRouteImport } from './routes/app.cv'
 import { Route as AppCvBuilderRouteImport } from './routes/app.cv-builder'
 import { Route as AppGapRouteImport } from './routes/app.gap'
@@ -30,6 +31,7 @@ import { Route as AuthSetupRouteImport } from './routes/auth.setup'
 import { Route as AuthSignupRouteImport } from './routes/auth.signup'
 import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
 import { Route as HrIndexRouteImport } from './routes/hr.index'
+import { Route as HrAssistantRouteImport } from './routes/hr.assistant'
 import { Route as HrCompanyRouteImport } from './routes/hr.company'
 import { Route as HrMoreRouteImport } from './routes/hr.more'
 import { Route as HrNotificationsRouteImport } from './routes/hr.notifications'
@@ -79,6 +81,11 @@ const AppAnalysisRoute = AppAnalysisRouteImport.update({
 const AppApplicationsRoute = AppApplicationsRouteImport.update({
   id: '/applications',
   path: '/applications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAssistantRoute = AppAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCvRoute = AppCvRouteImport.update({
@@ -149,6 +156,11 @@ const AuthVerifyRoute = AuthVerifyRouteImport.update({
 const HrIndexRoute = HrIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => HrRoute,
+} as any)
+const HrAssistantRoute = HrAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
   getParentRoute: () => HrRoute,
 } as any)
 const HrCompanyRoute = HrCompanyRouteImport.update({
@@ -234,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/hr': typeof HrRouteWithChildren
   '/app/analysis': typeof AppAnalysisRoute
   '/app/applications': typeof AppApplicationsRoute
+  '/app/assistant': typeof AppAssistantRoute
   '/app/cv': typeof AppCvRoute
   '/app/cv-builder': typeof AppCvBuilderRoute
   '/app/gap': typeof AppGapRoute
@@ -246,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/hr/assistant': typeof HrAssistantRoute
   '/hr/company': typeof HrCompanyRoute
   '/hr/more': typeof HrMoreRoute
   '/hr/notifications': typeof HrNotificationsRoute
@@ -269,6 +283,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app/analysis': typeof AppAnalysisRoute
   '/app/applications': typeof AppApplicationsRoute
+  '/app/assistant': typeof AppAssistantRoute
   '/app/cv': typeof AppCvRoute
   '/app/cv-builder': typeof AppCvBuilderRoute
   '/app/gap': typeof AppGapRoute
@@ -281,6 +296,7 @@ export interface FileRoutesByTo {
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/hr/assistant': typeof HrAssistantRoute
   '/hr/company': typeof HrCompanyRoute
   '/hr/more': typeof HrMoreRoute
   '/hr/notifications': typeof HrNotificationsRoute
@@ -308,6 +324,7 @@ export interface FileRoutesById {
   '/hr': typeof HrRouteWithChildren
   '/app/analysis': typeof AppAnalysisRoute
   '/app/applications': typeof AppApplicationsRoute
+  '/app/assistant': typeof AppAssistantRoute
   '/app/cv': typeof AppCvRoute
   '/app/cv-builder': typeof AppCvBuilderRoute
   '/app/gap': typeof AppGapRoute
@@ -320,6 +337,7 @@ export interface FileRoutesById {
   '/auth/setup': typeof AuthSetupRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
+  '/hr/assistant': typeof HrAssistantRoute
   '/hr/company': typeof HrCompanyRoute
   '/hr/more': typeof HrMoreRoute
   '/hr/notifications': typeof HrNotificationsRoute
@@ -348,6 +366,7 @@ export interface FileRouteTypes {
     | '/hr'
     | '/app/analysis'
     | '/app/applications'
+    | '/app/assistant'
     | '/app/cv'
     | '/app/cv-builder'
     | '/app/gap'
@@ -360,6 +379,7 @@ export interface FileRouteTypes {
     | '/auth/setup'
     | '/auth/signup'
     | '/auth/verify'
+    | '/hr/assistant'
     | '/hr/company'
     | '/hr/more'
     | '/hr/notifications'
@@ -383,6 +403,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app/analysis'
     | '/app/applications'
+    | '/app/assistant'
     | '/app/cv'
     | '/app/cv-builder'
     | '/app/gap'
@@ -395,6 +416,7 @@ export interface FileRouteTypes {
     | '/auth/setup'
     | '/auth/signup'
     | '/auth/verify'
+    | '/hr/assistant'
     | '/hr/company'
     | '/hr/more'
     | '/hr/notifications'
@@ -421,6 +443,7 @@ export interface FileRouteTypes {
     | '/hr'
     | '/app/analysis'
     | '/app/applications'
+    | '/app/assistant'
     | '/app/cv'
     | '/app/cv-builder'
     | '/app/gap'
@@ -433,6 +456,7 @@ export interface FileRouteTypes {
     | '/auth/setup'
     | '/auth/signup'
     | '/auth/verify'
+    | '/hr/assistant'
     | '/hr/company'
     | '/hr/more'
     | '/hr/notifications'
@@ -509,6 +533,13 @@ declare module '@tanstack/react-router' {
       path: '/applications'
       fullPath: '/app/applications'
       preLoaderRoute: typeof AppApplicationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/assistant': {
+      id: '/app/assistant'
+      path: '/assistant'
+      fullPath: '/app/assistant'
+      preLoaderRoute: typeof AppAssistantRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/cv': {
@@ -607,6 +638,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/hr/'
       preLoaderRoute: typeof HrIndexRouteImport
+      parentRoute: typeof HrRoute
+    }
+    '/hr/assistant': {
+      id: '/hr/assistant'
+      path: '/assistant'
+      fullPath: '/hr/assistant'
+      preLoaderRoute: typeof HrAssistantRouteImport
       parentRoute: typeof HrRoute
     }
     '/hr/company': {
@@ -720,6 +758,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppAnalysisRoute: typeof AppAnalysisRoute
   AppApplicationsRoute: typeof AppApplicationsRoute
+  AppAssistantRoute: typeof AppAssistantRoute
   AppCvRoute: typeof AppCvRoute
   AppCvBuilderRoute: typeof AppCvBuilderRoute
   AppGapRoute: typeof AppGapRoute
@@ -737,6 +776,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAnalysisRoute: AppAnalysisRoute,
   AppApplicationsRoute: AppApplicationsRoute,
+  AppAssistantRoute: AppAssistantRoute,
   AppCvRoute: AppCvRoute,
   AppCvBuilderRoute: AppCvBuilderRoute,
   AppGapRoute: AppGapRoute,
@@ -772,6 +812,7 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface HrRouteChildren {
+  HrAssistantRoute: typeof HrAssistantRoute
   HrCompanyRoute: typeof HrCompanyRoute
   HrMoreRoute: typeof HrMoreRoute
   HrNotificationsRoute: typeof HrNotificationsRoute
@@ -788,6 +829,7 @@ interface HrRouteChildren {
 }
 
 const HrRouteChildren: HrRouteChildren = {
+  HrAssistantRoute: HrAssistantRoute,
   HrCompanyRoute: HrCompanyRoute,
   HrMoreRoute: HrMoreRoute,
   HrNotificationsRoute: HrNotificationsRoute,
