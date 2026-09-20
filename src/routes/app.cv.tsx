@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Download, Eye, FileText, Pencil, Upload } from "lucide-react";
+import { Check, Download, Eye, FileText, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
