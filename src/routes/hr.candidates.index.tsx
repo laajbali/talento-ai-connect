@@ -265,6 +265,33 @@ function Candidates() {
               </div>
             </fieldset>
 
+            <fieldset className="mb-5">
+              <legend className="mb-2 text-sm font-semibold">Saved</legend>
+              <div className="space-y-1">
+                {[
+                  { value: false, label: "All candidates" },
+                  { value: true, label: "Saved candidates" },
+                ].map((opt) => (
+                  <label
+                    key={String(opt.value)}
+                    className="flex min-h-11 cursor-pointer items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm hover:bg-muted/60"
+                  >
+                    <span>{opt.label}</span>
+                    <span className="flex items-center">
+                      {draftSavedOnly === opt.value && <Check className="h-4 w-4 text-primary" />}
+                      <input
+                        type="radio"
+                        name="saved"
+                        checked={draftSavedOnly === opt.value}
+                        onChange={() => setDraftSavedOnly(opt.value)}
+                        className="sr-only"
+                      />
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <Button type="button" className="w-full" onClick={applyFilters}>
               Apply filters
             </Button>
