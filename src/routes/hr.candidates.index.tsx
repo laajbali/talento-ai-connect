@@ -41,30 +41,36 @@ function Candidates() {
   const [sort, setSort] = useState("match");
   const [availability, setAvailability] = useState("all");
   const [location, setLocation] = useState("all");
+  const [savedOnly, setSavedOnly] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [draftAvailability, setDraftAvailability] = useState(availability);
   const [draftLocation, setDraftLocation] = useState(location);
+  const [draftSavedOnly, setDraftSavedOnly] = useState(savedOnly);
   const job = state.jobs.find((j) => j.id === jobId)!;
 
-  const activeFilters: { key: "availability" | "location"; label: string }[] = [];
+  const activeFilters: { key: "availability" | "location" | "saved"; label: string }[] = [];
   if (availability !== "all") activeFilters.push({ key: "availability", label: availability });
   if (location !== "all") activeFilters.push({ key: "location", label: location });
+  if (savedOnly) activeFilters.push({ key: "saved", label: "Saved candidates" });
 
   const openFilters = () => {
     setDraftAvailability(availability);
     setDraftLocation(location);
+    setDraftSavedOnly(savedOnly);
     setFiltersOpen(true);
   };
 
   const applyFilters = () => {
     setAvailability(draftAvailability);
     setLocation(draftLocation);
+    setSavedOnly(draftSavedOnly);
     setFiltersOpen(false);
   };
 
-  const removeFilter = (key: "availability" | "location") => {
+  const removeFilter = (key: "availability" | "location" | "saved") => {
     if (key === "availability") setAvailability("all");
-    else setLocation("all");
+    else if (key === "location") setLocation("all");
+    else setSavedOnly(false);
   };
 
   const results = useMemo(() => {
