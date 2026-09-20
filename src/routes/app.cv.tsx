@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Download, Eye, FileText, Pencil, Upload } from "lucide-react";
+import { Check, Download, Eye, FileText, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
@@ -61,13 +61,6 @@ function MyCv() {
       <PageHeader
         title="My CV"
         subtitle="Create, edit and manage your professional CV."
-        action={
-          <Button asChild size="sm">
-            <Link to="/app/cv-builder">
-              <Pencil className="mr-1 h-4 w-4" /> {t("Edit CV")}
-            </Link>
-          </Button>
-        }
       />
 
       <section className="surface grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 p-5">
