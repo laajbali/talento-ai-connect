@@ -30,7 +30,7 @@ async function extractPdf(file: File): Promise<string> {
         .trim(),
     );
   }
-  await doc.destroy();
+  await doc.cleanup();
   return clean(pages.join("\n\n"));
 }
 
