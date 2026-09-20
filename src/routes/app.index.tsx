@@ -2,10 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Briefcase, FileText, Sparkles, TrendingUp } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { AiBadge, MatchRing, StatTile } from "@/components/brand";
-import { JobCard } from "@/components/match";
 import { Button } from "@/components/ui/button";
-import { JOBS, jobById } from "@/lib/data";
-import { careerReadiness, computeMatch, rankJobs, toProfile } from "@/lib/matching";
+import { careerReadiness } from "@/lib/matching";
 import { cvCompletion, profileCompletion, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/app/")({
@@ -24,20 +22,10 @@ export const Route = createFileRoute("/app/")({
 });
 
 function SeekerHome() {
-  const { state, update } = useStore();
+  const { state } = useStore();
   const cvPct = cvCompletion(state.cv);
   const profilePct = profileCompletion(state.seeker);
   const readiness = careerReadiness(state.seeker, cvPct);
-  const ranked = rankJobs(toProfile(state.seeker, state.cv.projects.length), JOBS).slice(0, 3);
-  const recent = state.viewedJobs.map(jobById).filter(Boolean);
-
-  const toggleSave = (id: string) =>
-    update((s) => ({
-      ...s,
-      savedJobs: s.savedJobs.includes(id)
-        ? s.savedJobs.filter((j) => j !== id)
-        : [...s.savedJobs, id],
-    }));
 
   return (
     <AppShell variant="seeker" title="Home">
@@ -95,47 +83,6 @@ function SeekerHome() {
           </Button>
         </div>
       )}
-
-      {recent.length > 0 && (
-        <section className="mt-6">
-          <h2 className="mb-3 text-lg font-bold">Recently Viewed</h2>
-          <div className="grid gap-3 lg:grid-cols-2">
-            {recent.map((job) => {
-              if (!job) return null;
-              const match = computeMatch(toProfile(state.seeker), job);
-              return (
-                <JobCard
-                  key={job.id}
-                  job={job}
-                  match={match}
-                  saved={state.savedJobs.includes(job.id)}
-                  onSave={() => toggleSave(job.id)}
-                />
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      <section className="mt-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Recommended for you</h2>
-          <Link to="/app/jobs" className="text-sm font-semibold text-primary">
-            See all
-          </Link>
-        </div>
-        <div className="grid gap-3 lg:grid-cols-2">
-          {ranked.map(({ job, match }) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              match={match}
-              saved={state.savedJobs.includes(job.id)}
-              onSave={() => toggleSave(job.id)}
-            />
-          ))}
-        </div>
-      </section>
 
       <section className="surface mt-6 p-5">
         <p className="flex items-center gap-2 text-sm font-semibold">
