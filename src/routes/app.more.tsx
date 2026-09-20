@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bell, ChevronRight, HelpCircle, LogOut, Shield, Sparkles, User } from "lucide-react";
+import { Bell, BookMarked, ChevronRight, HelpCircle, LogOut, Shield, Sparkles, User } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
@@ -25,6 +25,7 @@ function More() {
     <AppShell variant="seeker" title="More">
       <Group title={t("Account")}>
         <Item to="/app/profile" icon={<User className="h-4 w-4" />} label={t("Personal information")} />
+        <Item to="/app/saved" icon={<BookMarked className="h-4 w-4" />} label={t("Saved jobs")} />
       </Group>
 
       <Group title={t("Preferences")}>
@@ -70,7 +71,7 @@ function Item({
   label,
   hint,
 }: {
-  to: "/app/profile" | "/app/cv" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications" | "/app/assistant";
+  to: "/app/profile" | "/app/saved" | "/app/cv" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications" | "/app/assistant";
   icon: React.ReactNode;
   label: string;
   hint?: string;
