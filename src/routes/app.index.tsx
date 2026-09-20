@@ -22,17 +22,10 @@ export const Route = createFileRoute("/app/")({
 });
 
 function SeekerHome() {
-  const { state, update } = useStore();
+  const { state } = useStore();
   const cvPct = cvCompletion(state.cv);
   const profilePct = profileCompletion(state.seeker);
   const readiness = careerReadiness(state.seeker, cvPct);
-  const toggleSave = (id: string) =>
-    update((s) => ({
-      ...s,
-      savedJobs: s.savedJobs.includes(id)
-        ? s.savedJobs.filter((j) => j !== id)
-        : [...s.savedJobs, id],
-    }));
 
   return (
     <AppShell variant="seeker" title="Home">
