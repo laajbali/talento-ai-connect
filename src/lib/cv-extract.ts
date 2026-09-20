@@ -143,6 +143,7 @@ export async function extractCvText(
     } else text = await extractPlain(file);
   } catch (error) {
     if (error instanceof CvExtractError) throw error;
+    console.error("CV extraction failed", error);
     throw new CvExtractError(UNREADABLE_MESSAGE);
   }
 
