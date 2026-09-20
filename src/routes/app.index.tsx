@@ -71,7 +71,7 @@ function SeekerHome() {
       </section>
 
       {profilePct < 100 && (
-        <div className="surface mt-4 flex flex-wrap items-center justify-between gap-3 p-4">
+        <div className="surface mt-4 flex flex-wrap items-center justify-between gap-3 p-5">
           <div>
             <p className="text-sm font-semibold">Finish your profile to improve matching</p>
             <p className="text-xs text-muted-foreground">

@@ -101,7 +101,7 @@ function Screening() {
         subtitle="Upload several CVs at once and get structured, searchable profiles."
       />
 
-      <section className="surface p-6 text-center">
+      <section className="surface p-5 text-center">
         <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-accent text-accent-foreground">
           <Upload className="h-5 w-5" />
         </div>
