@@ -4,7 +4,13 @@ import { useState } from "react";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { jobById } from "@/lib/data";
 import { useStore } from "@/lib/store";
 import type { ApplicationStatus } from "@/lib/types";
