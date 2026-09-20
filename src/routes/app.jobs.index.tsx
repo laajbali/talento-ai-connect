@@ -38,29 +38,35 @@ function JobsPage() {
   const [type, setType] = useState("all");
   const [location, setLocation] = useState("all");
   const [sort, setSort] = useState("match");
+  const [savedOnly, setSavedOnly] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [draftType, setDraftType] = useState(type);
   const [draftLocation, setDraftLocation] = useState(location);
+  const [draftSavedOnly, setDraftSavedOnly] = useState(savedOnly);
 
-  const activeFilters: { key: "type" | "location"; label: string }[] = [];
+  const activeFilters: { key: "type" | "location" | "saved"; label: string }[] = [];
   if (type !== "all") activeFilters.push({ key: "type", label: type });
   if (location !== "all") activeFilters.push({ key: "location", label: location });
+  if (savedOnly) activeFilters.push({ key: "saved", label: "Saved jobs" });
 
   const openFilters = () => {
     setDraftType(type);
     setDraftLocation(location);
+    setDraftSavedOnly(savedOnly);
     setFiltersOpen(true);
   };
 
   const applyFilters = () => {
     setType(draftType);
     setLocation(draftLocation);
+    setSavedOnly(draftSavedOnly);
     setFiltersOpen(false);
   };
 
-  const removeFilter = (key: "type" | "location") => {
+  const removeFilter = (key: "type" | "location" | "saved") => {
     if (key === "type") setType("all");
-    else setLocation("all");
+    else if (key === "location") setLocation("all");
+    else setSavedOnly(false);
   };
 
   const results = useMemo(() => {
@@ -76,9 +82,10 @@ function JobsPage() {
     }
     if (type !== "all") list = list.filter(({ job }) => job.type === type);
     if (location !== "all") list = list.filter(({ job }) => job.location.includes(location));
+    if (savedOnly) list = list.filter(({ job }) => state.savedJobs.includes(job.id));
     if (sort === "recent") list = [...list].reverse();
     return list;
-  }, [query, type, location, sort, state.seeker, state.cv.projects.length]);
+  }, [query, type, location, savedOnly, sort, state.seeker, state.cv.projects.length, state.savedJobs]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
@@ -155,13 +162,14 @@ function JobsPage() {
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-muted" />
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold">Filters</h2>
-              {(draftType !== "all" || draftLocation !== "all") && (
+              {(draftType !== "all" || draftLocation !== "all" || draftSavedOnly) && (
                 <button
                   type="button"
                   className="text-sm font-medium text-primary"
                   onClick={() => {
                     setDraftType("all");
                     setDraftLocation("all");
+                    setDraftSavedOnly(false);
                   }}
                 >
                   Clear all
@@ -221,6 +229,33 @@ function JobsPage() {
                         value={opt.value}
                         checked={draftLocation === opt.value}
                         onChange={() => setDraftLocation(opt.value)}
+                        className="sr-only"
+                      />
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="mb-5">
+              <legend className="mb-2 text-sm font-semibold">Saved</legend>
+              <div className="space-y-1">
+                {[
+                  { value: false, label: "All jobs" },
+                  { value: true, label: "Saved jobs" },
+                ].map((opt) => (
+                  <label
+                    key={String(opt.value)}
+                    className="flex min-h-11 cursor-pointer items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm hover:bg-muted/60"
+                  >
+                    <span>{opt.label}</span>
+                    <span className="flex items-center">
+                      {draftSavedOnly === opt.value && <Check className="h-4 w-4 text-primary" />}
+                      <input
+                        type="radio"
+                        name="job-saved"
+                        checked={draftSavedOnly === opt.value}
+                        onChange={() => setDraftSavedOnly(opt.value)}
                         className="sr-only"
                       />
                     </span>
