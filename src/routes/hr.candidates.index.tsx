@@ -292,7 +292,7 @@ function Candidates() {
                 explanation={`${match.matching.length ? `Matches on ${match.matching.join(", ")}.` : "Limited overlap with required skills."}${match.missing.length ? ` Missing ${match.missing.join(", ")}.` : ""}`}
                 actions={
                   <div className="flex items-center justify-between gap-2">
-                    <Button asChild size="sm" className="h-9 px-4 text-xs">
+                    <Button asChild size="sm" className="h-8 min-w-[4.5rem] px-3 text-xs">
                       <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
                         {t("View profile")}
                       </Link>
@@ -301,7 +301,7 @@ function Candidates() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      className="h-9 min-w-16 bg-background px-3 text-xs text-foreground"
+                      className="h-8 min-w-[4.5rem] bg-background px-3 text-xs text-foreground"
                       aria-label={t(saved ? "Remove saved candidate" : "Save candidate")}
                       onClick={() => toggleSave(candidate.id)}
                     >

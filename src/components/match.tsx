@@ -90,7 +90,7 @@ function CardActions({
   return (
     <div className="mt-2.5 flex items-center justify-between gap-2">
       {primary}
-      <Button size="sm" variant="outline" onClick={onSave} className="h-9 min-w-16 bg-background px-3 text-foreground">
+      <Button size="sm" variant="outline" onClick={onSave} className="h-8 min-w-[4.5rem] bg-background px-3 text-xs text-foreground">
         {t(saved ? "Saved" : "Save")}
       </Button>
     </div>
@@ -165,7 +165,7 @@ export function JobCard({
         saved={saved}
         onSave={onSave}
         primary={
-          <Button asChild size="sm" className="h-9 px-4">
+          <Button asChild size="sm" className="h-8 min-w-[4.5rem] px-3 text-xs">
             <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
               {t("View profile")}
             </Link>
