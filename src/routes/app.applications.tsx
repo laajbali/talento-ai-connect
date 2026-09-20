@@ -65,17 +65,21 @@ function Applications() {
         subtitle={`${state.applications.length} applications in total`}
       />
 
-      <Tabs value={filter} onValueChange={setFilter} className="mb-4 min-w-0">
-        <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <TabsList className="flex h-8 w-max flex-nowrap justify-start p-0.5">
+      <Select value={filter} onValueChange={setFilter}>
+        <SelectTrigger
+          aria-label="Filter by status"
+          className="mb-4 h-9 w-auto min-w-36 shrink-0 gap-1 rounded-lg border-border bg-card px-3 text-xs shadow-sm"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
           {filters.map((f) => (
-            <TabsTrigger key={f} value={f} className="h-7 shrink-0 px-3 text-xs">
+            <SelectItem key={f} value={f} className="text-xs">
               {t(f)}
-            </TabsTrigger>
+            </SelectItem>
           ))}
-          </TabsList>
-        </div>
-      </Tabs>
+        </SelectContent>
+      </Select>
 
       {list.length === 0 ? (
         <EmptyState
