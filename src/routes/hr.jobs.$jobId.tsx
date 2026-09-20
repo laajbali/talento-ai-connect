@@ -116,7 +116,7 @@ function JobApplicants() {
       ) : (
         <div className="space-y-3">
           {list.map(({ candidate, match }) => {
-            const stage = state.candidateStages[candidate.id] ?? "Applied";
+            const saved = state.savedCandidates.includes(candidate.id);
             return (
               <article key={candidate.id} className="surface p-4">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
