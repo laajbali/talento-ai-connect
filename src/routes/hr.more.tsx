@@ -1,14 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Bell,
+  Bookmark,
   Building2,
   ChevronRight,
-  FileSearch,
   HelpCircle,
   LogOut,
   Shield,
   Sparkles,
-  Users,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
@@ -37,10 +36,8 @@ function HrMore() {
         <Item to="/hr/company" icon={<Building2 className="h-4 w-4" />} label={t("Company Profile")} />
       </Group>
 
-      <Group title={t("Hiring tools")}>
-        <Item to="/hr/screening" icon={<FileSearch className="h-4 w-4" />} label={t("AI CV Screening")} />
-        <Item to="/hr/candidates" icon={<Users className="h-4 w-4" />} label={t("All Candidates")} />
-        <Item to="/hr/saved" icon={<Users className="h-4 w-4" />} label={t("Saved Candidates")} />
+      <Group title={t("Saved & hiring")}>
+        <Item to="/hr/saved" icon={<Bookmark className="h-4 w-4" />} label={t("Saved Candidates")} />
       </Group>
 
       <Group title={t("Preferences")}>
@@ -86,7 +83,7 @@ function Item({
   label,
   hint,
 }: {
-  to: "/hr/company" | "/hr/notifications" | "/hr/assistant" | "/hr/screening" | "/hr/candidates" | "/hr/saved";
+  to: "/hr/company" | "/hr/notifications" | "/hr/assistant" | "/hr/saved";
   icon: React.ReactNode;
   label: string;
   hint?: string;
