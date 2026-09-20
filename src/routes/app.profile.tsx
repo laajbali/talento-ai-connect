@@ -54,7 +54,7 @@ function Profile() {
 
   return (
     <AppShell variant="seeker" title="Personal information">
-      <div className="[&_h1]:text-[28px] [&_h1]:leading-tight [&_h1]:font-bold [&_p]:text-[16px] [&_p]:leading-normal [&_p]:font-medium sm:[&_h1]:text-2xl sm:[&_p]:text-sm sm:[&_p]:font-normal">
+      <div className="[&_h1]:text-[26px] [&_h1]:leading-tight [&_h1]:font-bold [&_p]:text-[15px] [&_p]:leading-normal [&_p]:font-medium sm:[&_h1]:text-2xl sm:[&_p]:text-sm sm:[&_p]:font-normal">
         <PageHeader title="Personal information" subtitle="This information powers your matching." />
       </div>
 
@@ -63,12 +63,12 @@ function Profile() {
           value={pct}
           label={t("Complete")}
           size={84}
-          valueClassName="text-[26px] leading-none sm:text-[21px]"
-          labelClassName="text-[14px] sm:text-[10px]"
+          valueClassName="text-[20px] leading-none sm:text-[21px]"
+          labelClassName="text-[11px] sm:text-[10px]"
         />
         <div className="min-w-0">
-          <p className="text-[21px] leading-tight font-bold sm:text-base sm:font-semibold" data-no-translate>{form.fullName}</p>
-          <p className="mt-1 text-[16px] leading-normal font-medium text-muted-foreground sm:mt-0 sm:text-sm sm:font-normal">
+          <p className="text-[18px] leading-tight font-bold sm:text-base sm:font-semibold" data-no-translate>{form.fullName}</p>
+          <p className="mt-1 text-[14px] leading-normal font-medium text-muted-foreground sm:mt-0 sm:text-sm sm:font-normal">
             {form.major} · {form.university}
           </p>
         </div>

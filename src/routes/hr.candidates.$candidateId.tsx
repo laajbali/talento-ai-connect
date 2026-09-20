@@ -121,7 +121,7 @@ function CandidateProfile() {
                 {candidate.initials}
               </span>
               <div className="min-w-0">
-                <h1 className="text-xl font-bold">{candidate.name}</h1>
+                <h1 className="text-[18px] font-bold sm:text-xl">{candidate.name}</h1>
                 <p className="text-sm text-muted-foreground">{candidate.title}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {candidate.degree} in {candidate.major} · {candidate.university} · GPA{" "}
@@ -218,7 +218,12 @@ function CandidateProfile() {
 
         <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <div className="surface flex flex-col items-center p-5 text-center">
-            <MatchRing value={match.score} size={110} />
+            <MatchRing
+              value={match.score}
+              size={110}
+              valueClassName="text-[20px] leading-none sm:text-[27.5px]"
+              labelClassName="text-[11px] sm:text-[10px]"
+            />
             <Select value={jobId} onValueChange={setJobId}>
               <SelectTrigger className="mt-3" aria-label="Compare against job">
                 <SelectValue />
