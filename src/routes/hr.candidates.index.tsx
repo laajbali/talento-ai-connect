@@ -41,36 +41,30 @@ function Candidates() {
   const [sort, setSort] = useState("match");
   const [availability, setAvailability] = useState("all");
   const [location, setLocation] = useState("all");
-  const [savedOnly, setSavedOnly] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [draftAvailability, setDraftAvailability] = useState(availability);
   const [draftLocation, setDraftLocation] = useState(location);
-  const [draftSavedOnly, setDraftSavedOnly] = useState(savedOnly);
   const job = state.jobs.find((j) => j.id === jobId)!;
 
-  const activeFilters: { key: "availability" | "location" | "saved"; label: string }[] = [];
+  const activeFilters: { key: "availability" | "location"; label: string }[] = [];
   if (availability !== "all") activeFilters.push({ key: "availability", label: availability });
   if (location !== "all") activeFilters.push({ key: "location", label: location });
-  if (savedOnly) activeFilters.push({ key: "saved", label: "Saved candidates" });
 
   const openFilters = () => {
     setDraftAvailability(availability);
     setDraftLocation(location);
-    setDraftSavedOnly(savedOnly);
     setFiltersOpen(true);
   };
 
   const applyFilters = () => {
     setAvailability(draftAvailability);
     setLocation(draftLocation);
-    setSavedOnly(draftSavedOnly);
     setFiltersOpen(false);
   };
 
-  const removeFilter = (key: "availability" | "location" | "saved") => {
+  const removeFilter = (key: "availability" | "location") => {
     if (key === "availability") setAvailability("all");
-    else if (key === "location") setLocation("all");
-    else setSavedOnly(false);
+    else setLocation("all");
   };
 
   const results = useMemo(() => {
@@ -89,12 +83,10 @@ function Candidates() {
       list = list.filter(({ candidate }) => candidate.availability === availability);
     if (location !== "all")
       list = list.filter(({ candidate }) => candidate.location.includes(location));
-    if (savedOnly)
-      list = list.filter(({ candidate }) => state.savedCandidates.includes(candidate.id));
     if (sort === "recent")
       list = [...list].sort((a, b) => b.candidate.graduationYear - a.candidate.graduationYear);
     return list;
-  }, [job, query, availability, location, sort, savedOnly, state.savedCandidates]);
+  }, [job, query, availability, location, sort]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
@@ -186,14 +178,13 @@ function Candidates() {
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-muted" />
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold">Filters</h2>
-              {(draftAvailability !== "all" || draftLocation !== "all" || draftSavedOnly) && (
+              {(draftAvailability !== "all" || draftLocation !== "all") && (
                 <button
                   type="button"
                   className="text-sm font-medium text-primary"
                   onClick={() => {
                     setDraftAvailability("all");
                     setDraftLocation("all");
-                    setDraftSavedOnly(false);
                   }}
                 >
                   Clear all
@@ -257,33 +248,6 @@ function Candidates() {
                         value={opt.value}
                         checked={draftLocation === opt.value}
                         onChange={() => setDraftLocation(opt.value)}
-                        className="sr-only"
-                      />
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <fieldset className="mb-5">
-              <legend className="mb-2 text-sm font-semibold">Saved</legend>
-              <div className="space-y-1">
-                {[
-                  { value: false, label: "All candidates" },
-                  { value: true, label: "Saved candidates" },
-                ].map((opt) => (
-                  <label
-                    key={String(opt.value)}
-                    className="flex min-h-11 cursor-pointer items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm hover:bg-muted/60"
-                  >
-                    <span>{opt.label}</span>
-                    <span className="flex items-center">
-                      {draftSavedOnly === opt.value && <Check className="h-4 w-4 text-primary" />}
-                      <input
-                        type="radio"
-                        name="saved"
-                        checked={draftSavedOnly === opt.value}
-                        onChange={() => setDraftSavedOnly(opt.value)}
                         className="sr-only"
                       />
                     </span>
