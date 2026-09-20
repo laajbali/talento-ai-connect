@@ -63,7 +63,7 @@ function Profile() {
           value={pct}
           label={t("Complete")}
           size={84}
-          valueClassName="text-[30px] leading-none sm:text-[21px]"
+          valueClassName="text-[26px] leading-none sm:text-[21px]"
           labelClassName="text-[14px] sm:text-[10px]"
         />
         <div className="min-w-0">
