@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { Mail, Star, UserX } from "lucide-react";
+import { Bookmark, Mail, Star, UserX } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
