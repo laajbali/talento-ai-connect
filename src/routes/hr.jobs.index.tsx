@@ -35,17 +35,7 @@ function HrJobs() {
 
   return (
     <AppShell variant="employer" title="Jobs">
-      <PageHeader
-        title="Job management"
-        subtitle={`${state.jobs.length} jobs`}
-        action={
-          <Button asChild size="sm">
-            <Link to="/hr/jobs/new">
-              <Plus className="mr-1 h-4 w-4" /> Post a job
-            </Link>
-          </Button>
-        }
-      />
+      <PageHeader title="Job management" subtitle={`${state.jobs.length} jobs`} />
 
       <Tabs value={tab} onValueChange={(v) => setTab(v as (typeof TABS)[number])} className="mb-4">
         <TabsList className="w-full justify-start overflow-x-auto">

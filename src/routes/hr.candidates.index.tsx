@@ -72,11 +72,6 @@ function Candidates() {
       <PageHeader
         title="Candidates"
         subtitle={`${results.length} candidates matched against ${job.title}`}
-        action={
-          <Button asChild size="sm" variant="outline" className="w-full sm:w-auto">
-            <Link to="/hr/search">AI search</Link>
-          </Button>
-        }
       />
 
       <div className="surface mb-4 w-full min-w-0 max-w-full space-y-3 overflow-hidden p-4">
