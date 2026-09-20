@@ -71,7 +71,7 @@ function Item({
   label,
   hint,
 }: {
-  to: "/app/profile" | "/app/cv" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications" | "/app/assistant";
+  to: "/app/profile" | "/app/saved" | "/app/cv" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications" | "/app/assistant";
   icon: React.ReactNode;
   label: string;
   hint?: string;
