@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Download, Eye, FileText, Pencil, Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { AiBadge, MatchRing } from "@/components/brand";
-import { CvDocument } from "@/components/cv-templates";
+import { CV_DOC_WIDTH, CvDocument } from "@/components/cv-templates";
 import { SkillChips } from "@/components/match";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -12,6 +12,7 @@ import { CV_TEMPLATES } from "@/lib/data";
 import { useI18n } from "@/lib/i18n";
 import { downloadNodeAsPdf } from "@/lib/pdf";
 import { cvCompletion, useStore } from "@/lib/store";
+import type { CvSection } from "@/lib/types";
 
 export const Route = createFileRoute("/app/cv")({
   head: () => ({
@@ -166,7 +167,7 @@ function MyCv() {
 
       <section className="mt-6">
         <h2 className="mb-3 text-lg font-bold">{t("CV templates")}</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3 sm:gap-3">
           {CV_TEMPLATES.map((tpl) => {
             const selected = state.cvTemplate === tpl.id;
             return (
@@ -178,23 +179,19 @@ function MyCv() {
                   set({ cvTemplate: tpl.id });
                   toast.success(`${t(tpl.name)} — ${t("Selected")}`);
                 }}
-                className={`surface p-4 text-start transition-colors ${
+                className={`surface group min-w-0 overflow-hidden p-3 text-start transition-colors sm:p-4 ${
                   selected ? "ring-2 ring-primary" : ""
                 }`}
               >
-                <div className="mb-3 h-40 overflow-hidden rounded-lg border border-border bg-card">
-                  <div className="pointer-events-none origin-top-left" style={{ width: 794 }}>
-                    <CvDocument cv={cv} template={tpl.id} scale={0.28} />
-                  </div>
-                </div>
-                <p className="flex items-center gap-1.5 font-semibold">
+                <CvTemplatePreview cv={cv} template={tpl.id} />
+                <p className="mt-3 flex items-center gap-1.5 font-semibold">
                   {t(tpl.name)}
                   {selected && <Check className="h-4 w-4 text-primary" />}
                 </p>
-                <p className="text-xs text-muted-foreground">{tpl.description}</p>
-                <p className="mt-1 text-xs font-medium text-primary">
+                <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{tpl.description}</p>
+                <span className="mt-3 flex min-h-10 w-full items-center justify-center rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground shadow-sm sm:min-h-9">
                   {selected ? t("Selected") : t("Use this template")}
-                </p>
+                </span>
               </button>
             );
           })}
@@ -222,6 +219,36 @@ function MyCv() {
         <CvDocument ref={docRef} cv={cv} template={state.cvTemplate} forExport />
       </div>
     </AppShell>
+  );
+}
+
+function CvTemplatePreview({ cv, template }: { cv: CvSection; template: string }) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.28);
+
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+
+    const resize = () => {
+      const desktop = window.matchMedia("(min-width: 640px)").matches;
+      setScale(desktop ? 0.28 : frame.clientWidth / CV_DOC_WIDTH);
+    };
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={frameRef}
+      className="aspect-[794/520] w-full overflow-hidden rounded-md border border-border bg-card sm:h-40 sm:aspect-auto"
+    >
+      <div className="pointer-events-none">
+        <CvDocument cv={cv} template={template} scale={scale} />
+      </div>
+    </div>
   );
 }
 
