@@ -34,7 +34,6 @@ function More() {
     <AppShell variant="seeker" title="More">
       <Group title={t("Account")}>
         <Item to="/app/profile" icon={<User className="h-4 w-4" />} label={t("Personal information")} />
-        <Item to="/app/cv" icon={<FileText className="h-4 w-4" />} label={t("My CV")} />
         <Item to="/app/saved" icon={<BookMarked className="h-4 w-4" />} label={t("Saved jobs")} />
       </Group>
 
