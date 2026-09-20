@@ -6,7 +6,6 @@ import {
   FileText,
   HelpCircle,
   LogOut,
-  Route as RouteIcon,
   Shield,
   Sparkles,
   User,
@@ -37,12 +36,6 @@ function More() {
       <Group title={t("Account")}>
         <Item to="/app/profile" icon={<User className="h-4 w-4" />} label={t("Personal information")} />
         <Item to="/app/cv" icon={<FileText className="h-4 w-4" />} label={t("My CV")} />
-      </Group>
-
-      <Group title={t("Career tools")}>
-        <Item to="/app/analysis" icon={<Sparkles className="h-4 w-4" />} label={t("Career analysis")} />
-        <Item to="/app/gap" icon={<Sparkles className="h-4 w-4" />} label={t("Career gap analysis")} />
-        <Item to="/app/path" icon={<RouteIcon className="h-4 w-4" />} label={t("Career path")} />
         <Item to="/app/saved" icon={<BookMarked className="h-4 w-4" />} label={t("Saved jobs")} />
       </Group>
 
