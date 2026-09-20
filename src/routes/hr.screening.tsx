@@ -53,7 +53,7 @@ function Screening() {
     }));
     setRows((r) => [...seeds, ...r]);
 
-    const update = (id: string, patch: Partial<Record<keyof Row, Row[keyof Row]>>) =>
+    const update = (id: string, patch: Partial<Row>) =>
       setRows((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)));
 
     await Promise.all(
