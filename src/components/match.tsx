@@ -246,11 +246,7 @@ export function CandidateCard({
       {explanation && (
         <MatchExplanation heading="Why this candidate matches">{explanation}</MatchExplanation>
       )}
-      {actions && onSave ? (
-        <CardActions primary={actions} saved={Boolean(saved)} onSave={onSave} />
-      ) : actions ? (
-        <div className="mt-2.5 [&>*]:w-full">{actions}</div>
-      ) : null}
+      {actions ? <div className="mt-2.5">{actions}</div> : null}
     </article>
   );
 }

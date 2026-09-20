@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
 import { CandidateCard } from "@/components/match";
@@ -13,9 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CANDIDATES } from "@/lib/data";
+import { useI18n } from "@/lib/i18n";
 import { rankCandidates } from "@/lib/matching";
 import { useStore } from "@/lib/store";
+import type { ApplicationStatus } from "@/lib/types";
 
 export const Route = createFileRoute("/hr/candidates/")({
   head: () => ({
@@ -31,6 +35,16 @@ export const Route = createFileRoute("/hr/candidates/")({
   }),
   component: Candidates,
 });
+
+const STATUS_FILTERS = ["All", "Applied", "Under Review", "Shortlisted", "Interview", "Rejected"];
+const STAGES: ApplicationStatus[] = [
+  "Applied",
+  "Under Review",
+  "Shortlisted",
+  "Interview",
+  "Rejected",
+  "Hired",
+];
 
 function Candidates() {
   const { state, update } = useStore();
