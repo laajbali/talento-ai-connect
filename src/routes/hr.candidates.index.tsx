@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
 import { CandidateCard } from "@/components/match";
@@ -18,7 +17,6 @@ import { CANDIDATES } from "@/lib/data";
 import { useI18n } from "@/lib/i18n";
 import { rankCandidates } from "@/lib/matching";
 import { useStore } from "@/lib/store";
-import type { ApplicationStatus } from "@/lib/types";
 
 export const Route = createFileRoute("/hr/candidates/")({
   head: () => ({
@@ -34,15 +32,6 @@ export const Route = createFileRoute("/hr/candidates/")({
   }),
   component: Candidates,
 });
-
-const STAGES: ApplicationStatus[] = [
-  "Applied",
-  "Under Review",
-  "Shortlisted",
-  "Interview",
-  "Rejected",
-  "Hired",
-];
 
 function Candidates() {
   const { t } = useI18n();
@@ -97,7 +86,7 @@ function Candidates() {
     if (sort === "recent")
       list = [...list].sort((a, b) => b.candidate.graduationYear - a.candidate.graduationYear);
     return list;
-  }, [job, query, availability, location, sort, state.candidateStages]);
+  }, [job, query, availability, location, sort]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
@@ -290,7 +279,6 @@ function Candidates() {
         <div className="grid w-full min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">
           {results.map(({ candidate, match }) => {
             const saved = state.savedCandidates.includes(candidate.id);
-            const stage = state.candidateStages[candidate.id] ?? "Applied";
             return (
               <CandidateCard
                 key={candidate.id}
@@ -303,39 +291,22 @@ function Candidates() {
                 showSkills
                 explanation={`${match.matching.length ? `Matches on ${match.matching.join(", ")}.` : "Limited overlap with required skills."}${match.missing.length ? ` Missing ${match.missing.join(", ")}.` : ""}`}
                 actions={
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button asChild size="sm" className="h-8 px-2 text-xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <Button asChild size="sm" className="h-9 px-4 text-xs">
                       <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
                         {t("View profile")}
                       </Link>
                     </Button>
-                    <Select
-                      value={stage}
-                      onValueChange={(v) => {
-                        update((s) => ({
-                          ...s,
-                          candidateStages: {
-                            ...s.candidateStages,
-                            [candidate.id]: v as ApplicationStatus,
-                          },
-                        }));
-                        toast.success(`${candidate.name} moved to ${v}.`);
-                      }}
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="h-9 min-w-16 bg-background px-3 text-xs text-foreground"
+                      aria-label={t(saved ? "Remove saved candidate" : "Save candidate")}
+                      onClick={() => toggleSave(candidate.id)}
                     >
-                      <SelectTrigger
-                        aria-label={`Status for ${candidate.name}`}
-                        className="h-8 w-full gap-1 bg-background px-2 text-xs"
-                      >
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STAGES.map((s) => (
-                          <SelectItem key={s} value={s} className="text-xs">
-                            {t(s)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      {t(saved ? "Saved" : "Save")}
+                    </Button>
                   </div>
                 }
               />
