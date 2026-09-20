@@ -1,12 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Briefcase, CalendarCheck, Star, Users } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { AiBadge, StatTile } from "@/components/brand";
-import { CandidateCard } from "@/components/match";
-import { statusClass } from "./app.applications";
+import { StatTile } from "@/components/brand";
 import { Button } from "@/components/ui/button";
-import { CANDIDATES } from "@/lib/data";
-import { rankCandidates } from "@/lib/matching";
 import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/hr/")({
@@ -25,7 +21,6 @@ export const Route = createFileRoute("/hr/")({
 });
 
 function HrHome() {
-  const { state, update } = useStore();
   const jobs = state.jobs;
   const active = jobs.filter((j) => j.status === "Active");
   const totals = jobs.reduce(
@@ -36,15 +31,6 @@ function HrHome() {
     }),
     { applicants: 0, shortlisted: 0, interviews: 0 },
   );
-  const topJob = active[0] ?? jobs[0]!;
-  const recommended = rankCandidates(topJob, CANDIDATES).slice(0, 3);
-  const toggleSave = (id: string) =>
-    update((s) => ({
-      ...s,
-      savedCandidates: s.savedCandidates.includes(id)
-        ? s.savedCandidates.filter((candidateId) => candidateId !== id)
-        : [...s.savedCandidates, id],
-    }));
 
   return (
     <AppShell variant="employer" title="Hiring dashboard">
@@ -68,56 +54,6 @@ function HrHome() {
         <StatTile value={totals.applicants} label="Total applicants" icon={<Users className="h-4 w-4" />} />
         <StatTile value={totals.shortlisted} label="Shortlisted" icon={<Star className="h-4 w-4" />} />
         <StatTile value={totals.interviews} label="Interviews" icon={<CalendarCheck className="h-4 w-4" />} />
-      </section>
-
-      <section className="mt-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Recent applications</h2>
-          <Link to="/hr/candidates" className="text-sm font-semibold text-primary">
-            See all
-          </Link>
-        </div>
-        <div className="grid gap-3 lg:grid-cols-2">
-          {CANDIDATES.slice(0, 5).map((c) => (
-            <CandidateCard
-              key={c.id}
-              candidate={c}
-              saved={state.savedCandidates.includes(c.id)}
-              onSave={() => toggleSave(c.id)}
-              status={<span className={statusClass(state.candidateStages[c.id] ?? "Applied")}>{state.candidateStages[c.id] ?? "Applied"}</span>}
-              explanation={`${c.university} · ${c.location}`}
-              actions={
-                <Button asChild size="sm" variant="outline" className="w-full">
-                  <Link to="/hr/candidates/$candidateId" params={{ candidateId: c.id }}>View profile</Link>
-                </Button>
-              }
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-6">
-        <h2 className="mb-3 flex items-center gap-2 text-lg font-bold">
-          Recommended for {topJob.title} <AiBadge />
-        </h2>
-        <div className="grid gap-3 lg:grid-cols-3">
-          {recommended.map(({ candidate, match }) => (
-            <CandidateCard
-              key={candidate.id}
-              candidate={candidate}
-              match={match}
-              jobTitle={topJob.title}
-              saved={state.savedCandidates.includes(candidate.id)}
-              onSave={() => toggleSave(candidate.id)}
-              explanation={`Matches on ${match.matching.slice(0, 3).join(", ") || "few required skills"}.${match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No gaps."}`}
-              actions={
-                <Button asChild size="sm" variant="outline" className="w-full">
-                  <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>View profile</Link>
-                </Button>
-              }
-            />
-          ))}
-        </div>
       </section>
 
       <section className="surface mt-6 p-5">
