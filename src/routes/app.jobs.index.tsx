@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SearchX } from "lucide-react";
+import { Check, SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
 import { JobCard } from "@/components/match";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -37,6 +38,30 @@ function JobsPage() {
   const [type, setType] = useState("all");
   const [location, setLocation] = useState("all");
   const [sort, setSort] = useState("match");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [draftType, setDraftType] = useState(type);
+  const [draftLocation, setDraftLocation] = useState(location);
+
+  const activeFilters: { key: "type" | "location"; label: string }[] = [];
+  if (type !== "all") activeFilters.push({ key: "type", label: type });
+  if (location !== "all") activeFilters.push({ key: "location", label: location });
+
+  const openFilters = () => {
+    setDraftType(type);
+    setDraftLocation(location);
+    setFiltersOpen(true);
+  };
+
+  const applyFilters = () => {
+    setType(draftType);
+    setLocation(draftLocation);
+    setFiltersOpen(false);
+  };
+
+  const removeFilter = (key: "type" | "location") => {
+    if (key === "type") setType("all");
+    else setLocation("all");
+  };
 
   const results = useMemo(() => {
     let list = rankJobs(toProfile(state.seeker, state.cv.projects.length), JOBS);
@@ -67,46 +92,147 @@ function JobsPage() {
     <AppShell variant="seeker" title="Find Jobs">
       <PageHeader title="Find jobs" subtitle={`${results.length} jobs found for your profile`} />
 
-      <div className="surface mb-4 space-y-3 p-4">
+      <div className="surface mb-3 space-y-3 p-4">
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by job title, skill or company"
           aria-label="Search jobs"
         />
-        <div className="grid gap-2 sm:grid-cols-3">
-          <Select value={type} onValueChange={setType}>
-            <SelectTrigger aria-label="Employment type">
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All types</SelectItem>
-              <SelectItem value="Full-time">Full-time</SelectItem>
-              <SelectItem value="Internship">Internship</SelectItem>
-              <SelectItem value="Remote">Remote</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={location} onValueChange={setLocation}>
-            <SelectTrigger aria-label="Location">
-              <SelectValue placeholder="Location" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All locations</SelectItem>
-              <SelectItem value="Riyadh">Riyadh</SelectItem>
-              <SelectItem value="Dhahran">Dhahran</SelectItem>
-              <SelectItem value="Remote">Remote</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger aria-label="Sort">
-              <SelectValue placeholder="Sort" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="match">Best match</SelectItem>
-              <SelectItem value="recent">Most recent</SelectItem>
-            </SelectContent>
-          </Select>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full justify-start"
+          onClick={openFilters}
+          aria-label="Filters"
+        >
+          <SlidersHorizontal className="h-4 w-4" />
+          Filters{activeFilters.length > 0 ? ` (${activeFilters.length})` : ""}
+        </Button>
+        {activeFilters.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {activeFilters.map((f) => (
+              <button
+                key={f.key}
+                type="button"
+                onClick={() => removeFilter(f.key)}
+                className="inline-flex h-7 items-center gap-1 rounded-full border border-border bg-card px-2.5 text-xs font-medium text-foreground shadow-sm"
+                aria-label={`Remove filter ${f.label}`}
+              >
+                {f.label}
+                <X className="h-3 w-3" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {filtersOpen && (
+        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Filters">
+          <button
+            type="button"
+            aria-label="Close filters"
+            className="absolute inset-0 bg-foreground/40"
+            onClick={() => setFiltersOpen(false)}
+          />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-2xl border border-border bg-background p-4 shadow-xl sm:mx-auto sm:max-w-md">
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-muted" />
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold">Filters</h2>
+              {(draftType !== "all" || draftLocation !== "all") && (
+                <button
+                  type="button"
+                  className="text-sm font-medium text-primary"
+                  onClick={() => {
+                    setDraftType("all");
+                    setDraftLocation("all");
+                  }}
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+
+            <fieldset className="mb-4">
+              <legend className="mb-2 text-sm font-semibold">Job type</legend>
+              <div className="space-y-1">
+                {[
+                  { value: "all", label: "All types" },
+                  { value: "Full-time", label: "Full-time" },
+                  { value: "Internship", label: "Internship" },
+                  { value: "Remote", label: "Remote" },
+                ].map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex min-h-11 cursor-pointer items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm hover:bg-muted/60"
+                  >
+                    <span>{opt.label}</span>
+                    <span className="flex items-center">
+                      {draftType === opt.value && <Check className="h-4 w-4 text-primary" />}
+                      <input
+                        type="radio"
+                        name="job-type"
+                        value={opt.value}
+                        checked={draftType === opt.value}
+                        onChange={() => setDraftType(opt.value)}
+                        className="sr-only"
+                      />
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="mb-5">
+              <legend className="mb-2 text-sm font-semibold">Location</legend>
+              <div className="space-y-1">
+                {[
+                  { value: "all", label: "All locations" },
+                  { value: "Riyadh", label: "Riyadh" },
+                  { value: "Dhahran", label: "Dhahran" },
+                  { value: "Remote", label: "Remote" },
+                ].map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex min-h-11 cursor-pointer items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm hover:bg-muted/60"
+                  >
+                    <span>{opt.label}</span>
+                    <span className="flex items-center">
+                      {draftLocation === opt.value && <Check className="h-4 w-4 text-primary" />}
+                      <input
+                        type="radio"
+                        name="job-location"
+                        value={opt.value}
+                        checked={draftLocation === opt.value}
+                        onChange={() => setDraftLocation(opt.value)}
+                        className="sr-only"
+                      />
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <Button type="button" className="w-full" onClick={applyFilters}>
+              Apply filters
+            </Button>
+          </div>
         </div>
+      )}
+
+      <div className="mb-3 flex justify-end">
+        <Select value={sort} onValueChange={setSort}>
+          <SelectTrigger
+            aria-label="Sort"
+            className="h-9 w-auto gap-1 rounded-lg border-border bg-card px-3 text-xs shadow-sm"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="match">Best match</SelectItem>
+            <SelectItem value="recent">Most recent</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {results.length === 0 ? (
