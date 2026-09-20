@@ -47,10 +47,12 @@ const STAGES: ApplicationStatus[] = [
 ];
 
 function Candidates() {
+  const { t } = useI18n();
   const { state, update } = useStore();
   const [jobId, setJobId] = useState(state.jobs[0]!.id);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("match");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [availability, setAvailability] = useState("all");
   const [location, setLocation] = useState("all");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -95,10 +97,14 @@ function Candidates() {
       list = list.filter(({ candidate }) => candidate.availability === availability);
     if (location !== "all")
       list = list.filter(({ candidate }) => candidate.location.includes(location));
+    if (statusFilter !== "All")
+      list = list.filter(
+        ({ candidate }) => (state.candidateStages[candidate.id] ?? "Applied") === statusFilter,
+      );
     if (sort === "recent")
       list = [...list].sort((a, b) => b.candidate.graduationYear - a.candidate.graduationYear);
     return list;
-  }, [job, query, availability, location, sort]);
+  }, [job, query, availability, location, sort, statusFilter, state.candidateStages]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
