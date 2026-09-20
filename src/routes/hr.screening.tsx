@@ -77,7 +77,6 @@ function Screening() {
         }
       }),
     );
-    }
   };
 
   const visible = rows.filter((r) => {
