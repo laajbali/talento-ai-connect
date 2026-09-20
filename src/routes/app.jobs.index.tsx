@@ -38,29 +38,35 @@ function JobsPage() {
   const [type, setType] = useState("all");
   const [location, setLocation] = useState("all");
   const [sort, setSort] = useState("match");
+  const [savedOnly, setSavedOnly] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [draftType, setDraftType] = useState(type);
   const [draftLocation, setDraftLocation] = useState(location);
+  const [draftSavedOnly, setDraftSavedOnly] = useState(savedOnly);
 
-  const activeFilters: { key: "type" | "location"; label: string }[] = [];
+  const activeFilters: { key: "type" | "location" | "saved"; label: string }[] = [];
   if (type !== "all") activeFilters.push({ key: "type", label: type });
   if (location !== "all") activeFilters.push({ key: "location", label: location });
+  if (savedOnly) activeFilters.push({ key: "saved", label: "Saved jobs" });
 
   const openFilters = () => {
     setDraftType(type);
     setDraftLocation(location);
+    setDraftSavedOnly(savedOnly);
     setFiltersOpen(true);
   };
 
   const applyFilters = () => {
     setType(draftType);
     setLocation(draftLocation);
+    setSavedOnly(draftSavedOnly);
     setFiltersOpen(false);
   };
 
-  const removeFilter = (key: "type" | "location") => {
+  const removeFilter = (key: "type" | "location" | "saved") => {
     if (key === "type") setType("all");
-    else setLocation("all");
+    else if (key === "location") setLocation("all");
+    else setSavedOnly(false);
   };
 
   const results = useMemo(() => {
@@ -76,9 +82,10 @@ function JobsPage() {
     }
     if (type !== "all") list = list.filter(({ job }) => job.type === type);
     if (location !== "all") list = list.filter(({ job }) => job.location.includes(location));
+    if (savedOnly) list = list.filter(({ job }) => state.savedJobs.includes(job.id));
     if (sort === "recent") list = [...list].reverse();
     return list;
-  }, [query, type, location, sort, state.seeker, state.cv.projects.length]);
+  }, [query, type, location, savedOnly, sort, state.seeker, state.cv.projects.length, state.savedJobs]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
