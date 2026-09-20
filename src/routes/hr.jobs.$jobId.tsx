@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { BriefcaseBusiness, Users } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
 import { ScorePill, SkillChips } from "@/components/match";
@@ -30,15 +29,6 @@ export const Route = createFileRoute("/hr/jobs/$jobId")({
   }),
   component: JobApplicants,
 });
-
-const STAGES: ApplicationStatus[] = [
-  "Applied",
-  "Under Review",
-  "Shortlisted",
-  "Interview",
-  "Rejected",
-  "Hired",
-];
 
 const FILTERS: (ApplicationStatus | "All")[] = [
   "All",
@@ -72,6 +62,14 @@ function JobApplicants() {
       </AppShell>
     );
   }
+
+  const toggleSave = (id: string) =>
+    update((s) => ({
+      ...s,
+      savedCandidates: s.savedCandidates.includes(id)
+        ? s.savedCandidates.filter((c) => c !== id)
+        : [...s.savedCandidates, id],
+    }));
 
   const ranked = rankCandidates(job, CANDIDATES);
   const list = ranked.filter(
@@ -118,7 +116,7 @@ function JobApplicants() {
       ) : (
         <div className="space-y-3">
           {list.map(({ candidate, match }) => {
-            const stage = state.candidateStages[candidate.id] ?? "Applied";
+            const saved = state.savedCandidates.includes(candidate.id);
             return (
               <article key={candidate.id} className="surface p-4">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
@@ -143,35 +141,20 @@ function JobApplicants() {
                   {match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No gaps."}
                 </p>
 
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <Select
-                    value={stage}
-                    onValueChange={(v) => {
-                      update((s) => ({
-                        ...s,
-                        candidateStages: {
-                          ...s.candidateStages,
-                          [candidate.id]: v as ApplicationStatus,
-                        },
-                      }));
-                      toast.success(`${candidate.name} moved to ${v}.`);
-                    }}
-                  >
-                    <SelectTrigger className="w-[170px]" aria-label={`Stage for ${candidate.name}`}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {STAGES.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button asChild size="sm" variant="outline">
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <Button asChild size="sm" className="h-8 px-3 text-xs">
                     <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
-                      View profile
+                      {t("View profile")}
                     </Link>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 min-w-16 bg-background px-3 text-xs text-foreground"
+                    aria-label={t(saved ? "Remove saved candidate" : "Save candidate")}
+                    onClick={() => toggleSave(candidate.id)}
+                  >
+                    {t(saved ? "Saved" : "Save")}
                   </Button>
                 </div>
               </article>
