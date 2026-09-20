@@ -3,7 +3,6 @@ import {
   Bell,
   BookMarked,
   ChevronRight,
-  FileText,
   HelpCircle,
   LogOut,
   Shield,
