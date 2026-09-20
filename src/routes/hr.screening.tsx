@@ -87,7 +87,7 @@ function Screening() {
     const d = r.data;
     return (
       r.fileName.toLowerCase().includes(q) ||
-      d?.name?.toLowerCase().includes(q) ||
+      d?.candidateName?.toLowerCase().includes(q) ||
       d?.university?.toLowerCase().includes(q) ||
       d?.major?.toLowerCase().includes(q) ||
       d?.skills?.some((s) => s.toLowerCase().includes(q))
@@ -151,8 +151,10 @@ function Screening() {
           <article key={r.id} className="surface p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="truncate font-semibold">{r.data?.name ?? r.fileName}</p>
-                <p className="truncate text-xs text-muted-foreground">{r.fileName}</p>
+                <p className="truncate font-semibold">{r.data?.candidateName || r.fileName}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {r.data?.role ? `${r.data.role} · ${r.fileName}` : r.fileName}
+                </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <span
@@ -178,23 +180,35 @@ function Screening() {
 
             {r.status === "processing" && (
               <div className="mt-3 space-y-2">
+                <p className="text-xs text-muted-foreground">{r.step || "Processing…"}</p>
                 <div className="h-3 animate-pulse rounded bg-muted" />
                 <div className="h-3 w-2/3 animate-pulse rounded bg-muted" />
               </div>
             )}
 
             {r.status === "error" && (
-              <p className="mt-2 text-sm text-muted-foreground">
-                This file could not be read as text. Export it as a text-based PDF or TXT and try
-                again.
+              <p className="mt-2 text-sm text-destructive">
+                {r.error ||
+                  "This file could not be read as text. Export it as a text-based PDF or TXT and try again."}
               </p>
             )}
 
             {r.status === "done" && r.data && (
               <div className="mt-3 space-y-2 text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                    {r.data.matchPercentage}% match
+                  </span>
+                  {r.data.role && (
+                    <span className="truncate text-xs text-muted-foreground">{r.data.role}</span>
+                  )}
+                </div>
                 <p className="text-muted-foreground">{r.data.summary}</p>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <Row2 label="Education" value={`${r.data.degree ?? "—"} in ${r.data.major ?? "—"}`} />
+                  <Row2
+                    label="Education"
+                    value={r.data.education || [r.data.degree, r.data.major].filter(Boolean).join(" in ")}
+                  />
                   <Row2 label="University" value={r.data.university} />
                   <Row2 label="GPA" value={r.data.gpa} />
                   <Row2 label="Graduation" value={r.data.graduationYear?.toString()} />
@@ -223,12 +237,46 @@ function Screening() {
                     ))}
                   </div>
                 )}
+                <Bullets label="Strengths" items={r.data.strengths} />
+                <Bullets label="Missing skills" items={r.data.skillGaps} />
+                <Bullets label="Relevant experience" items={r.data.relevantExperience} />
+                <Bullets label="Potential concerns" items={r.data.concerns} />
+                {r.data.explanation && (
+                  <div className="rounded-lg bg-muted/60 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                      Why this candidate matches
+                    </p>
+                    <p className="text-sm">{r.data.explanation}</p>
+                  </div>
+                )}
+                {r.data.recommendation && (
+                  <div className="rounded-lg bg-muted/60 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                      Recommendation
+                    </p>
+                    <p className="text-sm">{r.data.recommendation}</p>
+                  </div>
+                )}
               </div>
             )}
           </article>
         ))}
       </section>
     </AppShell>
+  );
+}
+
+function Bullets({ label, items }: { label: string; items?: string[] }) {
+  if (!items?.length) return null;
+  return (
+    <div>
+      <p className="text-xs font-semibold">{label}</p>
+      <ul className="mt-1 list-disc space-y-0.5 ps-4 text-xs text-muted-foreground">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
