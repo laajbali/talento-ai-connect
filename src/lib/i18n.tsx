@@ -19,6 +19,8 @@ const ar: Record<string, string> = {
   Home: "الرئيسية",
   Jobs: "الوظائف",
   "My CV": "سيرتي الذاتية",
+  "CV": "السيرة الذاتية",
+  "Application": "الطلب",
   More: "المزيد",
   Candidates: "المرشحون",
   "Career Analysis": "تحليل المسار المهني",

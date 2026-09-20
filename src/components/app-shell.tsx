@@ -27,7 +27,8 @@ interface NavItem {
 const seekerNav: NavItem[] = [
   { to: "/app", label: "Home", icon: <Home className="h-5 w-5" />, exact: true },
   { to: "/app/jobs", label: "Jobs", icon: <Briefcase className="h-5 w-5" /> },
-  { to: "/app/cv", label: "My CV", icon: <FileText className="h-5 w-5" /> },
+  { to: "/app/applications", label: "Application", icon: <Briefcase className="h-5 w-5" /> },
+  { to: "/app/cv", label: "CV", icon: <FileText className="h-5 w-5" /> },
   { to: "/app/more", label: "More", icon: <LayoutGrid className="h-5 w-5" /> },
 ];
 
@@ -170,7 +171,7 @@ export function AppShell({
 
       {/* Mobile bottom navigation */}
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur lg:hidden">
-        <ul className="mx-auto grid max-w-md grid-cols-4">
+        <ul className={cn("mx-auto grid max-w-md", variant === "seeker" ? "grid-cols-5" : "grid-cols-4")}>
           {nav.map((item) => (
             <li key={item.to}>
               <Link
