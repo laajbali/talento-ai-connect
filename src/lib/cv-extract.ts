@@ -91,7 +91,7 @@ async function extractPdf(file: File, onProgress?: CvExtractProgress): Promise<s
     }
   } finally {
     if (ocrWorker) await ocrWorker.terminate();
-    await doc.destroy();
+    await doc.cleanup();
   }
 
   return clean(pages.join("\n\n"));
