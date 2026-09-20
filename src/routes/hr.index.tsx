@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Briefcase, CalendarCheck, Star, Users } from "lucide-react";
+import { Briefcase, CalendarCheck, ChevronRight, ScanText, Star, Users } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { StatTile } from "@/components/brand";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,22 @@ function HrHome() {
           </Button>
         </div>
       </section>
+
+      <Link
+        to="/hr/screening"
+        className="surface mt-4 flex items-center gap-3 p-4 transition-colors hover:bg-muted/60"
+      >
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
+          <ScanText className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-semibold">AI CV Screening</span>
+          <span className="block truncate text-xs text-muted-foreground">
+            Screen and match candidates faster with AI
+          </span>
+        </span>
+        <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
+      </Link>
 
       <section className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile value={active.length} label="Active jobs" icon={<Briefcase className="h-4 w-4" />} />
