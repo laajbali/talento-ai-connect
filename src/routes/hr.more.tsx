@@ -35,6 +35,12 @@ function HrMore() {
         <Item to="/hr/company" icon={<Building2 className="h-4 w-4" />} label={t("Company Profile")} />
       </Group>
 
+      <Group title={t("Hiring tools")}>
+        <Item to="/hr/screening" icon={<ScanText className="h-4 w-4" />} label={t("AI CV Screening")} />
+        <Item to="/hr/saved" icon={<Bookmark className="h-4 w-4" />} label={t("Saved candidates")} />
+      </Group>
+
+
 
       <Group title={t("Preferences")}>
         <Item
