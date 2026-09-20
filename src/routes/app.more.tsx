@@ -6,7 +6,6 @@ import {
   FileText,
   HelpCircle,
   LogOut,
-  Route as RouteIcon,
   Shield,
   Sparkles,
   User,
