@@ -46,7 +46,7 @@ function Notifications() {
           body="We'll let you know when something happens with your applications."
         />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {state.notifications.map((n) => (
             <button
               key={n.id}
@@ -59,7 +59,7 @@ function Notifications() {
                   ),
                 }))
               }
-              className={`surface w-full p-5 text-left ${n.read ? "" : "border-primary/40"}`}
+              className={`surface w-full p-4 text-left ${n.read ? "" : "border-primary/40"}`}
             >
               <div className="flex items-center justify-between gap-2">
                 <p className="font-semibold">{n.title}</p>

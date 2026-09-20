@@ -121,7 +121,7 @@ function Landing() {
         </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
-          <div className="surface p-5">
+          <div className="surface p-6">
             <Users className="h-6 w-6 text-primary" />
             <h3 className="mt-3 text-lg font-bold">For job seekers</h3>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -129,7 +129,7 @@ function Landing() {
               career path.
             </p>
           </div>
-          <div className="surface p-5">
+          <div className="surface p-6">
             <Building2 className="h-6 w-6 text-primary" />
             <h3 className="mt-3 text-lg font-bold">For employers & HR</h3>
             <p className="mt-1 text-sm text-muted-foreground">
