@@ -54,13 +54,21 @@ function Profile() {
 
   return (
     <AppShell variant="seeker" title="Personal information">
-      <PageHeader title="Personal information" subtitle="This information powers your matching." />
+      <div className="[&_h1]:text-[28px] [&_h1]:leading-tight [&_h1]:font-bold [&_p]:text-[16px] [&_p]:leading-normal [&_p]:font-medium sm:[&_h1]:text-2xl sm:[&_p]:text-sm sm:[&_p]:font-normal">
+        <PageHeader title="Personal information" subtitle="This information powers your matching." />
+      </div>
 
       <div className="surface mb-4 flex items-center gap-4 p-5">
-        <MatchRing value={pct} label={t("Complete")} size={84} />
-        <div>
-          <p className="font-semibold" data-no-translate>{form.fullName}</p>
-          <p className="text-sm text-muted-foreground">
+        <MatchRing
+          value={pct}
+          label={t("Complete")}
+          size={84}
+          valueClassName="text-[26px] leading-none sm:text-[21px]"
+          labelClassName="text-[14px] sm:text-[10px]"
+        />
+        <div className="min-w-0">
+          <p className="text-[21px] leading-tight font-bold sm:text-base sm:font-semibold" data-no-translate>{form.fullName}</p>
+          <p className="mt-1 text-[16px] leading-normal font-medium text-muted-foreground sm:mt-0 sm:text-sm sm:font-normal">
             {form.major} · {form.university}
           </p>
         </div>
@@ -103,7 +111,7 @@ function Profile() {
         </div>
 
         <div>
-          <Label className="mb-2 block">{t("Skills")}</Label>
+          <Label className="mb-2 block text-[15px] font-semibold sm:text-sm sm:font-medium">{t("Skills")}</Label>
           <div className="flex flex-wrap gap-1.5">
             {SKILL_LIBRARY.map((s) => (
               <button
@@ -117,7 +125,7 @@ function Profile() {
                       : [...form.skills, s],
                   })
                 }
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-full px-3 py-1 text-[14px] font-medium transition-colors sm:text-xs ${
                   form.skills.includes(s)
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground"
@@ -131,7 +139,7 @@ function Profile() {
       </div>
 
       <div className="sticky bottom-20 z-10 mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-background/95 p-3 backdrop-blur lg:bottom-4">
-        <Button onClick={save} disabled={!dirty}>
+        <Button className="text-[16px] font-semibold sm:text-sm sm:font-medium" onClick={save} disabled={!dirty}>
           {t("Save changes")}
         </Button>
         {dirty && (
@@ -160,8 +168,8 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={label}>{label}</Label>
-      <Input id={label} value={value} aria-invalid={!!error} onChange={(e) => onChange(e.target.value)} />
+      <Label className="text-[15px] font-semibold sm:text-sm sm:font-medium" htmlFor={label}>{label}</Label>
+      <Input className="text-[16px] font-medium sm:text-base sm:font-normal md:text-sm" id={label} value={value} aria-invalid={!!error} onChange={(e) => onChange(e.target.value)} />
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );

@@ -36,15 +36,17 @@ function Company() {
 
   return (
     <AppShell variant="employer" title="Company profile">
-      <PageHeader title="Company profile" subtitle="This is what candidates see on your job posts." />
+      <div className="[&_h1]:text-[28px] [&_h1]:leading-tight [&_h1]:font-bold [&_p]:text-[16px] [&_p]:leading-normal [&_p]:font-medium sm:[&_h1]:text-2xl sm:[&_p]:text-sm sm:[&_p]:font-normal">
+        <PageHeader title="Company profile" subtitle="This is what candidates see on your job posts." />
+      </div>
 
       <div className="surface mb-4 flex items-center gap-4 p-5">
         <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-primary text-lg font-bold text-primary-foreground">
           {initials || "T"}
         </span>
         <div className="min-w-0">
-          <p className="truncate text-lg font-bold">{form.name}</p>
-          <p className="truncate text-sm text-muted-foreground">
+          <p className="truncate text-[21px] leading-tight font-bold sm:text-lg">{form.name}</p>
+          <p className="text-[16px] leading-normal font-medium text-muted-foreground sm:truncate sm:text-sm sm:font-normal">
             {form.industry} · {form.size} · {form.location}
           </p>
         </div>
@@ -59,8 +61,9 @@ function Company() {
           <Field label="Location" value={form.location} onChange={(v) => setForm({ ...form, location: v })} />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="desc">Description</Label>
+          <Label className="text-[15px] font-semibold sm:text-sm sm:font-medium" htmlFor="desc">Description</Label>
           <Textarea
+            className="text-[16px] leading-6 font-medium sm:text-base sm:leading-normal sm:font-normal md:text-sm"
             id="desc"
             rows={4}
             value={form.description}
@@ -69,13 +72,13 @@ function Company() {
         </div>
 
         <div id="team" className="scroll-mt-24">
-          <p className="mb-2 text-sm font-semibold">Hiring team</p>
+          <p className="mb-2 text-[20px] leading-tight font-bold sm:text-sm sm:font-semibold">Hiring team</p>
           <div className="space-y-2">
             {form.team.map((t) => (
               <div key={t.email} className="flex items-center gap-3 rounded-xl border border-border p-3">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{t.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">
+                  <p className="truncate text-[17px] font-semibold sm:text-sm sm:font-medium">{t.name}</p>
+                  <p className="text-[14px] font-medium text-muted-foreground sm:truncate sm:text-xs sm:font-normal">
                     {t.role} · {t.email}
                   </p>
                 </div>
@@ -92,18 +95,21 @@ function Company() {
 
           <div className="mt-3 grid gap-2 sm:grid-cols-3">
             <Input
+              className="text-[16px] font-medium sm:text-base sm:font-normal md:text-sm"
               placeholder="Name"
               aria-label="Team member name"
               value={member.name}
               onChange={(e) => setMember({ ...member, name: e.target.value })}
             />
             <Input
+              className="text-[16px] font-medium sm:text-base sm:font-normal md:text-sm"
               placeholder="Role"
               aria-label="Team member role"
               value={member.role}
               onChange={(e) => setMember({ ...member, role: e.target.value })}
             />
             <Input
+              className="text-[16px] font-medium sm:text-base sm:font-normal md:text-sm"
               placeholder="Email"
               aria-label="Team member email"
               value={member.email}
@@ -114,7 +120,7 @@ function Company() {
           <Button
             variant="outline"
             size="sm"
-            className="mt-2"
+            className="mt-2 text-[16px] font-semibold sm:text-xs sm:font-medium"
             onClick={() => {
               if (!member.name.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email)) {
                 setError("Add a name and a valid email address.");
@@ -130,6 +136,7 @@ function Company() {
         </div>
 
         <Button
+          className="text-[16px] font-semibold sm:text-sm sm:font-medium"
           onClick={() => {
             if (form.name.trim().length < 2) {
               toast.error("Company name is required.");
@@ -157,8 +164,8 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={label}>{label}</Label>
-      <Input id={label} value={value} onChange={(e) => onChange(e.target.value)} />
+      <Label className="text-[15px] font-semibold sm:text-sm sm:font-medium" htmlFor={label}>{label}</Label>
+      <Input className="text-[16px] font-medium sm:text-base sm:font-normal md:text-sm" id={label} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
   );
 }

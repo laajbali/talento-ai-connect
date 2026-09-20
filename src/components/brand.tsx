@@ -16,11 +16,15 @@ export function MatchRing({
   size = 96,
   label = "Match",
   tone = "primary",
+  valueClassName,
+  labelClassName,
 }: {
   value: number;
   size?: number;
   label?: string;
   tone?: "primary" | "success" | "warning";
+  valueClassName?: string;
+  labelClassName?: string;
 }) {
   const stroke = size >= 80 ? 9 : 7;
   const r = (size - stroke) / 2;
@@ -64,10 +68,10 @@ export function MatchRing({
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center leading-none">
         <div>
-          <div className="font-bold" style={{ fontSize: size / 4 }}>
+          <div className={cn("font-bold", valueClassName)} style={valueClassName ? undefined : { fontSize: size / 4 }}>
             {pct}%
           </div>
-          <div className="mt-1 text-[10px] font-medium text-muted-foreground">{label}</div>
+          <div className={cn("mt-1 text-[10px] font-medium text-muted-foreground", labelClassName)}>{label}</div>
         </div>
       </div>
     </div>
