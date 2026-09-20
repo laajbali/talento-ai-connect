@@ -61,13 +61,6 @@ function MyCv() {
       <PageHeader
         title="My CV"
         subtitle="Create, edit and manage your professional CV."
-        action={
-          <Button asChild size="sm">
-            <Link to="/app/cv-builder">
-              <Pencil className="mr-1 h-4 w-4" /> {t("Edit CV")}
-            </Link>
-          </Button>
-        }
       />
 
       <section className="surface grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 p-5">
