@@ -60,7 +60,7 @@ function Screening() {
       list.map(async (file, i) => {
         const row = seeds[i]!;
         try {
-          const text = await extractCvText(file);
+          const text = await extractCvText(file, (step) => update(row.id, { step }));
           update(row.id, { step: "Analysing with AI…" });
           const data = (await screenCv({
             data: { text, fileName: file.name },
@@ -109,13 +109,13 @@ function Screening() {
           <AiBadge /> Upload CVs
         </p>
         <p className="mt-1 text-sm text-muted-foreground">
-          PDF, DOC, DOCX or TXT. Multiple files supported.
+          PDF, DOC, DOCX, TXT, JPG, PNG or WEBP. Multiple files supported.
         </p>
         <input
           ref={inputRef}
           type="file"
           multiple
-          accept=".pdf,.doc,.docx,.txt"
+          accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.webp,application/pdf,text/plain,image/jpeg,image/png,image/webp"
           className="hidden"
           onChange={(e) => {
             void handleFiles(e.target.files);
@@ -166,7 +166,7 @@ function Screening() {
                         : "bg-muted text-muted-foreground"
                   }`}
                 >
-                  {r.status === "done" ? "Extracted" : r.status === "error" ? "Failed" : "Processing"}
+                  {r.status === "done" ? "Completed" : r.status === "error" ? "Failed" : r.step?.startsWith("Analysing") ? "Analyzing" : "Processing"}
                 </span>
                 <button
                   type="button"
@@ -189,7 +189,7 @@ function Screening() {
             {r.status === "error" && (
               <p className="mt-2 text-sm text-destructive">
                 {r.error ||
-                  "This file could not be read as text. Export it as a text-based PDF or TXT and try again."}
+                  "Unable to read enough text from this CV. Please upload a clearer file or image."}
               </p>
             )}
 
