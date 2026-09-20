@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CANDIDATES } from "@/lib/data";
 import { useI18n } from "@/lib/i18n";
 import { rankCandidates } from "@/lib/matching";
@@ -36,7 +35,6 @@ export const Route = createFileRoute("/hr/candidates/")({
   component: Candidates,
 });
 
-const STATUS_FILTERS = ["All", "Applied", "Under Review", "Shortlisted", "Interview", "Rejected"];
 const STAGES: ApplicationStatus[] = [
   "Applied",
   "Under Review",
@@ -52,7 +50,6 @@ function Candidates() {
   const [jobId, setJobId] = useState(state.jobs[0]!.id);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("match");
-  const [statusFilter, setStatusFilter] = useState("All");
   const [availability, setAvailability] = useState("all");
   const [location, setLocation] = useState("all");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -97,14 +94,10 @@ function Candidates() {
       list = list.filter(({ candidate }) => candidate.availability === availability);
     if (location !== "all")
       list = list.filter(({ candidate }) => candidate.location.includes(location));
-    if (statusFilter !== "All")
-      list = list.filter(
-        ({ candidate }) => (state.candidateStages[candidate.id] ?? "Applied") === statusFilter,
-      );
     if (sort === "recent")
       list = [...list].sort((a, b) => b.candidate.graduationYear - a.candidate.graduationYear);
     return list;
-  }, [job, query, availability, location, sort, statusFilter, state.candidateStages]);
+  }, [job, query, availability, location, sort, state.candidateStages]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
@@ -281,15 +274,6 @@ function Candidates() {
         </div>
       )}
 
-      <Tabs value={statusFilter} onValueChange={setStatusFilter} className="mb-4">
-        <TabsList className="h-8 max-w-full justify-start overflow-x-auto p-1">
-          {STATUS_FILTERS.map((f) => (
-            <TabsTrigger key={f} value={f} className="h-7 shrink-0 px-3 text-xs">
-              {t(f)}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
 
       {results.length === 0 ? (
         <EmptyState
