@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { SearchX } from "lucide-react";
+import { Check, SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
@@ -38,7 +38,31 @@ function Candidates() {
   const [query, setQuery] = useState("");
   const [availability, setAvailability] = useState("all");
   const [location, setLocation] = useState("all");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [draftAvailability, setDraftAvailability] = useState(availability);
+  const [draftLocation, setDraftLocation] = useState(location);
   const job = state.jobs.find((j) => j.id === jobId)!;
+
+  const activeFilters: { key: "availability" | "location"; label: string }[] = [];
+  if (availability !== "all") activeFilters.push({ key: "availability", label: availability });
+  if (location !== "all") activeFilters.push({ key: "location", label: location });
+
+  const openFilters = () => {
+    setDraftAvailability(availability);
+    setDraftLocation(location);
+    setFiltersOpen(true);
+  };
+
+  const applyFilters = () => {
+    setAvailability(draftAvailability);
+    setLocation(draftLocation);
+    setFiltersOpen(false);
+  };
+
+  const removeFilter = (key: "availability" | "location") => {
+    if (key === "availability") setAvailability("all");
+    else setLocation("all");
+  };
 
   const results = useMemo(() => {
     let list = rankCandidates(job, CANDIDATES);
@@ -93,31 +117,130 @@ function Candidates() {
           placeholder="Search by name, skill, major or university"
           aria-label="Search candidates"
         />
-        <div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
-          <Select value={availability} onValueChange={setAvailability}>
-            <SelectTrigger aria-label="Availability">
-              <SelectValue placeholder="Availability" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Any availability</SelectItem>
-              <SelectItem value="Immediately">Immediately</SelectItem>
-              <SelectItem value="1 month">1 month</SelectItem>
-              <SelectItem value="3 months">3 months</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={location} onValueChange={setLocation}>
-            <SelectTrigger aria-label="Location">
-              <SelectValue placeholder="Location" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Any location</SelectItem>
-              <SelectItem value="Riyadh">Riyadh</SelectItem>
-              <SelectItem value="Dhahran">Dhahran</SelectItem>
-              <SelectItem value="Jeddah">Jeddah</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full justify-start"
+          onClick={openFilters}
+          aria-label="Filters"
+        >
+          <SlidersHorizontal className="h-4 w-4" />
+          Filters{activeFilters.length > 0 ? ` (${activeFilters.length})` : ""}
+        </Button>
+        {activeFilters.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {activeFilters.map((f) => (
+              <button
+                key={f.key}
+                type="button"
+                onClick={() => removeFilter(f.key)}
+                className="inline-flex h-7 items-center gap-1 rounded-full border border-border bg-card px-2.5 text-xs font-medium text-foreground shadow-sm"
+                aria-label={`Remove filter ${f.label}`}
+              >
+                {f.label}
+                <X className="h-3 w-3" />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
+      {filtersOpen && (
+        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Filters">
+          <button
+            type="button"
+            aria-label="Close filters"
+            className="absolute inset-0 bg-foreground/40"
+            onClick={() => setFiltersOpen(false)}
+          />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-2xl border border-border bg-background p-4 shadow-xl sm:mx-auto sm:max-w-md">
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-muted" />
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold">Filters</h2>
+              {(draftAvailability !== "all" || draftLocation !== "all") && (
+                <button
+                  type="button"
+                  className="text-sm font-medium text-primary"
+                  onClick={() => {
+                    setDraftAvailability("all");
+                    setDraftLocation("all");
+                  }}
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+
+            <fieldset className="mb-4">
+              <legend className="mb-2 text-sm font-semibold">Availability</legend>
+              <div className="space-y-1">
+                {[
+                  { value: "all", label: "Any availability" },
+                  { value: "Immediately", label: "Immediately" },
+                  { value: "1 month", label: "1 month" },
+                  { value: "3 months", label: "3 months" },
+                ].map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex min-h-11 cursor-pointer items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm hover:bg-muted/60"
+                  >
+                    <span>{opt.label}</span>
+                    <span className="flex items-center">
+                      {draftAvailability === opt.value && (
+                        <Check className="h-4 w-4 text-primary" />
+                      )}
+                      <input
+                        type="radio"
+                        name="availability"
+                        value={opt.value}
+                        checked={draftAvailability === opt.value}
+                        onChange={() => setDraftAvailability(opt.value)}
+                        className="sr-only"
+                      />
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className="mb-5">
+              <legend className="mb-2 text-sm font-semibold">Location</legend>
+              <div className="space-y-1">
+                {[
+                  { value: "all", label: "Any location" },
+                  { value: "Riyadh", label: "Riyadh" },
+                  { value: "Dhahran", label: "Dhahran" },
+                  { value: "Jeddah", label: "Jeddah" },
+                ].map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex min-h-11 cursor-pointer items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm hover:bg-muted/60"
+                  >
+                    <span>{opt.label}</span>
+                    <span className="flex items-center">
+                      {draftLocation === opt.value && (
+                        <Check className="h-4 w-4 text-primary" />
+                      )}
+                      <input
+                        type="radio"
+                        name="location"
+                        value={opt.value}
+                        checked={draftLocation === opt.value}
+                        onChange={() => setDraftLocation(opt.value)}
+                        className="sr-only"
+                      />
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <Button type="button" className="w-full" onClick={applyFilters}>
+              Apply filters
+            </Button>
+          </div>
+        </div>
+      )}
 
       {results.length === 0 ? (
         <EmptyState
