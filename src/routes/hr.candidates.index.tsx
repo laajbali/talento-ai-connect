@@ -81,8 +81,10 @@ function Candidates() {
       list = list.filter(({ candidate }) => candidate.availability === availability);
     if (location !== "all")
       list = list.filter(({ candidate }) => candidate.location.includes(location));
+    if (sort === "recent")
+      list = [...list].sort((a, b) => b.candidate.graduationYear - a.candidate.graduationYear);
     return list;
-  }, [job, query, availability, location]);
+  }, [job, query, availability, location, sort]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
