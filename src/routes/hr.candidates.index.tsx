@@ -36,6 +36,7 @@ function Candidates() {
   const { state, update } = useStore();
   const [jobId, setJobId] = useState(state.jobs[0]!.id);
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("match");
   const [availability, setAvailability] = useState("all");
   const [location, setLocation] = useState("all");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -80,8 +81,10 @@ function Candidates() {
       list = list.filter(({ candidate }) => candidate.availability === availability);
     if (location !== "all")
       list = list.filter(({ candidate }) => candidate.location.includes(location));
+    if (sort === "recent")
+      list = [...list].sort((a, b) => b.candidate.graduationYear - a.candidate.graduationYear);
     return list;
-  }, [job, query, availability, location]);
+  }, [job, query, availability, location, sort]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
@@ -99,6 +102,12 @@ function Candidates() {
       />
 
       <div className="surface mb-4 w-full min-w-0 max-w-full space-y-3 overflow-hidden p-4">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by name, skill, major or university"
+          aria-label="Search candidates"
+        />
         <Select value={jobId} onValueChange={setJobId}>
           <SelectTrigger aria-label="Match against job">
             <SelectValue />
@@ -111,22 +120,32 @@ function Candidates() {
             ))}
           </SelectContent>
         </Select>
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by name, skill, major or university"
-          aria-label="Search candidates"
-        />
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full justify-start"
-          onClick={openFilters}
-          aria-label="Filters"
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-          Filters{activeFilters.length > 0 ? ` (${activeFilters.length})` : ""}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-9 min-w-0 flex-1 justify-start"
+            onClick={openFilters}
+            aria-label="Filters"
+          >
+            <SlidersHorizontal className="h-4 w-4 shrink-0" />
+            <span className="truncate">
+              Filters{activeFilters.length > 0 ? ` (${activeFilters.length})` : ""}
+            </span>
+          </Button>
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger
+              aria-label="Sort"
+              className="h-9 w-auto shrink-0 gap-1 rounded-lg border-border bg-card px-3 text-xs shadow-sm"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="match">Best match</SelectItem>
+              <SelectItem value="recent">Most recent</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         {activeFilters.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {activeFilters.map((f) => (
