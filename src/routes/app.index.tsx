@@ -2,11 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Briefcase, FileText, Sparkles, TrendingUp } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { AiBadge, MatchRing, StatTile } from "@/components/brand";
-import { JobCard } from "@/components/match";
 import { Button } from "@/components/ui/button";
-import { JOBS, jobById } from "@/lib/data";
-import { careerReadiness, computeMatch, rankJobs, toProfile } from "@/lib/matching";
-import { cvCompletion, profileCompletion, useStore } from "@/lib/store";
+import { careerReadiness, useStore } from "@/lib/store";
+import { cvCompletion, profileCompletion } from "@/lib/store";
 
 export const Route = createFileRoute("/app/")({
   head: () => ({
@@ -28,9 +26,6 @@ function SeekerHome() {
   const cvPct = cvCompletion(state.cv);
   const profilePct = profileCompletion(state.seeker);
   const readiness = careerReadiness(state.seeker, cvPct);
-  const ranked = rankJobs(toProfile(state.seeker, state.cv.projects.length), JOBS).slice(0, 3);
-  const recent = state.viewedJobs.map(jobById).filter(Boolean);
-
   const toggleSave = (id: string) =>
     update((s) => ({
       ...s,
