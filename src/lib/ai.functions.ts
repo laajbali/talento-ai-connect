@@ -274,13 +274,11 @@ Return JSON exactly in this shape:
 "recommendation":"one of: Strongly recommend for interview / Recommend for interview / Consider with reservations / Not a fit — plus a short reason",
 "summary":"2 sentence profile summary"}`,
     );
-    console.log('SCREEN_RAW', raw.slice(0, 400));
     const parsed = parseJson<unknown>(raw, null);
     if (!parsed || typeof parsed !== "object") {
       throw new Error("The AI returned an unreadable response. Please try again.");
     }
     const result = ScreenResult.parse(parsed);
-    console.log('SCREEN_PCT', result.matchPercentage);
     const candidateName = result.candidateName || result.name;
     if (!candidateName && result.skills.length === 0 && !result.summary) {
       throw new Error("No candidate details could be read from this CV.");
