@@ -251,6 +251,7 @@ export const screenCv = createServerFn({ method: "POST" })
       `Screen this CV${data.targetRole ? ` against the target role "${data.targetRole}"` : ""}.
 If the target role is not given, infer the single best-fit role from the CV itself.
 Base every field strictly on the CV text below. If something is not in the CV, use an empty string, empty array, 0 or null.
+matchPercentage is the exception: always judge it yourself as an honest 0-100 fit score of this candidate against the target or inferred role, based on their skills, seniority and experience.
 
 CV file: ${data.fileName}
 CV text:
@@ -259,7 +260,7 @@ ${data.text.slice(0, 12000)}
 """
 
 Return JSON exactly in this shape:
-{"candidateName":"","title":"","role":"best fit or target role","matchPercentage":0,
+{"candidateName":"","title":"","role":"best fit or target role","matchPercentage":0,  // ALWAYS a real 0-100 fit score for that role, never left at 0 unless the candidate is genuinely unsuitable
 "degree":"","major":"","university":"","gpa":"","graduationYear":null,"education":"one line education summary",
 "location":"","years":0,
 "skills":["key skills detected in the CV"],
