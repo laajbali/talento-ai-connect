@@ -4,7 +4,13 @@ import { useState } from "react";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { jobById } from "@/lib/data";
 import { useStore } from "@/lib/store";
 import type { ApplicationStatus } from "@/lib/types";
@@ -47,7 +53,7 @@ export function statusClass(status: string) {
 function Applications() {
   const { t } = useI18n();
   const { state } = useStore();
-  const [filter, setFilter] = useState<string>("All");
+  const [filter, setFilter] = useState<string>("Applied");
   const [open, setOpen] = useState<string | null>(null);
 
   const list = state.applications.filter((a) => filter === "All" || a.status === filter);
@@ -59,17 +65,21 @@ function Applications() {
         subtitle={`${state.applications.length} applications in total`}
       />
 
-      <Tabs value={filter} onValueChange={setFilter} className="mb-4 min-w-0">
-        <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <TabsList className="flex h-8 w-max flex-nowrap justify-start p-0.5">
+      <Select value={filter} onValueChange={setFilter}>
+        <SelectTrigger
+          aria-label="Filter by status"
+          className="mb-4 h-9 w-auto min-w-36 shrink-0 gap-1 rounded-lg border-border bg-card px-3 text-xs shadow-sm"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
           {filters.map((f) => (
-            <TabsTrigger key={f} value={f} className="h-7 shrink-0 px-3 text-xs">
+            <SelectItem key={f} value={f} className="text-xs">
               {t(f)}
-            </TabsTrigger>
+            </SelectItem>
           ))}
-          </TabsList>
-        </div>
-      </Tabs>
+        </SelectContent>
+      </Select>
 
       {list.length === 0 ? (
         <EmptyState
@@ -124,10 +134,14 @@ function Applications() {
                 )}
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <Button size="sm" className="min-h-10 sm:min-h-0" onClick={() => setOpen(expanded ? null : app.id)}>
+                  <Button
+                    size="sm"
+                    className="h-8 px-2 text-xs"
+                    onClick={() => setOpen(expanded ? null : app.id)}
+                  >
                     {expanded ? "Hide details" : "View details"}
                   </Button>
-                  <Button asChild size="sm" variant="outline" className="min-h-10 sm:min-h-0">
+                  <Button asChild size="sm" variant="outline" className="h-8 px-2 text-xs">
                     <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
                       Open job
                     </Link>
