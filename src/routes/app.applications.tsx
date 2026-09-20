@@ -61,9 +61,9 @@ function Applications() {
 
       <Tabs value={filter} onValueChange={setFilter} className="mb-4 min-w-0">
         <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <TabsList className="flex h-10 w-max min-w-full flex-nowrap justify-start">
+          <TabsList className="flex h-8 w-max flex-nowrap justify-start p-0.5">
           {filters.map((f) => (
-            <TabsTrigger key={f} value={f} className="h-8 shrink-0">
+            <TabsTrigger key={f} value={f} className="h-7 shrink-0 px-3 text-xs">
               {t(f)}
             </TabsTrigger>
           ))}
@@ -123,11 +123,11 @@ function Applications() {
                   </ol>
                 )}
 
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
-                  <Button size="sm" variant="outline" className="min-h-10 sm:min-h-0" onClick={() => setOpen(expanded ? null : app.id)}>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <Button size="sm" className="min-h-10 sm:min-h-0" onClick={() => setOpen(expanded ? null : app.id)}>
                     {expanded ? "Hide details" : "View details"}
                   </Button>
-                  <Button asChild size="sm" variant="ghost" className="min-h-10 sm:min-h-0">
+                  <Button asChild size="sm" variant="outline" className="min-h-10 sm:min-h-0">
                     <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
                       Open job
                     </Link>
