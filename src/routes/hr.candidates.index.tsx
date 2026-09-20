@@ -97,7 +97,7 @@ function Candidates() {
     if (sort === "recent")
       list = [...list].sort((a, b) => b.candidate.graduationYear - a.candidate.graduationYear);
     return list;
-  }, [job, query, availability, location, sort, statusFilter, state.candidateStages]);
+  }, [job, query, availability, location, sort, state.candidateStages]);
 
   const toggleSave = (id: string) =>
     update((s) => ({
