@@ -1,6 +1,6 @@
 /** Browser-side CV text extraction for PDFs, images, DOCX/DOC and plain text files. */
 
-const MAX_BYTES = 15 * 1024 * 1024;
+const MAX_BYTES = 20 * 1024 * 1024;
 const MIN_READABLE_CHARS = 40;
 const UNREADABLE_MESSAGE =
   "Unable to read enough text from this CV. Please upload a clearer file or image.";
@@ -129,7 +129,7 @@ export async function extractCvText(
   onProgress?: CvExtractProgress,
 ): Promise<string> {
   if (file.size === 0) throw new CvExtractError("The file is empty.");
-  if (file.size > MAX_BYTES) throw new CvExtractError("The file is larger than 15MB.");
+  if (file.size > MAX_BYTES) throw new CvExtractError("The file is larger than 20MB.");
 
   const name = file.name.toLowerCase();
   const isPdf = name.endsWith(".pdf") || file.type === "application/pdf";

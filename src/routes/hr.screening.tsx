@@ -56,9 +56,13 @@ function Screening() {
     const update = (id: string, patch: Partial<Row>) =>
       setRows((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)));
 
-    await Promise.all(
-      list.map(async (file, i) => {
+    let nextFile = 0;
+    const processNext = async () => {
+      while (nextFile < list.length) {
+        const i = nextFile++;
+        const file = list[i];
         const row = seeds[i]!;
+        if (!file) continue;
         try {
           const text = await extractCvText(file, (step) => update(row.id, { step }));
           update(row.id, { step: "Analysing with AI…" });
@@ -77,8 +81,9 @@ function Screening() {
           update(row.id, { status: "error", error: message, step: "" });
           toast.error(`${file.name}: ${message}`);
         }
-      }),
-    );
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(2, list.length) }, () => processNext()));
   };
 
   const visible = rows.filter((r) => {
