@@ -88,9 +88,9 @@ function CardActions({
   const { t } = useI18n();
 
   return (
-    <div className="mt-2.5 flex items-center justify-between gap-2">
-      {primary}
-      <Button size="sm" variant="outline" onClick={onSave} className="h-8 min-w-[4.5rem] bg-background px-3 text-xs text-foreground">
+    <div className="mt-2.5 flex items-center gap-2">
+      <div className="min-w-0 flex-[2]">{primary}</div>
+      <Button size="sm" variant="outline" onClick={onSave} className="h-8 shrink-0 bg-background px-3 text-xs text-foreground">
         {t(saved ? "Saved" : "Save")}
       </Button>
     </div>
@@ -165,7 +165,7 @@ export function JobCard({
         saved={saved}
         onSave={onSave}
         primary={
-          <Button asChild size="sm" className="h-8 min-w-[4.5rem] px-3 text-xs">
+          <Button asChild size="sm" className="h-8 w-full px-3 text-xs">
             <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
               {t("View profile")}
             </Link>

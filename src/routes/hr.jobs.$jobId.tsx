@@ -151,8 +151,8 @@ function JobApplicants() {
                   {match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No gaps."}
                 </p>
 
-                <div className="mt-3 flex items-center justify-between gap-2">
-                  <Button asChild size="sm" className="h-8 min-w-[4.5rem] px-3 text-xs">
+                <div className="mt-3 flex items-center gap-2">
+                  <Button asChild size="sm" className="h-8 min-w-0 flex-[2] px-3 text-xs">
                     <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
                       {t("View profile")}
                     </Link>
