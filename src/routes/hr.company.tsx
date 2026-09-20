@@ -46,7 +46,7 @@ function Company() {
         </span>
         <div className="min-w-0">
           <p className="truncate text-[21px] leading-tight font-bold sm:text-lg">{form.name}</p>
-          <p className="truncate text-[16px] leading-normal font-medium text-muted-foreground sm:text-sm sm:font-normal">
+          <p className="text-[16px] leading-normal font-medium text-muted-foreground sm:truncate sm:text-sm sm:font-normal">
             {form.industry} · {form.size} · {form.location}
           </p>
         </div>
@@ -78,7 +78,7 @@ function Company() {
               <div key={t.email} className="flex items-center gap-3 rounded-xl border border-border p-3">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[17px] font-semibold sm:text-sm sm:font-medium">{t.name}</p>
-                  <p className="truncate text-[14px] font-medium text-muted-foreground sm:text-xs sm:font-normal">
+                  <p className="text-[14px] font-medium text-muted-foreground sm:truncate sm:text-xs sm:font-normal">
                     {t.role} · {t.email}
                   </p>
                 </div>
