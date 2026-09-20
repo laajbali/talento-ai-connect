@@ -40,6 +40,15 @@ const FILTERS: (ApplicationStatus | "All")[] = [
   "Rejected",
 ];
 
+const STAGES: ApplicationStatus[] = [
+  "Applied",
+  "Under Review",
+  "Shortlisted",
+  "Interview",
+  "Rejected",
+  "Hired",
+];
+
 function JobApplicants() {
   const { jobId } = useParams({ from: "/hr/jobs/$jobId" });
   const { t } = useI18n();
