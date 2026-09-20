@@ -53,7 +53,7 @@ function Screening() {
     }));
     setRows((r) => [...seeds, ...r]);
 
-    const update = (id: string, patch: Partial<Row>) =>
+    const update = (id: string, patch: Partial<Record<keyof Row, Row[keyof Row]>>) =>
       setRows((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)));
 
     await Promise.all(
@@ -66,7 +66,7 @@ function Screening() {
             data: { text, fileName: file.name },
           })) as Extracted | null;
           if (!data) throw new Error("The AI returned no result. Please try again.");
-          update(row.id, { status: "done", data, step: undefined, error: undefined });
+          update(row.id, { status: "done", data, step: "", error: "" });
         } catch (err) {
           const message =
             err instanceof CvExtractError
@@ -74,7 +74,7 @@ function Screening() {
               : err instanceof Error && err.message
                 ? err.message
                 : "Screening failed. Please try again.";
-          update(row.id, { status: "error", error: message, step: undefined });
+          update(row.id, { status: "error", error: message, step: "" });
           toast.error(`${file.name}: ${message}`);
         }
       }),
