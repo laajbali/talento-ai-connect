@@ -7,7 +7,9 @@ import { AiBadge, EmptyState } from "@/components/brand";
 import { SkillChips } from "@/components/match";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { ScreenedCv } from "@/lib/ai.functions";
 import { screenCv } from "@/lib/ai.functions";
+import { CvExtractError, extractCvText } from "@/lib/cv-extract";
 
 export const Route = createFileRoute("/hr/screening")({
   head: () => ({
