@@ -92,9 +92,9 @@ function JobApplicants() {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {(["All", ...STAGES] as const).map((s) => (
-            <SelectItem key={s} value={s} className="text-xs">
-              {t(s)}
+          {FILTERS.map((f) => (
+            <SelectItem key={f} value={f} className="text-xs">
+              {t(f)}
             </SelectItem>
           ))}
         </SelectContent>
