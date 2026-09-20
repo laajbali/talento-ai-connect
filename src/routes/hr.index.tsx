@@ -52,9 +52,9 @@ function HrHome() {
 
       <Link
         to="/hr/screening"
-        className="surface mt-4 flex items-center gap-3 p-4 transition-colors hover:bg-muted/60"
+        className="surface brand-gradient mt-4 flex items-center gap-3 p-4 transition-colors hover:bg-muted/60"
       >
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-foreground text-background">
           <ScanText className="h-5 w-5" />
         </span>
         <span className="min-w-0 flex-1">
