@@ -134,10 +134,14 @@ function Applications() {
                 )}
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <Button size="sm" className="min-h-10 sm:min-h-0" onClick={() => setOpen(expanded ? null : app.id)}>
+                  <Button
+                    size="sm"
+                    className="h-8 px-2 text-xs"
+                    onClick={() => setOpen(expanded ? null : app.id)}
+                  >
                     {expanded ? "Hide details" : "View details"}
                   </Button>
-                  <Button asChild size="sm" variant="outline" className="min-h-10 sm:min-h-0">
+                  <Button asChild size="sm" variant="outline" className="h-8 px-2 text-xs">
                     <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
                       Open job
                     </Link>
