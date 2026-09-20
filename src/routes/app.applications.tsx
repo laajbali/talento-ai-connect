@@ -59,14 +59,16 @@ function Applications() {
         subtitle={`${state.applications.length} applications in total`}
       />
 
-      <Tabs value={filter} onValueChange={setFilter} className="mb-4">
-        <TabsList className="flex w-full flex-wrap justify-start">
+      <Tabs value={filter} onValueChange={setFilter} className="mb-4 min-w-0">
+        <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsList className="flex h-10 w-max min-w-full flex-nowrap justify-start">
           {filters.map((f) => (
-            <TabsTrigger key={f} value={f}>
+            <TabsTrigger key={f} value={f} className="h-8 shrink-0">
               {t(f)}
             </TabsTrigger>
           ))}
-        </TabsList>
+          </TabsList>
+        </div>
       </Tabs>
 
       {list.length === 0 ? (
@@ -88,19 +90,19 @@ function Applications() {
             const expanded = open === app.id;
             return (
               <article key={app.id} className="surface p-4">
-                <div className="flex items-start gap-3">
+                <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3">
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-xs font-bold text-accent-foreground">
                     {job.companyLogo}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                       <div className="min-w-0">
-                        <h3 className="truncate font-semibold">{job.title}</h3>
+                        <h3 className="line-clamp-2 font-semibold leading-snug">{job.title}</h3>
                         <p className="truncate text-xs text-muted-foreground">
                           {job.company} · Applied {app.appliedAt}
                         </p>
                       </div>
-                      <span className={statusClass(app.status)}>{t(app.status)}</span>
+                      <span className={cn(statusClass(app.status), "shrink-0 whitespace-nowrap")}>{t(app.status)}</span>
                     </div>
                   </div>
                 </div>
@@ -121,11 +123,11 @@ function Applications() {
                   </ol>
                 )}
 
-                <div className="mt-3 flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setOpen(expanded ? null : app.id)}>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
+                  <Button size="sm" variant="outline" className="min-h-10 sm:min-h-0" onClick={() => setOpen(expanded ? null : app.id)}>
                     {expanded ? "Hide details" : "View details"}
                   </Button>
-                  <Button asChild size="sm" variant="ghost">
+                  <Button asChild size="sm" variant="ghost" className="min-h-10 sm:min-h-0">
                     <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
                       Open job
                     </Link>
