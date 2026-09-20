@@ -13,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CANDIDATES } from "@/lib/data";
+import { useI18n } from "@/lib/i18n";
 import { rankCandidates } from "@/lib/matching";
 import { useStore } from "@/lib/store";
 import type { ApplicationStatus } from "@/lib/types";
