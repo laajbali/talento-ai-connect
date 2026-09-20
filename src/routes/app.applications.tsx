@@ -53,7 +53,7 @@ export function statusClass(status: string) {
 function Applications() {
   const { t } = useI18n();
   const { state } = useStore();
-  const [filter, setFilter] = useState<string>("Applied");
+  const [filter, setFilter] = useState<string>("All");
   const [open, setOpen] = useState<string | null>(null);
 
   const list = state.applications.filter((a) => filter === "All" || a.status === filter);
