@@ -12,6 +12,7 @@ import { CV_TEMPLATES } from "@/lib/data";
 import { useI18n } from "@/lib/i18n";
 import { downloadNodeAsPdf } from "@/lib/pdf";
 import { cvCompletion, useStore } from "@/lib/store";
+import type { CvSection } from "@/lib/types";
 
 export const Route = createFileRoute("/app/cv")({
   head: () => ({
@@ -221,7 +222,7 @@ function MyCv() {
   );
 }
 
-function CvTemplatePreview({ cv, template }: { cv: typeof import("@/lib/data").SEEKER_CV; template: string }) {
+function CvTemplatePreview({ cv, template }: { cv: CvSection; template: string }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.28);
 
