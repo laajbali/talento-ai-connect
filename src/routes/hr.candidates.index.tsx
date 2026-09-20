@@ -281,6 +281,16 @@ function Candidates() {
         </div>
       )}
 
+      <Tabs value={statusFilter} onValueChange={setStatusFilter} className="mb-4">
+        <TabsList className="h-8 max-w-full justify-start overflow-x-auto p-1">
+          {STATUS_FILTERS.map((f) => (
+            <TabsTrigger key={f} value={f} className="h-7 shrink-0 px-3 text-xs">
+              {t(f)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+
       {results.length === 0 ? (
         <EmptyState
           icon={<SearchX className="h-6 w-6" />}
@@ -296,6 +306,7 @@ function Candidates() {
         <div className="grid w-full min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">
           {results.map(({ candidate, match }) => {
             const saved = state.savedCandidates.includes(candidate.id);
+            const stage = state.candidateStages[candidate.id] ?? "Applied";
             return (
               <CandidateCard
                 key={candidate.id}
@@ -308,11 +319,40 @@ function Candidates() {
                 showSkills
                 explanation={`${match.matching.length ? `Matches on ${match.matching.join(", ")}.` : "Limited overlap with required skills."}${match.missing.length ? ` Missing ${match.missing.join(", ")}.` : ""}`}
                 actions={
-                  <Button asChild size="sm" className="w-full">
-                    <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
-                      View profile
-                    </Link>
-                  </Button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button asChild size="sm" className="h-8 px-2 text-xs">
+                      <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
+                        {t("View profile")}
+                      </Link>
+                    </Button>
+                    <Select
+                      value={stage}
+                      onValueChange={(v) => {
+                        update((s) => ({
+                          ...s,
+                          candidateStages: {
+                            ...s.candidateStages,
+                            [candidate.id]: v as ApplicationStatus,
+                          },
+                        }));
+                        toast.success(`${candidate.name} moved to ${v}.`);
+                      }}
+                    >
+                      <SelectTrigger
+                        aria-label={`Status for ${candidate.name}`}
+                        className="h-8 w-full gap-1 bg-background px-2 text-xs"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {STAGES.map((s) => (
+                          <SelectItem key={s} value={s} className="text-xs">
+                            {t(s)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 }
               />
             );
