@@ -73,11 +73,6 @@ function JobApplicants() {
       <PageHeader
         title={job.title}
         subtitle={`${job.location} · ${job.type} · ${job.status}`}
-        action={
-          <Button asChild size="sm" variant="outline">
-            <Link to="/hr/jobs">All jobs</Link>
-          </Button>
-        }
       />
 
       <section className="surface mb-4 p-5">
