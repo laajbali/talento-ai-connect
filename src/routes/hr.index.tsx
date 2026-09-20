@@ -21,6 +21,7 @@ export const Route = createFileRoute("/hr/")({
 });
 
 function HrHome() {
+  const { state } = useStore();
   const jobs = state.jobs;
   const active = jobs.filter((j) => j.status === "Active");
   const totals = jobs.reduce(
