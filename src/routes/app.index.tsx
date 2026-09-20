@@ -93,9 +93,9 @@ function SeekerHome() {
           <li>• Add one analytics project to your CV to close the experience gap.</li>
           <li>• Ask for an English proficiency certificate to strengthen your profile.</li>
         </ul>
-        <Button asChild size="sm" variant="outline" className="mt-4">
+        <Button asChild className="mt-4 h-12 w-full justify-between px-4 text-sm font-semibold">
           <Link to="/app/path">
-            Open career path <ArrowRight className="ml-1 h-4 w-4" />
+            Open career path <ArrowRight />
           </Link>
         </Button>
       </section>
