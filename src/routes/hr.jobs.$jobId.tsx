@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { BriefcaseBusiness, Users } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { EmptyState } from "@/components/brand";
 import { ScorePill, SkillChips } from "@/components/match";
@@ -30,15 +29,6 @@ export const Route = createFileRoute("/hr/jobs/$jobId")({
   }),
   component: JobApplicants,
 });
-
-const STAGES: ApplicationStatus[] = [
-  "Applied",
-  "Under Review",
-  "Shortlisted",
-  "Interview",
-  "Rejected",
-  "Hired",
-];
 
 const FILTERS: (ApplicationStatus | "All")[] = [
   "All",
