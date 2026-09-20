@@ -42,8 +42,9 @@ const STAGES: ApplicationStatus[] = [
 
 function JobApplicants() {
   const { jobId } = useParams({ from: "/hr/jobs/$jobId" });
+  const { t } = useI18n();
   const { state, update } = useStore();
-  const [tab, setTab] = useState<"All" | ApplicationStatus>("All");
+  const [tab, setTab] = useState<ApplicationStatus | "All">("All");
   const job = state.jobs.find((j) => j.id === jobId);
 
   if (!job) {
