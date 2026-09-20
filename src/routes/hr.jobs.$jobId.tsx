@@ -64,13 +64,13 @@ function JobApplicants() {
     );
   }
 
-  const toggleSave = (id: string) =>
+  const setStage = (id: string, name: string, v: string) => {
     update((s) => ({
       ...s,
-      savedCandidates: s.savedCandidates.includes(id)
-        ? s.savedCandidates.filter((c) => c !== id)
-        : [...s.savedCandidates, id],
+      candidateStages: { ...s.candidateStages, [id]: v as ApplicationStatus },
     }));
+    toast.success(`${name} moved to ${v}.`);
+  };
 
   const ranked = rankCandidates(job, CANDIDATES);
   const list = ranked.filter(
