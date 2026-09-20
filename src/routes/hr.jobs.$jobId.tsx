@@ -133,35 +133,20 @@ function JobApplicants() {
                   {match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No gaps."}
                 </p>
 
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <Select
-                    value={stage}
-                    onValueChange={(v) => {
-                      update((s) => ({
-                        ...s,
-                        candidateStages: {
-                          ...s.candidateStages,
-                          [candidate.id]: v as ApplicationStatus,
-                        },
-                      }));
-                      toast.success(`${candidate.name} moved to ${v}.`);
-                    }}
-                  >
-                    <SelectTrigger className="w-[170px]" aria-label={`Stage for ${candidate.name}`}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {STAGES.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button asChild size="sm" variant="outline">
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <Button asChild size="sm" className="h-8 px-3 text-xs">
                     <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
-                      View profile
+                      {t("View profile")}
                     </Link>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 min-w-16 bg-background px-3 text-xs text-foreground"
+                    aria-label={t(saved ? "Remove saved candidate" : "Save candidate")}
+                    onClick={() => toggleSave(candidate.id)}
+                  >
+                    {t(saved ? "Saved" : "Save")}
                   </Button>
                 </div>
               </article>
