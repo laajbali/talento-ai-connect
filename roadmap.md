@@ -11,8 +11,8 @@
 - [x] Verify mobile navigation and HR isolation
 
 ## Mobile Application and CV pages
-- [ ] Make application status filters horizontally scrollable
-- [ ] Improve mobile application card title, badge, and actions
-- [ ] Compact and contain mobile CV template previews
-- [ ] Clarify mobile template selection and CTA
-- [ ] Verify both pages and bottom navigation at mobile width
+- [x] Make application status filters horizontally scrollable
+- [x] Improve mobile application card title, badge, and actions
+- [x] Compact and contain mobile CV template previews
+- [x] Clarify mobile template selection and CTA
+- [x] Verify both pages and bottom navigation at mobile width
