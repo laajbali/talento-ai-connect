@@ -117,7 +117,7 @@ function JobApplicants() {
       ) : (
         <div className="space-y-3">
           {list.map(({ candidate, match }) => {
-            const saved = state.savedCandidates.includes(candidate.id);
+            const stage = state.candidateStages[candidate.id] ?? "Applied";
             return (
               <article key={candidate.id} className="surface p-4">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
@@ -143,20 +143,29 @@ function JobApplicants() {
                 </p>
 
                 <div className="mt-3 flex items-center justify-between gap-2">
-                  <Button asChild size="sm" className="h-8 px-3 text-xs">
+                  <Button asChild size="sm" className="h-8 min-w-[4.5rem] px-3 text-xs">
                     <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
                       {t("View profile")}
                     </Link>
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 min-w-16 bg-background px-3 text-xs text-foreground"
-                    aria-label={t(saved ? "Remove saved candidate" : "Save candidate")}
-                    onClick={() => toggleSave(candidate.id)}
+                  <Select
+                    value={stage}
+                    onValueChange={(v) => setStage(candidate.id, candidate.name, v)}
                   >
-                    {t(saved ? "Saved" : "Save")}
-                  </Button>
+                    <SelectTrigger
+                      aria-label={`${candidate.name} hiring stage`}
+                      className="h-8 w-auto min-w-[6.5rem] shrink-0 gap-1 rounded-lg border-border bg-background px-3 text-xs text-foreground shadow-sm"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STAGES.map((s) => (
+                        <SelectItem key={s} value={s} className="text-xs">
+                          {t(s)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </article>
             );
