@@ -54,11 +54,11 @@ function Profile() {
 
   return (
     <AppShell variant="seeker" title="Personal information">
-      <div className="[&_h1]:text-[26px] [&_h1]:leading-tight [&_h1]:font-bold [&_p]:text-[15px] [&_p]:leading-normal [&_p]:font-medium sm:[&_h1]:text-2xl sm:[&_p]:text-sm sm:[&_p]:font-normal">
+      <div className="[&_h1]:text-[22px] [&_h1]:leading-tight [&_h1]:font-bold [&_p]:text-[14px] [&_p]:leading-normal sm:[&_h1]:text-2xl sm:[&_p]:text-sm sm:[&_p]:font-normal">
         <PageHeader title="Personal information" subtitle="This information powers your matching." />
       </div>
 
-      <div className="surface mb-4 flex items-center gap-4 p-5">
+      <div className="surface mb-3 flex items-center gap-3 p-3 sm:mb-4 sm:gap-4 sm:p-5">
         <MatchRing
           value={pct}
           label={t("Complete")}
@@ -67,15 +67,15 @@ function Profile() {
           labelClassName="text-[11px] sm:text-[10px]"
         />
         <div className="min-w-0">
-          <p className="text-[18px] leading-tight font-bold sm:text-base sm:font-semibold" data-no-translate>{form.fullName}</p>
-          <p className="mt-1 text-[14px] leading-normal font-medium text-muted-foreground sm:mt-0 sm:text-sm sm:font-normal">
+          <p className="text-[17px] leading-tight font-semibold sm:text-base" data-no-translate>{form.fullName}</p>
+          <p className="mt-0.5 text-[13px] leading-snug text-muted-foreground sm:mt-0 sm:text-sm">
             {form.major} · {form.university}
           </p>
         </div>
       </div>
 
-      <div className="surface space-y-4 p-5">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className="surface space-y-3 p-3 sm:space-y-4 sm:p-5">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           <Field label={t("Full name")} value={form.fullName} error={errors.name} onChange={(v) => setForm({ ...form, fullName: v })} />
           <Field label={t("Email")} value={form.email} error={errors.email} onChange={(v) => setForm({ ...form, email: v })} />
           <Field label={t("Phone")} value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
@@ -111,8 +111,8 @@ function Profile() {
         </div>
 
         <div>
-          <Label className="mb-2 block text-[15px] font-semibold sm:text-sm sm:font-medium">{t("Skills")}</Label>
-          <div className="flex flex-wrap gap-1.5">
+          <Label className="mb-1.5 block text-[14px] font-medium sm:mb-2 sm:text-sm">{t("Skills")}</Label>
+          <div className="flex flex-wrap gap-1 sm:gap-1.5">
             {SKILL_LIBRARY.map((s) => (
               <button
                 key={s}
@@ -125,7 +125,7 @@ function Profile() {
                       : [...form.skills, s],
                   })
                 }
-                className={`rounded-full px-3 py-1 text-[14px] font-medium transition-colors sm:text-xs ${
+                className={`rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors sm:px-3 sm:py-1 ${
                   form.skills.includes(s)
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground"
@@ -138,8 +138,8 @@ function Profile() {
         </div>
       </div>
 
-      <div className="sticky bottom-20 z-10 mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-background/95 p-3 backdrop-blur lg:bottom-4">
-        <Button className="text-[16px] font-semibold sm:text-sm sm:font-medium" onClick={save} disabled={!dirty}>
+      <div className="sticky bottom-20 z-10 mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-border bg-background/95 p-2.5 backdrop-blur sm:mt-4 sm:gap-3 sm:p-3 lg:bottom-4">
+        <Button className="h-8 text-sm font-medium sm:h-9" onClick={save} disabled={!dirty}>
           {t("Save changes")}
         </Button>
         {dirty && (
@@ -167,9 +167,9 @@ function Field({
   error?: string | undefined;
 }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-[15px] font-semibold sm:text-sm sm:font-medium" htmlFor={label}>{label}</Label>
-      <Input className="text-[16px] font-medium sm:text-base sm:font-normal md:text-sm" id={label} value={value} aria-invalid={!!error} onChange={(e) => onChange(e.target.value)} />
+    <div className="space-y-1">
+      <Label className="text-[14px] font-medium sm:text-sm" htmlFor={label}>{label}</Label>
+      <Input className="h-9 text-[15px] font-normal sm:text-base md:text-sm" id={label} value={value} aria-invalid={!!error} onChange={(e) => onChange(e.target.value)} />
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );

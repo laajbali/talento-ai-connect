@@ -16,3 +16,9 @@
 - [x] Compact and contain mobile CV template previews
 - [x] Clarify mobile template selection and CTA
 - [x] Verify both pages and bottom navigation at mobile width
+
+## Compact mobile profile pages
+- [x] Reduce Job Seeker Personal Information sizing and spacing on mobile
+- [x] Reduce HR Company Profile sizing and spacing on mobile
+- [x] Preserve tablet/desktop styles and existing behavior
+- [x] Verify both pages at 390px without overflow
