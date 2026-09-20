@@ -22,7 +22,7 @@ export function AuthLayout({
           </div>
           {step && <span className="text-xs font-semibold text-muted-foreground">{t(step)}</span>}
         </div>
-        <div className="surface mt-6 p-6">
+        <div className="surface mt-6 p-5">
           <h1 className="text-2xl font-bold">{t(title)}</h1>
           {subtitle && <p className="mt-1 text-sm text-muted-foreground">{t(subtitle)}</p>}
           <div className="mt-6">{children}</div>
