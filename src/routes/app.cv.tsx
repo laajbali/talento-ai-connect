@@ -230,7 +230,10 @@ function CvTemplatePreview({ cv, template }: { cv: CvSection; template: string }
     const frame = frameRef.current;
     if (!frame) return;
 
-    const resize = () => setScale(frame.clientWidth / CV_DOC_WIDTH);
+    const resize = () => {
+      const desktop = window.matchMedia("(min-width: 640px)").matches;
+      setScale(desktop ? 0.28 : frame.clientWidth / CV_DOC_WIDTH);
+    };
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(frame);
