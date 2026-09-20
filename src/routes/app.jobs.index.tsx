@@ -162,13 +162,14 @@ function JobsPage() {
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-muted" />
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold">Filters</h2>
-              {(draftType !== "all" || draftLocation !== "all") && (
+              {(draftType !== "all" || draftLocation !== "all" || draftSavedOnly) && (
                 <button
                   type="button"
                   className="text-sm font-medium text-primary"
                   onClick={() => {
                     setDraftType("all");
                     setDraftLocation("all");
+                    setDraftSavedOnly(false);
                   }}
                 >
                   Clear all
