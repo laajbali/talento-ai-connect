@@ -88,8 +88,8 @@ function CardActions({
   const { t } = useI18n();
 
   return (
-    <div className="mt-2.5 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
-      <div className="min-w-0 [&>*]:w-full">{primary}</div>
+    <div className="mt-2.5 flex items-center justify-between gap-2">
+      {primary}
       <Button size="sm" variant="outline" onClick={onSave} className="min-w-16 bg-background text-foreground">
         {t(saved ? "Saved" : "Save")}
       </Button>
