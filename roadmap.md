@@ -8,4 +8,4 @@
 - [x] Add Application and rename My CV to CV
 - [x] Keep the requested five-tab order
 - [x] Remove My applications from More
-- [ ] Verify mobile navigation and HR isolation
+- [x] Verify mobile navigation and HR isolation
