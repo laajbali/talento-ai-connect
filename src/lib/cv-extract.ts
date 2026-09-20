@@ -49,6 +49,21 @@ async function extractImage(file: File, onProgress?: CvExtractProgress): Promise
 }
 
 async function extractPdf(file: File, onProgress?: CvExtractProgress): Promise<string> {
+  // PDF.js uses the new Map upsert helper, which is not yet available in every browser.
+  const mapPrototype = Map.prototype as Map<unknown, unknown> & {
+    getOrInsertComputed?: (key: unknown, callback: (key: unknown) => unknown) => unknown;
+  };
+  if (!mapPrototype.getOrInsertComputed) {
+    Object.defineProperty(mapPrototype, "getOrInsertComputed", {
+      configurable: true,
+      value(key: unknown, callback: (key: unknown) => unknown) {
+        if (this.has(key)) return this.get(key);
+        const value = callback(key);
+        this.set(key, value);
+        return value;
+      },
+    });
+  }
   const pdfjs = await import("pdfjs-dist");
   const workerUrl = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
   pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
@@ -143,7 +158,6 @@ export async function extractCvText(
     } else text = await extractPlain(file);
   } catch (error) {
     if (error instanceof CvExtractError) throw error;
-    console.error("CV extraction failed", error);
     throw new CvExtractError(UNREADABLE_MESSAGE);
   }
 
