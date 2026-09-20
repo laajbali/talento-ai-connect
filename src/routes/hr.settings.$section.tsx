@@ -120,7 +120,7 @@ function HrSettings() {
               checked={teamVisible}
               onChange={setTeamVisible}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground sm:text-xs">
               Candidate data is used only for recruitment and is never shared outside your team.
             </p>
           </>
@@ -203,8 +203,8 @@ function Toggle({
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <p className="text-sm font-semibold sm:font-medium">{label}</p>
+        <p className="text-sm text-muted-foreground sm:text-xs">{description}</p>
       </div>
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>

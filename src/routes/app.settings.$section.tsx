@@ -143,7 +143,7 @@ function SettingsSection() {
               checked={alerts}
               onChange={setAlerts}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground sm:text-xs">
               Talento stores only the information you provide and never sells your data to third
               parties. You can delete your account at any time from Contact Us.
             </p>
@@ -230,8 +230,8 @@ function Toggle({
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <p className="text-sm font-semibold sm:font-medium">{label}</p>
+        <p className="text-sm text-muted-foreground sm:text-xs">{description}</p>
       </div>
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>
