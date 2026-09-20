@@ -197,21 +197,93 @@ Return JSON: {"verdict":"one sentence","strong":["2 to 3 points"],"risks":["1 to
 
 /* ---------------- CV screening extraction ---------------- */
 
-const ScreenInput = z.object({ text: z.string().min(20), fileName: z.string().default("CV") });
+const ScreenInput = z.object({
+  text: z.string().min(40),
+  fileName: z.string().default("CV"),
+  targetRole: z.string().default(""),
+});
+
+const str = z.string().catch("").default("");
+const strList = z
+  .array(z.union([z.string(), z.number()]).transform((v) => String(v)))
+  .catch([])
+  .default([])
+  .transform((list) => list.map((s) => s.trim()).filter(Boolean).slice(0, 14));
+
+const ScreenResult = z.object({
+  candidateName: str,
+  name: str,
+  title: str,
+  role: str,
+  matchPercentage: z.coerce.number().catch(0).default(0).transform((n) => Math.max(0, Math.min(100, Math.round(n)))),
+  degree: str,
+  major: str,
+  university: str,
+  gpa: str,
+  graduationYear: z.coerce.number().nullable().catch(null).default(null),
+  location: str,
+  years: z.coerce.number().catch(0).default(0),
+  skills: strList,
+  certifications: strList,
+  languages: strList,
+  strengths: strList,
+  skillGaps: strList,
+  concerns: strList,
+  relevantExperience: strList,
+  education: str,
+  experience: str,
+  projects: z
+    .array(z.object({ name: str, description: str }))
+    .catch([])
+    .default([]),
+  explanation: str,
+  recommendation: str,
+  summary: str,
+});
+
+export type ScreenedCv = z.infer<typeof ScreenResult>;
 
 export const screenCv = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => ScreenInput.parse(d))
-  .handler(async ({ data }) => {
-    const text = await ask(
-      "You extract structured candidate data from CV text. Reply with JSON only.",
-      `CV file: ${data.fileName}
-CV text:
-${data.text.slice(0, 6000)}
+  .handler(async ({ data }): Promise<ScreenedCv> => {
+    const raw = await ask(
+      "You are Talento's AI CV screener. You read real CV text and report only what the CV actually contains. Never invent names, employers, schools or skills. Reply with JSON only, no commentary.",
+      `Screen this CV${data.targetRole ? ` against the target role "${data.targetRole}"` : ""}.
+If the target role is not given, infer the single best-fit role from the CV itself.
+Base every field strictly on the CV text below. If something is not in the CV, use an empty string, empty array, 0 or null.
+matchPercentage is the exception: always judge it yourself as an honest 0-100 fit score of this candidate against the target or inferred role, based on their skills, seniority and experience.
 
-Return JSON:
-{"name":"","title":"","degree":"","major":"","university":"","gpa":"","graduationYear":null,"location":"","years":0,"skills":[""],"certifications":[""],"languages":[""],"projects":[{"name":"","description":""}],"summary":""}`,
+CV file: ${data.fileName}
+CV text:
+"""
+${data.text.slice(0, 12000)}
+"""
+
+Return JSON exactly in this shape:
+{"candidateName":"","title":"","role":"best fit or target role","matchPercentage":0,  // ALWAYS a real 0-100 fit score for that role, never left at 0 unless the candidate is genuinely unsuitable
+"degree":"","major":"","university":"","gpa":"","graduationYear":null,"education":"one line education summary",
+"location":"","years":0,
+"skills":["key skills detected in the CV"],
+"certifications":[""],"languages":[""],
+"strengths":["3 to 4 specific strengths grounded in the CV"],
+"skillGaps":["2 to 4 missing skills for the role"],
+"relevantExperience":["2 to 4 lines: role at company, what they did"],
+"concerns":["0 to 3 potential concerns such as gaps or short tenures"],
+"projects":[{"name":"","description":""}],
+"explanation":"2 sentences explaining why this candidate matches the role, citing CV evidence",
+"recommendation":"one of: Strongly recommend for interview / Recommend for interview / Consider with reservations / Not a fit — plus a short reason",
+"summary":"2 sentence profile summary"}`,
     );
-    return parseJson(text, null);
+    const parsed = parseJson<unknown>(raw, null);
+    if (!parsed || typeof parsed !== "object") {
+      throw new Error("The AI returned an unreadable response. Please try again.");
+    }
+    const result = ScreenResult.parse(parsed);
+    const candidateName = result.candidateName || result.name;
+    if (!candidateName && result.skills.length === 0 && !result.summary) {
+      throw new Error("No candidate details could be read from this CV.");
+    }
+    return { ...result, candidateName, name: candidateName, role: result.role || result.title };
   });
 
 /* ---------------- Role-aware product assistant ---------------- */
