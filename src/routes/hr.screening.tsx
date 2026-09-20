@@ -24,27 +24,14 @@ export const Route = createFileRoute("/hr/screening")({
   component: Screening,
 });
 
-interface Extracted {
-  name?: string;
-  title?: string;
-  degree?: string;
-  major?: string;
-  university?: string;
-  gpa?: string;
-  graduationYear?: number | null;
-  location?: string;
-  years?: number;
-  skills?: string[];
-  certifications?: string[];
-  languages?: string[];
-  projects?: { name: string; description: string }[];
-  summary?: string;
-}
+type Extracted = ScreenedCv;
 
 interface Row {
   id: string;
   fileName: string;
   status: "processing" | "done" | "error";
+  step?: string;
+  error?: string;
   data?: Extracted;
 }
 
@@ -59,25 +46,37 @@ function Screening() {
     const seeds: Row[] = list.map((f) => ({
       id: `${f.name}-${Date.now()}-${Math.random()}`,
       fileName: f.name,
-      status: "processing",
+      status: "processing" as const,
+      step: "Reading file…",
     }));
     setRows((r) => [...seeds, ...r]);
 
-    for (const [i, file] of list.entries()) {
-      const row = seeds[i]!;
-      try {
-        const text = await file.text();
-        const usable = text.replace(/[^\x20-\x7E\n]/g, " ").trim();
-        if (usable.length < 20) throw new Error("unreadable");
-        const data = (await screenCv({
-          data: { text: usable, fileName: file.name },
-        })) as Extracted | null;
-        if (!data) throw new Error("empty");
-        setRows((r) => r.map((x) => (x.id === row.id ? { ...x, status: "done", data } : x)));
-      } catch {
-        setRows((r) => r.map((x) => (x.id === row.id ? { ...x, status: "error" } : x)));
-        toast.error(`Could not read ${file.name}. Text-based PDF, DOC or TXT works best.`);
-      }
+    const update = (id: string, patch: Partial<Row>) =>
+      setRows((r) => r.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+
+    await Promise.all(
+      list.map(async (file, i) => {
+        const row = seeds[i]!;
+        try {
+          const text = await extractCvText(file);
+          update(row.id, { step: "Analysing with AI…" });
+          const data = (await screenCv({
+            data: { text, fileName: file.name },
+          })) as Extracted | null;
+          if (!data) throw new Error("The AI returned no result. Please try again.");
+          update(row.id, { status: "done", data, step: undefined, error: undefined });
+        } catch (err) {
+          const message =
+            err instanceof CvExtractError
+              ? err.message
+              : err instanceof Error && err.message
+                ? err.message
+                : "Screening failed. Please try again.";
+          update(row.id, { status: "error", error: message, step: undefined });
+          toast.error(`${file.name}: ${message}`);
+        }
+      }),
+    );
     }
   };
 
