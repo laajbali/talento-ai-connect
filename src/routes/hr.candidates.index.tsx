@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CANDIDATES } from "@/lib/data";
 import { useI18n } from "@/lib/i18n";
 import { rankCandidates } from "@/lib/matching";
@@ -36,7 +35,6 @@ export const Route = createFileRoute("/hr/candidates/")({
   component: Candidates,
 });
 
-const STATUS_FILTERS = ["All", "Applied", "Under Review", "Shortlisted", "Interview", "Rejected"];
 const STAGES: ApplicationStatus[] = [
   "Applied",
   "Under Review",
@@ -281,15 +279,6 @@ function Candidates() {
         </div>
       )}
 
-      <Tabs value={statusFilter} onValueChange={setStatusFilter} className="mb-4">
-        <TabsList className="h-8 max-w-full justify-start overflow-x-auto p-1">
-          {STATUS_FILTERS.map((f) => (
-            <TabsTrigger key={f} value={f} className="h-7 shrink-0 px-3 text-xs">
-              {t(f)}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
 
       {results.length === 0 ? (
         <EmptyState
