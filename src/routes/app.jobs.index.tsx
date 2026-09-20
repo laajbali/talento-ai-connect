@@ -236,21 +236,6 @@ function JobsPage() {
         </div>
       )}
 
-      <div className="mb-3 flex justify-end">
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger
-            aria-label="Sort"
-            className="h-9 w-auto gap-1 rounded-lg border-border bg-card px-3 text-xs shadow-sm"
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="match">Best match</SelectItem>
-            <SelectItem value="recent">Most recent</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
       {results.length === 0 ? (
         <EmptyState
           icon={<SearchX className="h-6 w-6" />}

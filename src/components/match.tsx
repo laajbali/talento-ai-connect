@@ -165,11 +165,11 @@ export function JobCard({
         saved={saved}
         onSave={onSave}
         primary={
-        <Button asChild size="sm" variant="outline" className="bg-background text-foreground">
-          <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
-            {t("View details")}
-          </Link>
-        </Button>
+          <Button asChild size="sm">
+            <Link to="/app/jobs/$jobId" params={{ jobId: job.id }}>
+              {t("View details")}
+            </Link>
+          </Button>
         }
       />
     </article>
