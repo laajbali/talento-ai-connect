@@ -84,15 +84,21 @@ function JobApplicants() {
         </div>
       </section>
 
-      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="mb-4">
-        <TabsList className="w-full justify-start overflow-x-auto">
-          {(["All", ...STAGES] as const).map((t) => (
-            <TabsTrigger key={t} value={t}>
-              {t}
-            </TabsTrigger>
+      <Select value={tab} onValueChange={(v) => setTab(v as ApplicationStatus | "All")}>
+        <SelectTrigger
+          aria-label="Filter applicants by status"
+          className="mb-4 h-9 w-auto min-w-36 shrink-0 gap-1 rounded-lg border-border bg-card px-3 text-xs shadow-sm"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {(["All", ...STAGES] as const).map((s) => (
+            <SelectItem key={s} value={s} className="text-xs">
+              {t(s)}
+            </SelectItem>
           ))}
-        </TabsList>
-      </Tabs>
+        </SelectContent>
+      </Select>
 
       {list.length === 0 ? (
         <EmptyState
