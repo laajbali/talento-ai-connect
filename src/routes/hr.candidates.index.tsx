@@ -36,6 +36,7 @@ function Candidates() {
   const { state, update } = useStore();
   const [jobId, setJobId] = useState(state.jobs[0]!.id);
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("match");
   const [availability, setAvailability] = useState("all");
   const [location, setLocation] = useState("all");
   const [filtersOpen, setFiltersOpen] = useState(false);
