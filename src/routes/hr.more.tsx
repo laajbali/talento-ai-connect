@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Bell,
-  Bookmark,
   Building2,
   ChevronRight,
   HelpCircle,
@@ -36,9 +35,6 @@ function HrMore() {
         <Item to="/hr/company" icon={<Building2 className="h-4 w-4" />} label={t("Company Profile")} />
       </Group>
 
-      <Group title={t("Saved & hiring")}>
-        <Item to="/hr/saved" icon={<Bookmark className="h-4 w-4" />} label={t("Saved Candidates")} />
-      </Group>
 
       <Group title={t("Preferences")}>
         <Item
@@ -83,7 +79,7 @@ function Item({
   label,
   hint,
 }: {
-  to: "/hr/company" | "/hr/notifications" | "/hr/assistant" | "/hr/saved";
+  to: "/hr/company" | "/hr/notifications" | "/hr/assistant";
   icon: React.ReactNode;
   label: string;
   hint?: string;
