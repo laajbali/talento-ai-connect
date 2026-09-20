@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Bell,
   BookMarked,
-  Briefcase,
   ChevronRight,
   FileText,
   HelpCircle,
@@ -38,11 +37,6 @@ function More() {
       <Group title={t("Account")}>
         <Item to="/app/profile" icon={<User className="h-4 w-4" />} label={t("Personal information")} />
         <Item to="/app/cv" icon={<FileText className="h-4 w-4" />} label={t("My CV")} />
-        <Item
-          to="/app/applications"
-          icon={<Briefcase className="h-4 w-4" />}
-          label={t("My applications")}
-        />
       </Group>
 
       <Group title={t("Career tools")}>
@@ -95,7 +89,7 @@ function Item({
   label,
   hint,
 }: {
-  to: "/app/profile" | "/app/cv" | "/app/applications" | "/app/saved" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications" | "/app/assistant";
+  to: "/app/profile" | "/app/cv" | "/app/saved" | "/app/analysis" | "/app/gap" | "/app/path" | "/app/notifications" | "/app/assistant";
   icon: React.ReactNode;
   label: string;
   hint?: string;
