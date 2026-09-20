@@ -243,8 +243,26 @@ function CandidateProfile() {
             </div>
           </div>
 
-          <div className="surface space-y-2 p-5">
-            <p className="text-sm font-semibold">Hiring stage</p>
+          <div className="surface p-5">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-sm font-semibold">Hiring stage</p>
+              <button
+                type="button"
+                aria-label={saved ? "Remove from saved" : "Save candidate"}
+                title={saved ? "Remove from saved" : "Save candidate"}
+                onClick={() =>
+                  update((s) => ({
+                    ...s,
+                    savedCandidates: saved
+                      ? s.savedCandidates.filter((c) => c !== candidate.id)
+                      : [...s.savedCandidates, candidate.id],
+                  }))
+                }
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                <Bookmark className={`h-4 w-4 ${saved ? "fill-current text-primary" : ""}`} />
+              </button>
+            </div>
             <Select
               value={stage}
               onValueChange={(v) => {
@@ -255,7 +273,7 @@ function CandidateProfile() {
                 toast.success(`${candidate.name} moved to ${v}.`);
               }}
             >
-              <SelectTrigger aria-label="Hiring stage">
+              <SelectTrigger className="mt-2" aria-label="Hiring stage">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -267,38 +285,28 @@ function CandidateProfile() {
               </SelectContent>
             </Select>
 
-            <Button
-              className="w-full"
-              onClick={() => {
-                update((s) => ({
-                  ...s,
-                  candidateStages: { ...s.candidateStages, [candidate.id]: "Shortlisted" },
-                }));
-                toast.success(`${candidate.name} shortlisted.`);
-              }}
-            >
-              <Star className="mr-1 h-4 w-4" /> Shortlist candidate
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() =>
-                update((s) => ({
-                  ...s,
-                  savedCandidates: saved
-                    ? s.savedCandidates.filter((c) => c !== candidate.id)
-                    : [...s.savedCandidates, candidate.id],
-                }))
-              }
-            >
-              {saved ? "Remove from saved" : "Save candidate"}
-            </Button>
-            <Button variant="outline" className="w-full" onClick={() => setContactOpen(true)}>
-              <Mail className="mr-1 h-4 w-4" /> Contact candidate
-            </Button>
-            <Button variant="ghost" className="w-full" onClick={() => setCvOpen(true)}>
-              View CV
-            </Button>
+            {stage !== "Shortlisted" && (
+              <Button
+                className="mt-3 w-full"
+                onClick={() => {
+                  update((s) => ({
+                    ...s,
+                    candidateStages: { ...s.candidateStages, [candidate.id]: "Shortlisted" },
+                  }));
+                  toast.success(`${candidate.name} shortlisted.`);
+                }}
+              >
+                <Star className="mr-1 h-4 w-4" /> Shortlist candidate
+              </Button>
+            )}
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Button variant="outline" size="sm" className="h-9" onClick={() => setContactOpen(true)}>
+                <Mail className="mr-1 h-4 w-4" /> Contact candidate
+              </Button>
+              <Button variant="outline" size="sm" className="h-9" onClick={() => setCvOpen(true)}>
+                View CV
+              </Button>
+            </div>
           </div>
         </aside>
       </div>
