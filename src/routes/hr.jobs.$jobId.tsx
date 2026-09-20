@@ -13,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CANDIDATES } from "@/lib/data";
+import { useI18n } from "@/lib/i18n";
 import { rankCandidates } from "@/lib/matching";
 import { useStore } from "@/lib/store";
 import type { ApplicationStatus } from "@/lib/types";
@@ -40,10 +40,20 @@ const STAGES: ApplicationStatus[] = [
   "Hired",
 ];
 
+const FILTERS: (ApplicationStatus | "All")[] = [
+  "All",
+  "Applied",
+  "Under Review",
+  "Shortlisted",
+  "Interview",
+  "Rejected",
+];
+
 function JobApplicants() {
   const { jobId } = useParams({ from: "/hr/jobs/$jobId" });
+  const { t } = useI18n();
   const { state, update } = useStore();
-  const [tab, setTab] = useState<"All" | ApplicationStatus>("All");
+  const [tab, setTab] = useState<ApplicationStatus | "All">("All");
   const job = state.jobs.find((j) => j.id === jobId);
 
   if (!job) {
@@ -83,15 +93,21 @@ function JobApplicants() {
         </div>
       </section>
 
-      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="mb-4">
-        <TabsList className="w-full justify-start overflow-x-auto">
-          {(["All", ...STAGES] as const).map((t) => (
-            <TabsTrigger key={t} value={t}>
-              {t}
-            </TabsTrigger>
+      <Select value={tab} onValueChange={(v) => setTab(v as ApplicationStatus | "All")}>
+        <SelectTrigger
+          aria-label="Filter applicants by status"
+          className="mb-4 h-9 w-auto min-w-36 shrink-0 gap-1 rounded-lg border-border bg-card px-3 text-xs shadow-sm"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {FILTERS.map((f) => (
+            <SelectItem key={f} value={f} className="text-xs">
+              {t(f)}
+            </SelectItem>
           ))}
-        </TabsList>
-      </Tabs>
+        </SelectContent>
+      </Select>
 
       {list.length === 0 ? (
         <EmptyState
