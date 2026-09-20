@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Bell,
+  Bookmark,
   Building2,
   ChevronRight,
   HelpCircle,
   LogOut,
+  ScanText,
   Shield,
   Sparkles,
 } from "lucide-react";
@@ -85,7 +87,7 @@ function Item({
   label,
   hint,
 }: {
-  to: "/hr/company" | "/hr/notifications" | "/hr/assistant";
+  to: "/hr/company" | "/hr/notifications" | "/hr/assistant" | "/hr/screening" | "/hr/saved";
   icon: React.ReactNode;
   label: string;
   hint?: string;
