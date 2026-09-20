@@ -63,6 +63,14 @@ function JobApplicants() {
     );
   }
 
+  const toggleSave = (id: string) =>
+    update((s) => ({
+      ...s,
+      savedCandidates: s.savedCandidates.includes(id)
+        ? s.savedCandidates.filter((c) => c !== id)
+        : [...s.savedCandidates, id],
+    }));
+
   const ranked = rankCandidates(job, CANDIDATES);
   const list = ranked.filter(
     ({ candidate }) => tab === "All" || (state.candidateStages[candidate.id] ?? "Applied") === tab,
