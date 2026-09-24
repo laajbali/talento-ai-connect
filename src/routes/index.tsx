@@ -96,7 +96,7 @@ function Landing() {
                 ["Career Path", "Personalized Steps"],
               ].map(([v, l]) => (
                 <div key={l} className="min-w-0 rounded-xl bg-background/70 px-2 py-3">
-                  <dt className="truncate text-sm font-bold text-primary sm:text-lg">{v}</dt>
+                  <dt className="text-sm font-bold leading-tight text-primary sm:text-lg">{v}</dt>
                   <dd className="mt-0.5 text-[10px] leading-tight text-muted-foreground sm:text-[11px]">{l}</dd>
                 </div>
               ))}
