@@ -84,8 +84,13 @@ function CvBuilder() {
       set({ cv: result, cvSource: "ai", targetRole: answers.targetRole });
       toast.success("Your CV is ready.");
       navigate({ to: "/app/cv" });
-    } catch {
-      toast.error("The AI could not generate your CV right now. Please try again.");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "";
+      toast.error(
+        /credits|busy/i.test(msg)
+          ? msg
+          : "The AI could not generate your CV right now. Please try again.",
+      );
     } finally {
       setLoading(false);
     }

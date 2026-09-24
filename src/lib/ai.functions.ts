@@ -24,14 +24,21 @@ function parseJson<T>(text: string, fallback: T): T {
 
 async function ask(system: string, prompt: string) {
   const { getModel } = await import("./ai-gateway.server");
-  const result = streamText({
-    model: getModel(),
-    system,
-    prompt,
-    maxRetries: 0,
-    providerOptions: { lovable: { reasoningEffort: "low" } },
-  });
-  return result.text;
+  try {
+    const result = streamText({
+      model: getModel(),
+      system,
+      prompt,
+      maxRetries: 0,
+      providerOptions: { lovable: { reasoningEffort: "low" } },
+    });
+    return await result.text;
+  } catch (e: any) {
+    const status = e?.statusCode ?? e?.lastError?.statusCode ?? e?.cause?.statusCode;
+    if (status === 402) throw new Error("AI credits have run out. Please add credits to your workspace, then try again.");
+    if (status === 429) throw new Error("The AI is busy right now. Please wait a moment and try again.");
+    throw e;
+  }
 }
 
 /* ---------------- CV generation ---------------- */
