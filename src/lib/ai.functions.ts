@@ -36,18 +36,19 @@ async function ask(system: string, prompt: string) {
 
 /* ---------------- CV generation ---------------- */
 
+const str = z.string().nullish().transform((v) => (v ?? "").trim());
 const CvInput = z.object({
-  fullName: z.string().min(1),
-  targetRole: z.string().min(1),
-  email: z.string().min(1),
-  phone: z.string().default(""),
-  location: z.string().default(""),
-  education: z.string().default(""),
-  experience: z.string().default(""),
-  skills: z.string().default(""),
-  projects: z.string().default(""),
-  certifications: z.string().default(""),
-  languages: z.string().default(""),
+  fullName: str,
+  targetRole: str,
+  email: str,
+  phone: str,
+  location: str,
+  education: str,
+  experience: str,
+  skills: str,
+  projects: str,
+  certifications: str,
+  languages: str,
 });
 
 export const generateCv = createServerFn({ method: "POST" })
