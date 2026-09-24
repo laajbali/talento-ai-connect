@@ -79,7 +79,21 @@ Return JSON exactly in this shape:
 "certifications":[""],
 "languages":[""]}`,
     );
-    return parseJson(text, null);
+    const cv = parseJson<Record<string, any> | null>(text, null);
+    if (!cv || typeof cv !== "object") return null;
+    const p = cv.personal ?? {};
+    cv.personal = {
+      fullName: p.fullName || data.fullName,
+      title: p.title || data.targetRole,
+      email: p.email || data.email,
+      phone: p.phone || data.phone,
+      location: p.location || data.location,
+      summary: p.summary || "",
+    };
+    for (const k of ["education", "skills", "experience", "projects", "certifications", "languages"]) {
+      if (!Array.isArray(cv[k])) cv[k] = [];
+    }
+    return cv;
   });
 
 /* ---------------- Career analysis ---------------- */
