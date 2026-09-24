@@ -88,16 +88,16 @@ function Landing() {
               Talento helps people understand where they stand, what they are missing, and how to get
               there — while helping companies find and evaluate the right talent faster.
             </p>
-            <dl className="mt-10 grid max-w-md grid-cols-4 gap-3 text-center">
+            <dl className="mt-10 grid max-w-md grid-cols-2 gap-2 text-center sm:max-w-lg sm:grid-cols-4 sm:gap-3">
               {[
-                ["AI-Powered", "Candidate Analysis"],
-                ["Multi-CV", "AI Screening"],
-                ["Explainable", "Match Scores"],
-                ["Personalized", "Career Paths"],
+                ["AI Analysis", "Candidate Profiles"],
+                ["CV Screening", "Multiple CVs"],
+                ["Smart Matching", "Explainable Scores"],
+                ["Career Path", "Personalized Steps"],
               ].map(([v, l]) => (
-                <div key={l} className="rounded-xl bg-background/70 px-2 py-3">
-                  <dt className="text-lg font-bold text-primary">{v}</dt>
-                  <dd className="text-[11px] text-muted-foreground">{l}</dd>
+                <div key={l} className="min-w-0 rounded-xl bg-background/70 px-2 py-3">
+                  <dt className="truncate text-sm font-bold text-primary sm:text-lg">{v}</dt>
+                  <dd className="mt-0.5 text-[10px] leading-tight text-muted-foreground sm:text-[11px]">{l}</dd>
                 </div>
               ))}
             </dl>
