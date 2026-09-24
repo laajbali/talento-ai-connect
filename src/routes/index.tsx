@@ -90,10 +90,10 @@ function Landing() {
             </p>
             <dl className="mt-10 grid max-w-md grid-cols-4 gap-3 text-center">
               {[
-                ["10K+", "Talents"],
-                ["500+", "Companies"],
-                ["3x", "Faster hiring"],
-                ["95%", "Match accuracy"],
+                ["AI-Powered", "Candidate Analysis"],
+                ["Multi-CV", "AI Screening"],
+                ["Explainable", "Match Scores"],
+                ["Personalized", "Career Paths"],
               ].map(([v, l]) => (
                 <div key={l} className="rounded-xl bg-background/70 px-2 py-3">
                   <dt className="text-lg font-bold text-primary">{v}</dt>
