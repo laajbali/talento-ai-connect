@@ -24,30 +24,38 @@ function parseJson<T>(text: string, fallback: T): T {
 
 async function ask(system: string, prompt: string) {
   const { getModel } = await import("./ai-gateway.server");
-  const result = streamText({
-    model: getModel(),
-    system,
-    prompt,
-    maxRetries: 0,
-    providerOptions: { lovable: { reasoningEffort: "low" } },
-  });
-  return result.text;
+  try {
+    const result = streamText({
+      model: getModel(),
+      system,
+      prompt,
+      maxRetries: 0,
+      providerOptions: { lovable: { reasoningEffort: "low" } },
+    });
+    return await result.text;
+  } catch (e: any) {
+    const status = e?.statusCode ?? e?.lastError?.statusCode ?? e?.cause?.statusCode;
+    if (status === 402) throw new Error("AI credits have run out. Please add credits to your workspace, then try again.");
+    if (status === 429) throw new Error("The AI is busy right now. Please wait a moment and try again.");
+    throw e;
+  }
 }
 
 /* ---------------- CV generation ---------------- */
 
+const cvStr = z.string().nullish().transform((v) => (v ?? "").trim());
 const CvInput = z.object({
-  fullName: z.string().min(1),
-  targetRole: z.string().min(1),
-  email: z.string().min(1),
-  phone: z.string().default(""),
-  location: z.string().default(""),
-  education: z.string().default(""),
-  experience: z.string().default(""),
-  skills: z.string().default(""),
-  projects: z.string().default(""),
-  certifications: z.string().default(""),
-  languages: z.string().default(""),
+  fullName: cvStr,
+  targetRole: cvStr,
+  email: cvStr,
+  phone: cvStr,
+  location: cvStr,
+  education: cvStr,
+  experience: cvStr,
+  skills: cvStr,
+  projects: cvStr,
+  certifications: cvStr,
+  languages: cvStr,
 });
 
 export const generateCv = createServerFn({ method: "POST" })
@@ -78,7 +86,21 @@ Return JSON exactly in this shape:
 "certifications":[""],
 "languages":[""]}`,
     );
-    return parseJson(text, null);
+    const cv = parseJson<Record<string, any> | null>(text, null);
+    if (!cv || typeof cv !== "object") return null;
+    const p = cv["personal"] ?? {};
+    cv["personal"] = {
+      fullName: p.fullName || data.fullName,
+      title: p.title || data.targetRole,
+      email: p.email || data.email,
+      phone: p.phone || data.phone,
+      location: p.location || data.location,
+      summary: p.summary || "",
+    };
+    for (const k of ["education", "skills", "experience", "projects", "certifications", "languages"]) {
+      if (!Array.isArray(cv[k])) cv[k] = [];
+    }
+    return cv;
   });
 
 /* ---------------- Career analysis ---------------- */
