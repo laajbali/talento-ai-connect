@@ -43,19 +43,19 @@ async function ask(system: string, prompt: string) {
 
 /* ---------------- CV generation ---------------- */
 
-const str = z.string().nullish().transform((v) => (v ?? "").trim());
+const cvStr = z.string().nullish().transform((v) => (v ?? "").trim());
 const CvInput = z.object({
-  fullName: str,
-  targetRole: str,
-  email: str,
-  phone: str,
-  location: str,
-  education: str,
-  experience: str,
-  skills: str,
-  projects: str,
-  certifications: str,
-  languages: str,
+  fullName: cvStr,
+  targetRole: cvStr,
+  email: cvStr,
+  phone: cvStr,
+  location: cvStr,
+  education: cvStr,
+  experience: cvStr,
+  skills: cvStr,
+  projects: cvStr,
+  certifications: cvStr,
+  languages: cvStr,
 });
 
 export const generateCv = createServerFn({ method: "POST" })
@@ -88,8 +88,8 @@ Return JSON exactly in this shape:
     );
     const cv = parseJson<Record<string, any> | null>(text, null);
     if (!cv || typeof cv !== "object") return null;
-    const p = cv.personal ?? {};
-    cv.personal = {
+    const p = cv["personal"] ?? {};
+    cv["personal"] = {
       fullName: p.fullName || data.fullName,
       title: p.title || data.targetRole,
       email: p.email || data.email,
