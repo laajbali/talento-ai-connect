@@ -38,7 +38,7 @@ function SeekerHome() {
               You are {readiness.score}% ready for {state.targetRole} roles.
             </p>
           </div>
-          <MatchRing value={readiness.score} label="Readiness" size={92} />
+          <MatchRing value={readiness.score} label="Readiness" size={92} valueClassName="text-lg leading-tight" labelClassName="text-xs font-normal" />
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button asChild size="sm">
@@ -85,15 +85,15 @@ function SeekerHome() {
       )}
 
       <section className="surface mt-6 p-5">
-        <p className="flex items-center gap-2 text-sm font-semibold">
+        <h2 className="flex items-center gap-2 font-semibold">
           <AiBadge /> Career Development Suggestions
-        </p>
+        </h2>
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
           <li>• Learn Power BI — it appears in 4 of your 6 recommended jobs.</li>
           <li>• Add one analytics project to your CV to close the experience gap.</li>
           <li>• Ask for an English proficiency certificate to strengthen your profile.</li>
         </ul>
-        <Button asChild className="mt-4 h-12 w-full justify-between px-4 text-sm font-semibold">
+        <Button asChild className="mt-4 h-12 w-full justify-between px-4 text-xs font-medium">
           <Link to="/app/path">
             Open career path <ArrowRight />
           </Link>
