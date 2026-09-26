@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as HrRouteImport } from './routes/hr'
+import { Route as ReferencesRouteImport } from './routes/references'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAnalysisRouteImport } from './routes/app.analysis'
 import { Route as AppApplicationsRouteImport } from './routes/app.applications'
@@ -66,6 +67,11 @@ const AuthRoute = AuthRouteImport.update({
 const HrRoute = HrRouteImport.update({
   id: '/hr',
   path: '/hr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReferencesRoute = ReferencesRouteImport.update({
+  id: '/references',
+  path: '/references',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/hr': typeof HrRouteWithChildren
+  '/references': typeof ReferencesRoute
   '/app/analysis': typeof AppAnalysisRoute
   '/app/applications': typeof AppApplicationsRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/references': typeof ReferencesRoute
   '/app/analysis': typeof AppAnalysisRoute
   '/app/applications': typeof AppApplicationsRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -322,6 +330,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/hr': typeof HrRouteWithChildren
+  '/references': typeof ReferencesRoute
   '/app/analysis': typeof AppAnalysisRoute
   '/app/applications': typeof AppApplicationsRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -364,6 +373,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/hr'
+    | '/references'
     | '/app/analysis'
     | '/app/applications'
     | '/app/assistant'
@@ -401,6 +411,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/references'
     | '/app/analysis'
     | '/app/applications'
     | '/app/assistant'
@@ -441,6 +452,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/auth'
     | '/hr'
+    | '/references'
     | '/app/analysis'
     | '/app/applications'
     | '/app/assistant'
@@ -482,6 +494,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   HrRoute: typeof HrRouteWithChildren
+  ReferencesRoute: typeof ReferencesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -512,6 +525,13 @@ declare module '@tanstack/react-router' {
       path: '/hr'
       fullPath: '/hr'
       preLoaderRoute: typeof HrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/references': {
+      id: '/references'
+      path: '/references'
+      fullPath: '/references'
+      preLoaderRoute: typeof ReferencesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/': {
@@ -852,6 +872,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   HrRoute: HrRouteWithChildren,
+  ReferencesRoute: ReferencesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
