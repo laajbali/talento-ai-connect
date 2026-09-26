@@ -63,8 +63,8 @@ function Profile() {
           value={pct}
           label={t("Complete")}
           size={84}
-          valueClassName="text-[20px] leading-none sm:text-[21px]"
-          labelClassName="text-[11px] sm:text-[10px]"
+          valueClassName="text-[15px] font-semibold leading-none"
+          labelClassName="mt-0.5 text-[9px]"
         />
         <div className="min-w-0">
           <p className="text-[17px] leading-tight font-semibold sm:text-base" data-no-translate>{form.fullName}</p>
