@@ -7,8 +7,8 @@ import { AiBadge, EmptyState } from "@/components/brand";
 import { SkillChips } from "@/components/match";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { ScreenedCv } from "@/lib/ai.functions";
-import { screenCv } from "@/lib/ai.functions";
+import { demoEngine, type ScreenedCv } from "@/lib/demo-engine";
+import { useStore } from "@/lib/store";
 import { CvExtractError, extractCvText } from "@/lib/cv-extract";
 
 export const Route = createFileRoute("/hr/screening")({
@@ -40,6 +40,7 @@ interface Row {
 function Screening() {
   const [rows, setRows] = useState<Row[]>([]);
   const [query, setQuery] = useState("");
+  const { state } = useStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = async (files: FileList | null) => {
@@ -65,11 +66,10 @@ function Screening() {
         if (!file) continue;
         try {
           const text = await extractCvText(file, (step) => update(row.id, { step }));
-          update(row.id, { step: "Analysing with AI…" });
-          const data = (await screenCv({
-            data: { text, fileName: file.name },
-          })) as Extracted | null;
-          if (!data) throw new Error("The AI returned no result. Please try again.");
+          const data = await demoEngine.analyzeCV(
+            { text, fileName: file.name, jobs: state.jobs },
+            (step) => update(row.id, { step }),
+          );
           update(row.id, { status: "done", data, step: "", error: "" });
         } catch (err) {
           const message =
