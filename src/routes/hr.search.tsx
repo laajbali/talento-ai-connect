@@ -9,8 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { demoEngine } from "@/lib/demo-engine";
 import { CANDIDATES } from "@/lib/data";
-import { rankCandidates } from "@/lib/matching";
-import { useStore } from "@/lib/store";
 import type { Candidate } from "@/lib/types";
 
 export const Route = createFileRoute("/hr/search")({
@@ -50,7 +48,6 @@ const EXAMPLES = [
 ];
 
 function AiSearch() {
-  const { state } = useStore();
   const [query, setQuery] = useState("");
   const [criteria, setCriteria] = useState<Criteria | null>(null);
   const [matches, setMatches] = useState<
@@ -70,7 +67,11 @@ function AiSearch() {
     setCriteria(null);
     setMatches(null);
     try {
-      const { criteria: parsed, results } = await demoEngine.searchCandidates(q, CANDIDATES, setStep);
+      const { criteria: parsed, results } = await demoEngine.searchCandidates(
+        q,
+        CANDIDATES,
+        setStep,
+      );
       setCriteria(parsed);
       setMatches(results);
     } catch {
@@ -80,7 +81,6 @@ function AiSearch() {
       setLoading(false);
     }
   };
-
 
   return (
     <AppShell variant="employer" title="AI candidate search">
@@ -176,7 +176,9 @@ function AiSearch() {
                       {candidate.initials}
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate font-semibold" data-no-translate>{candidate.name}</p>
+                      <p className="truncate font-semibold" data-no-translate>
+                        {candidate.name}
+                      </p>
                       <p className="truncate text-xs text-muted-foreground">
                         {candidate.degree} in {candidate.major} · {candidate.university}
                       </p>
@@ -192,8 +194,12 @@ function AiSearch() {
                     <SkillChips skills={candidate.skills.slice(0, 6)} />
                   </div>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    {matched.length ? `✓ Matches: ${matched.join(", ")}.` : "No requirements matched."}
-                    {missing.length ? ` ⚠ Missing: ${missing.join(", ")}.` : " All requirements met."}
+                    {matched.length
+                      ? `✓ Matches: ${matched.join(", ")}.`
+                      : "No requirements matched."}
+                    {missing.length
+                      ? ` ⚠ Missing: ${missing.join(", ")}.`
+                      : " All requirements met."}
                   </p>
                   <Button asChild size="sm" variant="outline" className="mt-3 w-full">
                     <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>

@@ -23,6 +23,8 @@ function parseJson<T>(text: string, fallback: T): T {
 }
 
 async function ask(system: string, prompt: string) {
+  const { DEMO_MODE } = await import("./demo-engine");
+  if (DEMO_MODE) throw new Error("External AI is disabled while Talento runs in demo mode.");
   const { getModel } = await import("./ai-gateway.server");
   try {
     const result = streamText({
