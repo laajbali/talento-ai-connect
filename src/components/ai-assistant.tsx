@@ -5,7 +5,7 @@ import { AppShell, PageHeader } from "@/components/app-shell";
 import { AiBadge } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { askAssistant } from "@/lib/ai.functions";
+import { demoEngine } from "@/lib/demo-engine";
 import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
 import type { Role } from "@/lib/types";
@@ -50,17 +50,7 @@ export function AiAssistant({ role }: { role: Role }) {
     setInput("");
     setLoading(true);
     try {
-      const answer = await askAssistant({
-        data: {
-          role,
-          question: clean,
-          history: nextMessages.slice(-6).map(({ role: messageRole, content }) => ({ role: messageRole, content })),
-          context:
-            role === "seeker"
-              ? `Target role: ${state.targetRole}. CV template: ${state.cvTemplate}. Saved jobs: ${state.savedJobs.length}. Applications: ${state.applications.length}.`
-              : `Company: ${state.company.name}. Jobs: ${state.jobs.length}. Saved candidates: ${state.savedCandidates.length}.`,
-        },
-      });
+      const answer = await demoEngine.answerAssistant(role, clean, state);
       if (!answer?.trim()) throw new Error("The assistant returned an empty response.");
       setMessages((current) => [
         ...current,
@@ -131,7 +121,7 @@ export function AiAssistant({ role }: { role: Role }) {
               <span className="grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-foreground">
                 <Bot className="h-4 w-4" />
               </span>
-              {t("Thinking…")}
+              {t("Analyzing…")}
             </div>
           )}
         </div>

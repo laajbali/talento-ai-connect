@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { generateCv } from "@/lib/ai.functions";
+import { demoEngine } from "@/lib/demo-engine";
 import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
 import type { CvSection } from "@/lib/types";
@@ -57,6 +57,7 @@ function CvBuilder() {
     languages: state.seeker.languages.join(", "),
   });
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState("");
   const [manual, setManual] = useState<CvSection>(state.cv);
 
   const current = questions[step]!;
@@ -64,8 +65,8 @@ function CvBuilder() {
   const runAi = async () => {
     setLoading(true);
     try {
-      const result = (await generateCv({
-        data: {
+      const result = await demoEngine.generateCV(
+        {
           fullName: state.seeker.fullName,
           email: state.seeker.email,
           phone: state.seeker.phone,
@@ -78,7 +79,8 @@ function CvBuilder() {
           certifications: answers.certifications,
           languages: answers.languages,
         },
-      })) as CvSection | null;
+        setLoadingStep,
+      );
 
       if (!result || !result.personal) throw new Error("empty");
       set({ cv: result, cvSource: "ai", targetRole: answers.targetRole });
@@ -86,11 +88,7 @@ function CvBuilder() {
       navigate({ to: "/app/cv" });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
-      toast.error(
-        /credits|busy/i.test(msg)
-          ? msg
-          : "The AI could not generate your CV right now. Please try again.",
-      );
+      toast.error(msg && msg !== "empty" ? msg : "Your CV could not be generated. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -198,7 +196,7 @@ function CvBuilder() {
               </Button>
             ) : (
               <Button className="flex-1" onClick={runAi} disabled={loading}>
-                {loading ? "Generating your CV…" : "Generate my CV"}
+                {loading ? loadingStep || "Preparing your CV…" : "Generate my CV"}
               </Button>
             )}
           </div>
