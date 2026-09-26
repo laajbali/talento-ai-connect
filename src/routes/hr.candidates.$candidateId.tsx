@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { matchInsight } from "@/lib/ai.functions";
+import { demoEngine } from "@/lib/demo-engine";
 import { candidateById } from "@/lib/data";
 import { candidateToProfile, computeMatch } from "@/lib/matching";
 import { useStore } from "@/lib/store";
@@ -64,6 +64,7 @@ function CandidateProfile() {
   const [jobId, setJobId] = useState(state.jobs[0]!.id);
   const [insight, setInsight] = useState<Insight | null>(null);
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState("");
   const [contactOpen, setContactOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [cvOpen, setCvOpen] = useState(false);
@@ -93,15 +94,7 @@ function CandidateProfile() {
   const runInsight = async () => {
     setLoading(true);
     try {
-      const result = (await matchInsight({
-        data: {
-          candidate: `${candidate.name}, ${candidate.degree} in ${candidate.major}, ${candidate.years} years experience, skills: ${candidate.skills.join(", ")}`,
-          job: `${job.title} requiring ${job.skills.join(", ")}, ${job.minYears}+ years`,
-          score: match.score,
-          matching: match.matching,
-          missing: match.missing,
-        },
-      })) as Insight | null;
+      const result: Insight = await demoEngine.explainCandidateMatch(candidate, job, setStep);
       if (!result?.verdict) throw new Error("empty");
       setInsight(result);
     } catch {
@@ -175,7 +168,7 @@ function CandidateProfile() {
                 <AiBadge /> AI match insights
               </h2>
               <Button size="sm" onClick={runInsight} disabled={loading}>
-                {loading ? "Analysing…" : insight ? "Run again" : "Generate insight"}
+                {loading ? step || "Analysing…" : insight ? "Run again" : "Generate insight"}
               </Button>
             </div>
             {loading && (
