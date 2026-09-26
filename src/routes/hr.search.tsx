@@ -7,7 +7,7 @@ import { AiBadge, EmptyState } from "@/components/brand";
 import { ScorePill, SkillChips } from "@/components/match";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { parseCandidateQuery } from "@/lib/ai.functions";
+import { demoEngine } from "@/lib/demo-engine";
 import { CANDIDATES } from "@/lib/data";
 import { rankCandidates } from "@/lib/matching";
 import { useStore } from "@/lib/store";
@@ -29,6 +29,8 @@ export const Route = createFileRoute("/hr/search")({
 });
 
 interface Criteria {
+  university?: string;
+  minGpa?: number | null;
   skills?: string[];
   major?: string;
   degree?: string;
@@ -51,7 +53,10 @@ function AiSearch() {
   const { state } = useStore();
   const [query, setQuery] = useState("");
   const [criteria, setCriteria] = useState<Criteria | null>(null);
-  const [matches, setMatches] = useState<Candidate[] | null>(null);
+  const [matches, setMatches] = useState<
+    { candidate: Candidate; score: number; matched: string[]; missing: string[] }[] | null
+  >(null);
+  const [step, setStep] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,10 +70,9 @@ function AiSearch() {
     setCriteria(null);
     setMatches(null);
     try {
-      const parsed = (await parseCandidateQuery({ data: { query: q } })) as Criteria | null;
-      if (!parsed) throw new Error("empty");
+      const { criteria: parsed, results } = await demoEngine.searchCandidates(q, CANDIDATES, setStep);
       setCriteria(parsed);
-      setMatches(filterCandidates(parsed));
+      setMatches(results);
     } catch {
       setError("The AI search is unavailable right now. Please try again in a moment.");
       toast.error("Search failed.");
@@ -77,7 +81,6 @@ function AiSearch() {
     }
   };
 
-  const job = state.jobs[0]!;
 
   return (
     <AppShell variant="employer" title="AI candidate search">
@@ -103,7 +106,7 @@ function AiSearch() {
         <div className="mt-3 flex flex-wrap gap-2">
           <Button onClick={() => run(query)} disabled={loading}>
             <Search className="mr-1 h-4 w-4" />
-            {loading ? "Searching…" : "Search candidates"}
+            {loading ? step || "Searching…" : "Search candidates"}
           </Button>
           {EXAMPLES.map((e) => (
             <button
@@ -166,7 +169,7 @@ function AiSearch() {
             />
           ) : (
             <div className="grid gap-3 lg:grid-cols-2">
-              {rankCandidates(job, matches).map(({ candidate, match }) => (
+              {matches.map(({ candidate, score, matched, missing }) => (
                 <article key={candidate.id} className="surface p-4">
                   <div className="flex items-center gap-3">
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
@@ -180,7 +183,7 @@ function AiSearch() {
                     </div>
                   </div>
                   <div className="mt-3 flex items-center gap-2">
-                    <ScorePill score={match.score} />
+                    <ScorePill score={score} />
                     <span className="text-xs text-muted-foreground">
                       {candidate.years} yrs · {candidate.location}
                     </span>
@@ -189,10 +192,8 @@ function AiSearch() {
                     <SkillChips skills={candidate.skills.slice(0, 6)} />
                   </div>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    {match.matching.length
-                      ? `Matches on ${match.matching.join(", ")}.`
-                      : "Limited overlap with required skills."}
-                    {match.missing.length ? ` Missing ${match.missing.join(", ")}.` : " No required skills are missing."}
+                    {matched.length ? `✓ Matches: ${matched.join(", ")}.` : "No requirements matched."}
+                    {missing.length ? ` ⚠ Missing: ${missing.join(", ")}.` : " All requirements met."}
                   </p>
                   <Button asChild size="sm" variant="outline" className="mt-3 w-full">
                     <Link to="/hr/candidates/$candidateId" params={{ candidateId: candidate.id }}>
@@ -216,44 +217,4 @@ function Criterion({ label, value }: { label: string; value?: string | undefined
       <p className="text-sm">{value && value.trim() ? value : "Not specified"}</p>
     </div>
   );
-}
-
-function filterCandidates(c: Criteria) {
-  const tokens = (v?: string | null) =>
-    (v ?? "")
-      .toLowerCase()
-      .split(/[^a-z]+/)
-      .filter((t) => t.length > 2);
-
-  const scored = CANDIDATES.map((cand) => {
-    let hits = 0;
-    let required = 0;
-    if (c.skills?.length) {
-      required += 1;
-      if (c.skills.some((s) => cand.skills.some((cs) => cs.toLowerCase().includes(s.toLowerCase()))))
-        hits += 1;
-    }
-    if (c.major?.trim()) {
-      required += 1;
-      const want = tokens(c.major);
-      const have = tokens(`${cand.major} ${cand.title} ${cand.skills.join(" ")}`);
-      if (want.some((w) => have.includes(w))) hits += 1;
-    }
-    if (c.location?.trim()) {
-      required += 1;
-      if (cand.location.toLowerCase().includes(c.location.toLowerCase().split(",")[0]!.trim()))
-        hits += 1;
-    }
-    return { cand, hits, required };
-  }).filter(({ cand }) => {
-    if (typeof c.minYears === "number" && cand.years < c.minYears) return false;
-    if (typeof c.maxYears === "number" && cand.years > c.maxYears) return false;
-    if (c.availability?.trim() && cand.availability !== c.availability) return false;
-    return true;
-  });
-
-  if (!scored.length) return [];
-  const best = Math.max(...scored.map((s) => s.hits));
-  if (best === 0) return scored.map((s) => s.cand);
-  return scored.filter((s) => s.hits === best).map((s) => s.cand);
 }

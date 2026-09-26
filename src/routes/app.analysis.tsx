@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { AppShell, PageHeader } from "@/components/app-shell";
 import { AiBadge, MatchRing } from "@/components/brand";
 import { Button } from "@/components/ui/button";
-import { analyzeCareer } from "@/lib/ai.functions";
+import { demoEngine } from "@/lib/demo-engine";
 import { careerReadiness } from "@/lib/matching";
 import { cvCompletion, useStore } from "@/lib/store";
 
@@ -37,12 +37,13 @@ function Analysis() {
   const readiness = careerReadiness(state.seeker, cvCompletion(state.cv));
   const [ai, setAi] = useState<AiAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState("");
 
   const run = async () => {
     setLoading(true);
     try {
-      const result = (await analyzeCareer({
-        data: {
+      const result = (await demoEngine.analyzeCareer(
+        {
           degree: state.seeker.degree,
           major: state.seeker.major,
           university: state.seeker.university,
@@ -51,8 +52,10 @@ function Analysis() {
           certifications: state.seeker.certifications,
           projects: state.cv.projects.map((p) => `${p.name}: ${p.description}`),
           targetRole: state.targetRole,
+          jobs: state.jobs,
         },
-      })) as AiAnalysis | null;
+        setStep,
+      )) as AiAnalysis | null;
       if (!result?.summary) throw new Error("empty");
       setAi(result);
     } catch {
@@ -104,7 +107,7 @@ function Analysis() {
           </p>
           <Button size="sm" onClick={run} disabled={loading}>
             <Sparkles className="mr-1 h-4 w-4" />
-            {loading ? "Analysing…" : ai ? "Run again" : "Run AI analysis"}
+            {loading ? step || "Analyzing your profile…" : ai ? "Run again" : "Run AI analysis"}
           </Button>
         </div>
 

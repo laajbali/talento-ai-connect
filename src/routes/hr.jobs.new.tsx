@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { writeJobPost } from "@/lib/ai.functions";
+import { demoEngine } from "@/lib/demo-engine";
 import { useStore } from "@/lib/store";
 import type { Job } from "@/lib/types";
 
@@ -58,6 +58,7 @@ function NewJob() {
   });
   const [draft, setDraft] = useState<Written | null>(null);
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState("");
   const [errors, setErrors] = useState<{ title?: string; skills?: string }>({});
 
   const validate = () => {
@@ -72,8 +73,8 @@ function NewJob() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const result = (await writeJobPost({
-        data: {
+      const result = (await demoEngine.generateJobPost(
+        {
           title: form.title,
           notes: form.notes,
           location: form.location,
@@ -82,8 +83,11 @@ function NewJob() {
           skills: form.skills,
           experience: form.experience,
           certifications: form.certifications,
+          level: form.level,
+          company: state.company.name,
         },
-      })) as Written | null;
+        setStep,
+      )) as Written | null;
       if (!result?.description) throw new Error("empty");
       setDraft(result);
       toast.success("Job description generated. Review and edit before publishing.");
@@ -249,7 +253,7 @@ function NewJob() {
           </div>
 
           <Button onClick={generate} disabled={loading} className="w-full">
-            <AiBadge /> <span className="ml-2">{loading ? "Writing…" : "Generate with AI"}</span>
+            <AiBadge /> <span className="ml-2">{loading ? step || "Writing…" : "Generate with AI"}</span>
           </Button>
         </section>
 
