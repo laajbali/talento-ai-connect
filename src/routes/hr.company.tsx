@@ -151,7 +151,13 @@ function Company() {
             size="sm"
             className="mt-2 h-8 text-sm font-medium sm:text-xs"
             onClick={() => {
-              setDrafts((d) => [...d, { id: nextId, name: "", role: "", email: "" }]);
+              if (drafts.length > 0) {
+                const el = document.querySelector<HTMLInputElement>('[aria-label="Team member name"]');
+                el?.scrollIntoView({ behavior: "smooth", block: "center" });
+                el?.focus();
+                return;
+              }
+              setDrafts([{ id: nextId, name: "", role: "", email: "" }]);
               setNextId((n) => n + 1);
             }}
           >
