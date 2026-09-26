@@ -4,9 +4,9 @@
  * To connect a real provider later, swap the implementation of these functions.
  */
 import { CANDIDATES, JOBS, SKILL_LIBRARY } from "./data";
-import { computeMatch, rankCandidates, rankJobs, toProfile } from "./matching";
+import { candidateToProfile, computeMatch, rankCandidates, rankJobs, toProfile } from "./matching";
 import type { TalentoState } from "./store";
-import type { CvSection, Job, Role } from "./types";
+import type { Candidate, CvSection, Job, Role } from "./types";
 
 export const DEMO_MODE = true;
 
@@ -437,6 +437,271 @@ export async function answerAssistant(role: Role, question: string, state: Talen
     : "I can help with searching candidates, AI CV Screening, Match %, publishing jobs and managing applicants. Try asking about one of these.";
 }
 
+
+/* ---------------- Career analysis ---------------- */
+
+export interface CareerAnalysisInput {
+  degree: string;
+  major: string;
+  university: string;
+  years: number;
+  skills: string[];
+  certifications: string[];
+  projects: string[];
+  targetRole: string;
+  jobs?: Job[];
+}
+
+const LEARN_WEEKS: Record<string, number> = {
+  SQL: 3, Excel: 2, Python: 6, "Power BI": 3, Tableau: 3, Statistics: 5, "Machine Learning": 8,
+  "Deep Learning": 8, Pandas: 3, NLP: 6, Java: 8, React: 5, TypeScript: 4, "Node.js": 5, Figma: 3,
+  "UX Research": 4, "Cloud (AWS)": 6, Docker: 3, Communication: 4, "Data Visualization": 3,
+};
+
+export async function analyzeCareer(d: CareerAnalysisInput, onStep?: (s: string) => void) {
+  for (const s of ["Analyzing your profile…", "Evaluating your skills…", "Comparing career requirements…"]) {
+    onStep?.(s);
+    await wait(400);
+  }
+  const jobs = d.jobs?.length ? d.jobs : JOBS;
+  const profile: Profile = {
+    skills: d.skills, education: d.degree, years: d.years, certifications: d.certifications, projects: d.projects.length,
+  };
+  const ranked = matchJobs(profile, jobs);
+  const target =
+    jobs.find((j) => j.title.toLowerCase() === d.targetRole.toLowerCase()) ?? ranked[0]?.job;
+  const tm = target ? computeMatch(profile, target) : undefined;
+  const paths = uniq(ranked.map((r) => r.job.title)).slice(0, 3);
+  const pathScores = paths.map((p) => `${p} (${ranked.find((r) => r.job.title === p)!.match.score}%)`);
+
+  const strengths = [
+    tm?.matching.length ? `You already have ${tm.matching.length} of ${target!.skills.length} core ${target!.title} skills: ${tm.matching.join(", ")}.` : "",
+    d.major ? `Your ${d.degree} in ${d.major}${d.university ? ` from ${d.university}` : ""} is relevant to ${paths[0] ?? "your target role"}.` : "",
+    d.certifications.length ? `Certified in ${d.certifications.join(", ")}, which signals verified skills to employers.` : "",
+    d.projects.length ? `${d.projects.length} project${d.projects.length === 1 ? "" : "s"} on your CV demonstrate hands-on practice.` : "",
+    d.years ? `${d.years} year${d.years === 1 ? "" : "s"} of experience listed.` : "",
+  ].filter(Boolean).slice(0, 4);
+
+  const gaps = tm ? [...tm.missing, ...tm.improve] : [];
+  const improvements = [
+    ...(tm?.missing ?? []).map((s) => `${s} — required for ${target!.title} and not yet on your profile.`),
+    tm && target!.minYears > d.years ? `Experience — ${target!.title} roles ask for ${target!.minYears}+ years; you list ${d.years}.` : "",
+    !d.projects.length ? "Projects — add at least one project to show practical application of your skills." : "",
+    !d.certifications.length && target?.certifications.length ? `Certification — employers for this role look for ${target.certifications[0]}.` : "",
+  ].filter(Boolean).slice(0, 4);
+
+  const recommendedSkills = gaps.slice(0, 4).map((skill) => ({
+    skill,
+    reason: tm!.missing.includes(skill)
+      ? `Required by ${target!.title}; adds ${Math.round(40 / Math.max(1, target!.skills.length))}% to your match.`
+      : `Preferred by ${target!.title} employers — helps you stand out.`,
+    weeks: LEARN_WEEKS[skill] ?? 4,
+  }));
+
+  const nextSteps = [
+    recommendedSkills[0] ? `Start learning ${recommendedSkills[0].skill} (about ${recommendedSkills[0].weeks} weeks).` : `Apply to ${paths[0]} roles — you meet the core requirements.`,
+    `Build a project using ${[...(tm?.matching ?? d.skills).slice(0, 2), recommendedSkills[0]?.skill].filter(Boolean).join(" and ")} and add it to your CV.`,
+    ranked[0] ? `Apply to ${ranked[0].job.title} at ${ranked[0].job.company} — your current best match at ${ranked[0].match.score}%.` : "",
+  ].filter(Boolean);
+
+  return {
+    summary: `Your profile fits best with ${pathScores.join(", ")}. ${
+      tm ? `For your goal of ${target!.title} you currently match ${tm.score}%${tm.missing.length ? `, with ${tm.missing.length} required skill${tm.missing.length === 1 ? "" : "s"} to close` : ""}.` : ""
+    }`,
+    strengths,
+    improvements,
+    recommendedSkills,
+    nextSteps,
+  };
+}
+
+/* ---------------- HR candidate search ---------------- */
+
+export interface SearchCriteria {
+  skills: string[];
+  major: string;
+  degree: string;
+  location: string;
+  university: string;
+  name: string;
+  minYears: number | null;
+  maxYears: number | null;
+  minGpa: number | null;
+  availability: string;
+  graduationYear: number | null;
+  certifications: string[];
+  interpretation: string;
+}
+
+const MAJORS = ["Computer Science", "Information Systems", "Software Engineering", "Data Science", "Artificial Intelligence", "AI", "Statistics", "Mathematics", "Business", "Design", "Engineering", "Information Technology", "Cybersecurity"];
+const CITIES = ["Riyadh", "Jeddah", "Dammam", "Khobar", "Mecca", "Makkah", "Medina", "Remote"];
+
+export function parseSearchQuery(query: string, candidates: Candidate[] = CANDIDATES): SearchCriteria {
+  const q = query;
+  const skillPool = uniq([...ALL_SKILLS, ...candidates.flatMap((c) => c.skills)]);
+  const skills = skillPool.filter((s) => hasSkill(q, s) && !/^(ai)$/i.test(s));
+  const major = MAJORS.find((m) => hasSkill(q, m)) ?? "";
+  const degree = /master|msc/i.test(q) ? "Master's degree" : /phd/i.test(q) ? "PhD" : /bachelor|bsc|graduate/i.test(q) ? "Bachelor's degree" : "";
+  const location = CITIES.find((c) => new RegExp(`\\b${c}\\b`, "i").test(q)) ?? "";
+  const university = uniq(candidates.map((c) => c.university)).find((u) => q.toLowerCase().includes(u.toLowerCase())) ?? "";
+  const name = candidates.find((c) => c.name.split(" ").some((n) => n.length > 2 && new RegExp(`\\b${n}\\b`, "i").test(q)))?.name ?? "";
+  const plus = q.match(/(\d+)\s*\+\s*(?:years|yrs)|(?:at least|minimum|over)\s*(\d+)\s*(?:years|yrs)/i);
+  const upTo = q.match(/(?:up to|max(?:imum)?|less than|under)\s*(\d+)\s*(?:years|yrs)/i);
+  const fresh = /fresh|entry|junior|new grad/i.test(q);
+  const minYears = plus ? Number(plus[1] ?? plus[2]) : /senior/i.test(q) ? 3 : null;
+  const maxYears = upTo ? Number(upTo[1]) : fresh ? 1 : null;
+  const gpaM = q.match(/gpa\s*(?:above|over|of|>=?|at least)?\s*([\d.]+)/i);
+  const minGpa = gpaM ? Number(gpaM[1]) : null;
+  const availability = /immediate/i.test(q) ? "Immediately" : /1 month|one month/i.test(q) ? "1 month" : /3 months/i.test(q) ? "3 months" : "";
+  const grad = q.match(/(?:graduat\w*|class of)\s*(?:in\s*)?((?:19|20)\d{2})/i);
+  const certifications = uniq(candidates.flatMap((c) => c.certifications)).filter((c) => q.toLowerCase().includes(c.toLowerCase()));
+  const parts = [
+    skills.length && `skills ${skills.join(", ")}`,
+    major && `major ${major}`,
+    degree && degree,
+    university && university,
+    location && `in ${location}`,
+    minYears !== null && `${minYears}+ years`,
+    maxYears !== null && `up to ${maxYears} years`,
+    minGpa !== null && `GPA ≥ ${minGpa}`,
+    availability && `available ${availability.toLowerCase()}`,
+    certifications.length && certifications.join(", "),
+    name && `name ${name}`,
+  ].filter(Boolean);
+  return {
+    skills, major, degree, location, university, name, minYears, maxYears, minGpa, availability,
+    graduationYear: grad ? Number(grad[1]) : null, certifications,
+    interpretation: parts.length
+      ? `Looking for candidates with ${parts.join(" · ")}. Each requirement counts equally toward the match score.`
+      : "No specific requirement was recognised — showing all candidates. Try naming skills, a major, location or years.",
+  };
+}
+
+const gpaNum = (g: string) => Number(g.match(/[\d.]+/)?.[0] ?? 0);
+
+export async function searchCandidates(query: string, candidates: Candidate[] = CANDIDATES, onStep?: (s: string) => void) {
+  for (const s of ["Reading your request…", "Matching requirements…", "Ranking candidates…"]) {
+    onStep?.(s);
+    await wait(300);
+  }
+  const c = parseSearchQuery(query, candidates);
+  const results = candidates.map((cand) => {
+    const matched: string[] = [];
+    const missing: string[] = [];
+    const check = (label: string, ok: boolean) => (ok ? matched : missing).push(label);
+    const lowerSkills = cand.skills.map((s) => s.toLowerCase());
+    c.skills.forEach((s) => check(s, lowerSkills.includes(s.toLowerCase())));
+    if (c.major) check(c.major, `${cand.major} ${cand.degree}`.toLowerCase().includes(c.major.toLowerCase()) || (c.major === "AI" && /artificial|ai\b/i.test(cand.major)));
+    if (c.degree) check(c.degree, cand.degree.toLowerCase() === c.degree.toLowerCase() || (c.degree === "Bachelor's degree" && /master|phd/i.test(cand.degree)));
+    if (c.university) check(c.university, cand.university === c.university);
+    if (c.location) check(c.location, cand.location.toLowerCase().includes(c.location.toLowerCase()));
+    if (c.minYears !== null) check(`${c.minYears}+ years`, cand.years >= c.minYears);
+    if (c.maxYears !== null) check(`≤ ${c.maxYears} years`, cand.years <= c.maxYears);
+    if (c.minGpa !== null) check(`GPA ≥ ${c.minGpa}`, gpaNum(cand.gpa) >= c.minGpa);
+    if (c.availability) check(`Available ${c.availability.toLowerCase()}`, cand.availability === c.availability);
+    if (c.graduationYear) check(`Graduated ${c.graduationYear}`, cand.graduationYear === c.graduationYear);
+    c.certifications.forEach((x) => check(x, cand.certifications.includes(x)));
+    if (c.name) check(c.name, cand.name === c.name);
+    const total = matched.length + missing.length;
+    return { candidate: cand, matched, missing, score: total ? Math.round((matched.length / total) * 100) : 0 };
+  });
+  const total = results[0] ? results[0].matched.length + results[0].missing.length : 0;
+  const filtered = total ? results.filter((r) => r.matched.length > 0) : results;
+  return { criteria: c, results: filtered.sort((a, b) => b.score - a.score) };
+}
+
+/* ---------------- Job post ---------------- */
+
+export interface JobPostInput {
+  title: string;
+  notes: string;
+  location: string;
+  type: string;
+  level?: string;
+  education: string;
+  skills: string;
+  experience: string;
+  certifications: string;
+  company?: string;
+}
+
+const pick = <T,>(list: T[], seed: string) => list[[...seed].reduce((a, ch) => a + ch.charCodeAt(0), 0) % list.length]!;
+
+export async function generateJobPost(d: JobPostInput, onStep?: (s: string) => void) {
+  for (const s of ["Reading role details…", "Structuring the job post…", "Polishing the wording…"]) {
+    onStep?.(s);
+    await wait(350);
+  }
+  const skills = splitList(d.skills);
+  const certs = splitList(d.certifications);
+  const noteItems = d.notes.split(/\n|;|\.\s/).map((s) => s.trim()).filter((s) => s.length > 3);
+  const seed = d.title + d.skills;
+  const company = d.company || "our team";
+  const intro = pick([
+    `${company} is hiring a ${d.title} to join us${d.location ? ` in ${d.location}` : ""}.`,
+    `We are looking for a ${d.title} to strengthen ${company}${d.location ? ` in ${d.location}` : ""}.`,
+    `Join ${company} as a ${d.title}${d.location ? ` based in ${d.location}` : ""}.`,
+  ], seed);
+  const body = pick([
+    `This ${d.type.toLowerCase()} role${d.level ? ` (${d.level.toLowerCase()})` : ""} centres on ${skills.slice(0, 3).join(", ")}.`,
+    `In this ${d.type.toLowerCase()} position you will put your ${skills.slice(0, 3).join(", ")} skills to daily use.`,
+    `The ideal candidate brings strong ${skills.slice(0, 3).join(", ")} skills to a ${d.type.toLowerCase()} role.`,
+  ], seed + "b");
+  const verbs = ["Apply", "Use", "Contribute with", "Deliver work using"];
+  const responsibilities = noteItems.length
+    ? noteItems.slice(0, 6).map((n) => polish(n))
+    : skills.slice(0, 4).map((s, i) => `${verbs[i % verbs.length]} ${s} in day-to-day work as ${d.title}.`);
+  const requirements = [
+    d.education && `${d.education} or equivalent.`,
+    d.experience && `${d.experience} of relevant experience.`,
+    skills.length && `Working knowledge of ${skills.join(", ")}.`,
+    certs.length && `${certs.join(", ")} certification${certs.length > 1 ? "s" : ""}.`,
+  ].filter(Boolean) as string[];
+  return {
+    description: `${intro} ${body}\n\nLocation: ${d.location || "Not specified"} · Type: ${d.type} · Experience: ${d.experience || "Not specified"}.`,
+    responsibilities,
+    requirements,
+    skills,
+    preferredSkills: certs,
+  };
+}
+
+/* ---------------- Candidate match explanation ---------------- */
+
+export async function explainCandidateMatch(candidate: Candidate, job: Job, onStep?: (s: string) => void) {
+  for (const s of ["Matching requirements…", "Evaluating skills…", "Preparing recommendations…"]) {
+    onStep?.(s);
+    await wait(300);
+  }
+  const m = computeMatch(candidateToProfile(candidate), job);
+  const expOk = candidate.years >= job.minYears;
+  const eduOk = m.dimensions.find((d) => d.label === "Education")!.score >= 1;
+  const majorOk = job.title.toLowerCase().split(/\s+/).some((w) => w.length > 3 && candidate.major.toLowerCase().includes(w)) ||
+    job.skills.some((s) => candidate.major.toLowerCase().includes(s.toLowerCase())) || /computer|data|software|information|engineering|ai|artificial/i.test(candidate.major);
+  const strong = [
+    ...m.matching.map((s) => `✓ ${s}`),
+    expOk ? `✓ Experience: meets the ${job.minYears}+ year requirement (${candidate.years} yrs)` : "",
+    eduOk ? `✓ Education: ${candidate.degree} meets the ${job.education} requirement` : "",
+    majorOk ? `✓ Major: ${candidate.major} is relevant to ${job.title}` : "",
+  ].filter(Boolean);
+  const risks = [
+    ...m.missing.map((s) => `⚠ Missing required skill: ${s}`),
+    !expOk ? `⚠ Experience: ${candidate.years} yrs vs ${job.minYears}+ required` : "",
+    !eduOk ? `⚠ Education: role asks for ${job.education}` : "",
+  ].filter(Boolean);
+  const recommendation = m.missing.length === 0 && expOk
+    ? "Invite to interview — all required skills and experience are met."
+    : m.score >= 65
+      ? `Interview and assess ${[...m.missing, !expOk ? "depth of experience" : ""].filter(Boolean).join(", ")} with a practical task.`
+      : `Keep on file — close gaps in ${m.missing.slice(0, 2).join(", ") || "experience"} before moving forward.`;
+  return {
+    verdict: `${m.score}% match for ${job.title}: ${m.matching.length} of ${job.skills.length} required skills present${m.missing.length ? `, ${m.missing.length} missing` : ""}.`,
+    strong: strong.length ? strong : ["No required skills matched yet."],
+    risks: risks.length ? risks : ["✓ No gaps found against the job requirements."],
+    recommendation,
+  };
+}
+
 export const demoEngine = {
   analyzeCV,
   generateCV,
@@ -444,4 +709,8 @@ export const demoEngine = {
   matchJobs,
   calculateSkillGaps,
   calculateMatchScore,
+  analyzeCareer,
+  searchCandidates,
+  generateJobPost,
+  explainCandidateMatch,
 };
