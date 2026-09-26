@@ -24,8 +24,23 @@ export const Route = createFileRoute("/hr/company")({
 function Company() {
   const { state, set } = useStore();
   const [form, setForm] = useState(state.company);
-  const [member, setMember] = useState({ name: "", role: "", email: "" });
-  const [error, setError] = useState<string | null>(null);
+  type Draft = { id: number; name: string; role: string; email: string };
+  const [drafts, setDrafts] = useState<Draft[]>([]);
+  const [draftErrors, setDraftErrors] = useState<Record<number, string>>({});
+  const [nextId, setNextId] = useState(1);
+  const updateDraft = (id: number, patch: Partial<Draft>) => {
+    setDrafts((d) => d.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+    setDraftErrors((e) => {
+      const { [id]: _omit, ...rest } = e;
+      return rest;
+    });
+  };
+  const validateDraft = (d: Draft): string | null => {
+    const missing = [!d.name.trim() && "Name", !d.role.trim() && "Role", !d.email.trim() && "Email"].filter(Boolean);
+    if (missing.length) return `${missing.join(", ")} ${missing.length > 1 ? "are" : "is"} required.`;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim())) return "Enter a valid email address.";
+    return null;
+  };
 
   const initials = form.name
     .split(" ")
@@ -93,42 +108,51 @@ function Company() {
             ))}
           </div>
 
-          <div className="mt-2.5 grid gap-1.5 sm:mt-3 sm:grid-cols-3 sm:gap-2">
-            <Input
-              className="h-9 text-[15px] font-normal sm:text-base md:text-sm"
-              placeholder="Name"
-              aria-label="Team member name"
-              value={member.name}
-              onChange={(e) => setMember({ ...member, name: e.target.value })}
-            />
-            <Input
-              className="h-9 text-[15px] font-normal sm:text-base md:text-sm"
-              placeholder="Role"
-              aria-label="Team member role"
-              value={member.role}
-              onChange={(e) => setMember({ ...member, role: e.target.value })}
-            />
-            <Input
-              className="h-9 text-[15px] font-normal sm:text-base md:text-sm"
-              placeholder="Email"
-              aria-label="Team member email"
-              value={member.email}
-              onChange={(e) => setMember({ ...member, email: e.target.value })}
-            />
-          </div>
-          {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+          {drafts.map((d) => (
+            <div key={d.id} className="mt-2.5 sm:mt-3">
+              <div className="flex items-start gap-2">
+                <div className="grid flex-1 gap-1.5 sm:grid-cols-3 sm:gap-2">
+              <Input
+                className="h-9 text-[15px] font-normal sm:text-base md:text-sm"
+                placeholder="Name"
+                aria-label="Team member name"
+                value={d.name}
+                onChange={(e) => updateDraft(d.id, { name: e.target.value })}
+              />
+              <Input
+                className="h-9 text-[15px] font-normal sm:text-base md:text-sm"
+                placeholder="Role"
+                aria-label="Team member role"
+                value={d.role}
+                onChange={(e) => updateDraft(d.id, { role: e.target.value })}
+              />
+              <Input
+                className="h-9 text-[15px] font-normal sm:text-base md:text-sm"
+                placeholder="Email"
+                aria-label="Team member email"
+                value={d.email}
+                onChange={(e) => updateDraft(d.id, { email: e.target.value })}
+              />
+                </div>
+                <button
+                  type="button"
+                  className="mt-2.5"
+                  aria-label="Remove new team member"
+                  onClick={() => setDrafts((x) => x.filter((y) => y.id !== d.id))}
+                >
+                  <Trash2 className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
+              {draftErrors[d.id] && <p className="mt-1 text-xs text-destructive">{draftErrors[d.id]}</p>}
+            </div>
+          ))}
           <Button
             variant="outline"
             size="sm"
             className="mt-2 h-8 text-sm font-medium sm:text-xs"
             onClick={() => {
-              if (!member.name.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email)) {
-                setError("Add a name and a valid email address.");
-                return;
-              }
-              setError(null);
-              setForm({ ...form, team: [...form.team, member] });
-              setMember({ name: "", role: "", email: "" });
+              setDrafts((d) => [...d, { id: nextId, name: "", role: "", email: "" }]);
+              setNextId((n) => n + 1);
             }}
           >
             <Plus className="mr-1 h-4 w-4" /> Add team member
@@ -142,7 +166,21 @@ function Company() {
               toast.error("Company name is required.");
               return;
             }
-            set({ company: form });
+            const errs: Record<number, string> = {};
+            for (const d of drafts) {
+              const err = validateDraft(d);
+              if (err) errs[d.id] = err;
+            }
+            setDraftErrors(errs);
+            if (Object.keys(errs).length) {
+              toast.error("Complete the new team member details.");
+              return;
+            }
+            const added = drafts.map((d) => ({ name: d.name.trim(), role: d.role.trim(), email: d.email.trim() }));
+            const next = { ...form, team: [...form.team, ...added] };
+            setForm(next);
+            setDrafts([]);
+            set({ company: next });
             toast.success("Company profile saved.");
           }}
         >
