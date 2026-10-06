@@ -1,43 +1,39 @@
-# Talento 💼
-🔗(https://talento-ai-connect.lovable.app/)
+# Talento
 
-> AI-powered recruitment & career platform connecting job seekers with employers.
+> AI-powered recruitment and career platform connecting job seekers with employers.
 
-## 🚀 Overview
+[Live Demo](https://talento-ai-connect.lovable.app/)
 
-Talento is an AI-powered recruitment and career platform designed to simplify the hiring process and help job seekers discover the right opportunities.
+## Overview
 
-The platform connects two types of users:
+Talento is an AI-powered recruitment and career platform designed to simplify the hiring process and help job seekers discover relevant opportunities.
 
-- 👩‍💻 Job Seekers
-- 🏢 Employers / HR
+The platform provides dedicated experiences for both job seekers and employers, combining career management with intelligent recruitment tools.
 
-Talento combines AI-powered tools, career management, and intelligent recruitment features into one platform.
+## Features
 
-## ✨ Features
+### Job Seeker
 
-### 👩‍💻 Job Seeker
+- Create and manage a professional CV
+- AI-powered CV analysis
+- Personalized job recommendations
+- Discover relevant job opportunities
+- Track applications
+- Manage professional profile
+- Responsive experience across devices
 
-- 📄 Create and manage a professional CV
-- 🤖 AI-powered CV analysis
-- 🎯 Personalized job recommendations
-- 🔎 Discover suitable job opportunities
-- 📌 Track applications
-- 👤 Manage professional profile
-- 📱 Responsive user experience
+### Employer / HR
 
-### 🏢 Employer / HR
+- Create and manage job postings
+- AI-powered CV screening
+- Search and filter candidates
+- Candidate management
+- Skill and experience-based candidate discovery
+- Recruitment dashboard
 
-- 📋 Create and manage job postings
-- 🤖 AI-powered CV screening
-- 🔎 Search and filter candidates
-- 👥 Candidate management
-- 🎯 Find candidates based on skills and experience
-- 📊 Recruitment dashboard
+## AI Capabilities
 
-## 🧠 AI Features
-
-Talento uses AI to help improve the recruitment experience through:
+Talento integrates AI-powered features to support both sides of the hiring process, including:
 
 - CV analysis
 - Candidate matching
@@ -45,62 +41,57 @@ Talento uses AI to help improve the recruitment experience through:
 - Intelligent candidate search
 - Recruitment insights
 
-## 🛠️ Tech Stack
+## Design & UX
+
+The platform follows a clean and consistent design system focused on:
+
+- Role-based user experiences
+- Responsive layouts
+- Intuitive navigation
+- Consistent UI components
+- Accessible interactions
+- Simple and efficient workflows
+
+## User Roles
+
+### Job Seeker
+
+A career-focused experience for students and professionals to manage their CV, discover opportunities, and track applications.
+
+### Employer / HR
+
+A recruitment-focused experience for companies and recruiters to manage job postings, search for candidates, and streamline the hiring process.
+
+## Goal
+
+Talento aims to make recruitment more efficient by connecting candidates with relevant opportunities and helping employers identify suitable talent through AI-powered tools.
+
+## My Contribution
+
+- Product concept and user flow
+- UI/UX design
+- Job Seeker and Employer experiences
+- Responsive interface development
+- CV management features
+- AI-powered CV screening concept
+- Recruitment workflows
+- Prototype development using Lovable
+
+## Tech Stack
 
 - React
 - TypeScript
-- HTML5
-- CSS3
 - Tailwind CSS
 - Firebase
 - AI / LLM
 - Lovable
 - GitHub
 
-## 🎨 Design & UX
+## Future Improvements
 
-The platform was designed with a focus on:
-
-- Clean and modern UI
-- Simple navigation
-- Responsive layouts
-- Role-based user experiences
-- Consistent design system
-- Accessible and intuitive interactions
-
-## 👥 User Roles
-
-### Job Seeker
-
-Designed for students and professionals looking for career opportunities, managing their CVs, and discovering suitable jobs.
-
-### Employer / HR
-
-Designed for recruiters and companies to manage vacancies, search for candidates, and streamline the hiring process.
-
-## 🎯 Goal
-
-The goal of Talento is to make recruitment smarter, faster, and more accessible by connecting the right candidates with the right opportunities using AI.
-
-## 👩🏻‍💻 My Contribution
-
-- Designed the user experience and interface
-- Developed the Job Seeker and Employer experiences
-- Built responsive layouts
-- Worked on AI-powered CV screening
-- Designed CV management and recruitment features
-- Worked on the product concept and overall user flow
-- Developed the prototype using Lovable
-
-## 🚀 Future Improvements
-
-- Advanced AI candidate matching
+- Advanced candidate matching
 - Automated interview recommendations
 - Recruitment analytics
-- More CV templates
-- Advanced employer analytics
+- Expanded CV templates
+- Employer analytics
 - Job market insights
-
----
-
-### 💡 Built with passion for better career opportunities.
